@@ -39,6 +39,7 @@ dependencies:
   pinput: ^5.0.2
   flutter_bloc: ^9.1.1
   fluttertoast: ^9.0.0
+  image_picker: ^1.2.0
 
 dev_dependencies:
   flutter_test:

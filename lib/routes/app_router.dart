@@ -3,6 +3,7 @@
 
 import 'package:dating_app/view/auth_landing_screen/auth_landing_screen.dart';
 import 'package:dating_app/view/email_auth_screen/email_auth_screen.dart';
+import 'package:dating_app/view/home_screen/home_screen.dart';
 import 'package:dating_app/view/phone_otp_screen/phone_otp_screen.dart';
 import 'package:dating_app/view/profile_setup_screen/profile_setup_screen.dart';
 import 'package:dating_app/view/screen_onboarding/screen_onboarding.dart';
@@ -16,6 +17,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(path: '/phoneotp', builder: (context, state) =>  PhoneOtpScreen()),
     GoRoute(path: '/emailauth', builder: (context, state) =>  EmailAuthScreen()),
     GoRoute(path: '/profilesetup', builder: (context, state) =>  ProfileSetupScreen()),
+    GoRoute(path: '/home', builder: (context, state) =>  HomeScreen()),
     // GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
     // GoRoute(
     //   path: '/register',

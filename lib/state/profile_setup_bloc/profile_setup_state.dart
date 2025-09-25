@@ -21,3 +21,14 @@ final class ProfileSetupFailure extends ProfileSetupState {
   final String error;
   ProfileSetupFailure({required this.error});
 }
+class SelfieImageUploadedState extends ProfileSetupState{
+  final XFile pickedFile;
+
+  SelfieImageUploadedState({required this.pickedFile});
+  
+}
+class ImageUploadedState extends ProfileSetupState{
+  final XFile pickedFile;
+
+  ImageUploadedState({required this.pickedFile});
+}

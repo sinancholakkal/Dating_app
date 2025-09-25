@@ -43,7 +43,7 @@ class AuthLandingScreen extends StatelessWidget {
               authButton(
                 text: AppStrings.continueG,
                 icon: Icons.g_mobiledata,
-                onTap: (){}
+                onTap: ()=>context.push("/profilesetup")
               ),
               AppSizedBox.h16,
 

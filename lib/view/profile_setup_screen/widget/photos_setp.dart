@@ -1,10 +1,17 @@
+import 'dart:io';
+
+import 'package:dating_app/state/profile_setup_bloc/profile_setup_bloc.dart';
 import 'package:dating_app/utils/app_color.dart' as AppColors;
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 
 class PhotosStep extends StatelessWidget {
   final VoidCallback onContinue;
-  const PhotosStep({super.key, required this.onContinue});
+   PhotosStep({super.key, required this.onContinue});
+
+  List<XFile>images =[];
 
   @override
   Widget build(BuildContext context) {
@@ -30,25 +37,45 @@ class PhotosStep extends StatelessWidget {
           ),
           const SizedBox(height: 32),
           Expanded(
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-              ),
-              itemCount: 6,
-              itemBuilder: (context, index) {
-                return Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.kWhite.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.kWhite.withOpacity(0.3)),
+            child: BlocConsumer<ProfileSetupBloc, ProfileSetupState>(
+              listener: (context, state) {
+                if(state is ImageUploadedState){
+                  images.add(state.pickedFile);
+                }
+              },
+              builder: (context, state) {
+                return GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
                   ),
-                  child:  Icon(
-                    Icons.add_a_photo_outlined,
-                    color: AppColors.kWhite54,
-                    size: 40,
-                  ),
+                  itemCount: 6,
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      onTap: () {
+                        context.read<ProfileSetupBloc>().add(
+                          SelfieImageUploadEvent(source: ImageSource.gallery),
+                        );
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.kWhite.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: AppColors.kWhite.withOpacity(0.3),
+                          ),
+                        ),
+                        child: (index<images.length)?ClipRRect(
+                                  borderRadius: BorderRadius.circular(16),
+                          child: Image.file(File(images[index].path),fit: BoxFit.fill,)):Icon(
+                          Icons.add_a_photo_outlined,
+                          color: AppColors.kWhite54,
+                          size: 40,
+                        ),
+                      ),
+                    );
+                  },
                 );
               },
             ),

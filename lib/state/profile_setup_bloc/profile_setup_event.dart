@@ -15,3 +15,8 @@ class GoBackTappedEvent extends ProfileSetupEvent {
 }
 class StartProfileSetupEvent extends ProfileSetupEvent{}
 class StartProfileSetup extends ProfileSetupEvent {}
+class SelfieImageUploadEvent extends ProfileSetupEvent{
+  final ImageSource source;
+
+  SelfieImageUploadEvent({required this.source});
+}
