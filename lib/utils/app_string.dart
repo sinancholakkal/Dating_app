@@ -26,24 +26,22 @@ class AppStrings {
   static const updateMsg = "Updated";
   static const addMsg = "Added";
     static const delete = "Are you sure you want to delete?";
-    static final ValueNotifier<List<Map<String, String>>> onboardingDataNotifier = 
-    ValueNotifier(
-  [
+    static const continuePh = "Continue with Phone";
+    static const continueG = "Continue with Google";
+    static const continueE = "Continue with Email";
+    static final List<Map<String, String>> onboardingData = [
     {
       "title": "Find Your Match ❤️",
       "subtitle": "Swipe and discover people nearby who share your interests.",
-      "image": "assets/images/match.png"
     },
     {
       "title": "Chat Instantly 💬",
       "subtitle": "Start conversations and make meaningful connections in real-time.",
-      "image": "assets/images/chat.png"
     },
     {
       "title": "Safe & Secure 🔒",
       "subtitle": "Your privacy and safety are our top priority.",
-      "image": "assets/images/secure.png"
     },
-  ],
-);
+  ];
+
 }

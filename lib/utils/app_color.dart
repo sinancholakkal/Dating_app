@@ -11,3 +11,9 @@ const Kred = Colors.red;
 
 Color bgcolor = Color.fromARGB(255, 32, 32, 32);
 Color bgcard = Color(0xFF1A1A1A);
+
+const LinearGradient appGradient = LinearGradient(
+  colors: [Color(0xffFF5F6D), Color(0xffFFC371)],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+);

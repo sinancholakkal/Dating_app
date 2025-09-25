@@ -1,47 +1,21 @@
+import 'package:dating_app/utils/app_color.dart';
+import 'package:dating_app/utils/app_string.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ScreenOnboarding extends StatelessWidget {
-   ScreenOnboarding({super.key});
+  ScreenOnboarding({super.key});
 
   final PageController _controller = PageController();
 
-  ValueNotifier<int>currentIndex = ValueNotifier(0);
-
-  final List<Map<String, String>> onboardingData = [
-    {
-      "title": "Find Your Match ❤️",
-      "subtitle": "Swipe and discover people nearby who share your interests.",
-      "image": "assets/images/match.png"
-    },
-    {
-      "title": "Chat Instantly 💬",
-      "subtitle": "Start conversations and make meaningful connections in real-time.",
-      "image": "assets/images/chat.png"
-    },
-    {
-      "title": "Safe & Secure 🔒",
-      "subtitle": "Your privacy and safety are our top priority.",
-      "image": "assets/images/secure.png"
-    },
-  ];
-
-  void _onPageChanged(int index) {
-    //setState(() => _currentIndex = index);
-    
-  }
+  ValueNotifier<int> currentIndex = ValueNotifier(0);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xffFF5F6D), Color(0xffFFC371)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
+        decoration: const BoxDecoration(gradient: appGradient),
         child: SafeArea(
           child: ValueListenableBuilder(
             valueListenable: currentIndex,
@@ -51,18 +25,17 @@ class ScreenOnboarding extends StatelessWidget {
                   Expanded(
                     child: PageView.builder(
                       controller: _controller,
-                      itemCount: onboardingData.length,
+                      itemCount: AppStrings.onboardingData.length,
                       onPageChanged: (value) {
                         currentIndex.value = value;
                       },
                       itemBuilder: (context, index) {
-                        final item = onboardingData[index];
+                        final item = AppStrings.onboardingData[index];
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            
                             const SizedBox(height: 40),
-              
+
                             // Title
                             Text(
                               item["title"]!,
@@ -74,10 +47,12 @@ class ScreenOnboarding extends StatelessWidget {
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: 16),
-              
+
                             // Subtitle
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 32),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 32,
+                              ),
                               child: Text(
                                 item["subtitle"]!,
                                 style: GoogleFonts.poppins(
@@ -92,25 +67,30 @@ class ScreenOnboarding extends StatelessWidget {
                       },
                     ),
                   ),
-              
+
                   // Dots Indicator
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(
-                      onboardingData.length,
+                      AppStrings.onboardingData.length,
                       (index) => AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
-                        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 4,
+                          vertical: 20,
+                        ),
                         width: currentIdxNoti == index ? 16 : 8,
                         height: 8,
                         decoration: BoxDecoration(
-                          color: currentIdxNoti == index ? Colors.white : Colors.white54,
+                          color: currentIdxNoti == index
+                              ? Colors.white
+                              : Colors.white54,
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                     ),
                   ),
-              
+
                   // Get Started Button
                   Padding(
                     padding: const EdgeInsets.all(24.0),
@@ -124,10 +104,18 @@ class ScreenOnboarding extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        //Navigator.pushReplacementNamed(context, "/auth");
+                        if (currentIndex.value ==
+                            AppStrings.onboardingData.length - 1) {
+                          context.push("/authlanding");
+                        } else {
+                          _controller.nextPage(
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.easeInOut,
+                          );
+                        }
                       },
                       child: Text(
-                        currentIdxNoti == onboardingData.length - 1
+                        currentIdxNoti == AppStrings.onboardingData.length - 1
                             ? "Get Started"
                             : "Next",
                         style: GoogleFonts.poppins(
@@ -136,10 +124,10 @@ class ScreenOnboarding extends StatelessWidget {
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               );
-            }
+            },
           ),
         ),
       ),

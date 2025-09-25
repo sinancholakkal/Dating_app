@@ -1,4 +1,5 @@
-import 'package:dating_app/view/screen_onboarding.dart';
+import 'package:dating_app/routes/app_router.dart';
+import 'package:dating_app/view/screen_onboarding/screen_onboarding.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -9,11 +10,12 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: appRouter,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: ScreenOnboarding()
+      
     );
   }
 }
