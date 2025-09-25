@@ -7,8 +7,7 @@ import 'package:dating_app/view/widgets/text_feild.dart';
 import 'package:dating_app/view/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:pinput/pinput.dart';
+
 
 class PhoneOtpScreen extends StatefulWidget {
   const PhoneOtpScreen({super.key});

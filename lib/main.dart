@@ -1,5 +1,6 @@
 import 'package:dating_app/routes/app_router.dart';
 import 'package:dating_app/state/auth_bloc/auth_bloc.dart';
+import 'package:dating_app/state/profile_setup_bloc/profile_setup_bloc.dart';
 import 'package:dating_app/view/screen_onboarding/screen_onboarding.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,6 +17,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => AuthBloc(),
+        ),
+        BlocProvider(
+          create: (context) => ProfileSetupBloc(),
         ),
         
       ],
