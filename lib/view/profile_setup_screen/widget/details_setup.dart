@@ -41,7 +41,7 @@ class DetailsStep extends StatelessWidget {
           ),
           const SizedBox(height: 48),
           AppTextField(controller: nameController, hintText: "Your Name"),
-          const SizedBox(height: 16),
+          AppSizedBox.h16,
           AppTextField(
             controller: ageController,
             hintText: "Your Age",

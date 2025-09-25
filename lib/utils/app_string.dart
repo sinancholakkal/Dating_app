@@ -46,5 +46,8 @@ class AppStrings {
       "subtitle": "Your privacy and safety are our top priority.",
     },
   ];
-
+ static final List<String> allInterests = const [
+    'Travel', 'Photography', 'Movies', 'Gaming', 'Music', 'Art',
+    'Cooking', 'Reading', 'Fitness', 'Dancing', 'Sports', 'Tech'
+  ];
 }

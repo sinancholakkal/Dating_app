@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:dating_app/state/profile_setup_bloc/profile_setup_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/utils/app_color.dart' as AppColors;
 import 'package:dating_app/view/profile_setup_screen/widget/details_setup.dart';
+import 'package:dating_app/view/profile_setup_screen/widget/interested_setup.dart';
 import 'package:dating_app/view/profile_setup_screen/widget/photos_setp.dart';
 import 'package:dating_app/view/widgets/app_genderchip.dart';
 import 'package:dating_app/view/widgets/app_text_field.dart';
@@ -23,6 +26,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   //Gender _selectedGender = Gender.none;
   ValueNotifier<Gender> selectedGender = ValueNotifier(Gender.none);
   int _currentPage = 0;
+  Set<String> interest ={};
 
   @override
   void initState() {
@@ -53,7 +57,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                 _currentPage = state.currentPage;
               }
               return LinearProgressIndicator(
-                value: (_currentPage + 1) / 2,
+                value: (_currentPage + 1) / 3,
                 backgroundColor: Colors.white24,
                 valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
               );
@@ -93,6 +97,15 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                 ),
               ),
             ),
+            InterestsStep(onContinue: (bio, interests) {
+              log(bio.toString());
+              log(interests.toString());
+              context.read<ProfileSetupBloc>().add(
+                ContinueTappedEvent(
+                  pageController: _pageController,
+                  currentPage: _currentPage,
+                ));
+            }, bioController: TextEditingController(), initialInterests: interest,)
           ],
         ),
       ),
