@@ -43,16 +43,14 @@ class AuthLandingScreen extends StatelessWidget {
               authButton(
                 text: AppStrings.continueG,
                 icon: Icons.g_mobiledata,
-                onTap: () {
-                  // TODO: Google Sign-in
-                },
+                onTap: (){}
               ),
               AppSizedBox.h16,
 
               authButton(
                 text: AppStrings.continueE,
                 icon: Icons.email_outlined,
-                onTap: () => Navigator.pushNamed(context, "/email"),
+                onTap: ()=>context.push("/emailauth"),
               ),
 
               AppSizedBox.h30,

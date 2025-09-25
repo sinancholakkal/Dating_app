@@ -3,6 +3,7 @@ import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/utils/app_string.dart';
 import 'package:dating_app/view/widgets/otp_input_view.dart';
 import 'package:dating_app/view/widgets/phone_input_view.dart';
+import 'package:dating_app/view/widgets/text_feild.dart';
 import 'package:dating_app/view/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,7 +37,7 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       
-      appBar: AppBar(title: const Text("Phone Verification"),backgroundColor: primary,),
+      appBar: AppBar(title: TextWidget(text: "Phone Verification"),backgroundColor: primary,iconTheme: IconThemeData(color: kWhite),),
       body: Container(
         decoration: BoxDecoration(
           gradient: appGradient

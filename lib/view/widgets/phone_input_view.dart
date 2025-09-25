@@ -49,23 +49,11 @@ class _PhoneInputViewState extends State<PhoneInputView> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
+          //TextFieldwidget-----------
           AppTextField(controller: _phoneController,prefixText: "+91 ",),
-          // TextField(
-          //   controller: _phoneController, // Use the state's controller
-          //   keyboardType: TextInputType.phone,
-          //   decoration: InputDecoration(
-          //     hintText: "98765 43210",
-          //     prefixText: "+91 ",
-          //     border: OutlineInputBorder(
-          //       borderRadius: BorderRadius.circular(12),
-          //       borderSide: BorderSide()
-          //     ),
-          //   ),
-          // ),
           const SizedBox(height: 24),
           ElevatedButton(
             onPressed: () {
-              // Call the callback function with the current phone number
               context.read<AuthBloc>().add(
                 SendOtpEvent(phoneNumber: _phoneController.text),
               );

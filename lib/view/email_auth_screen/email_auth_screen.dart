@@ -1,0 +1,171 @@
+import 'package:dating_app/utils/app_color.dart' as AppColors;
+import 'package:dating_app/utils/app_string.dart';
+import 'package:dating_app/view/widgets/app_form_field.dart';
+import 'package:dating_app/view/widgets/app_text_field.dart';
+import 'package:dating_app/view/widgets/text_feild.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+
+class EmailAuthScreen extends StatefulWidget {
+  const EmailAuthScreen({super.key});
+
+  @override
+  State<EmailAuthScreen> createState() => _EmailAuthScreenState();
+}
+
+class _EmailAuthScreenState extends State<EmailAuthScreen> {
+  // Controllers for the input fields
+  late final TextEditingController _emailController;
+  late final TextEditingController _passwordController;
+  late final TextEditingController _confirmPasswordController;
+
+  // State variables
+  //bool _isLoginMode = true;
+  bool _isPasswordVisible = false;
+   
+   ValueNotifier<bool>isLoginMode = ValueNotifier(true);
+  @override
+  void initState() {
+    super.initState();
+    _emailController = TextEditingController();
+    _passwordController = TextEditingController();
+    _confirmPasswordController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(gradient: AppColors.appGradient),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          iconTheme: IconThemeData(
+            color: AppColors.kWhite
+          ),
+          title: ValueListenableBuilder(
+            valueListenable: isLoginMode,
+            builder: (context, value, child) {
+              return TextWidget(text: value ?AppStrings.welcomeback : AppStrings.createAnAcc);
+              //return Text(value ?AppStrings.welcomeback : AppStrings.createAnAcc,style: TextStyle(color: AppColors.kWhite),);
+            }
+          ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: ValueListenableBuilder(
+              valueListenable: isLoginMode,
+              builder: (context, isLoginModeNoti, child) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // --- Email and Password Fields ---
+                    AppTextField(
+                      controller: _emailController,
+                      hintText: "Email",
+                      keyboardType: TextInputType.emailAddress,
+                    ),
+                    const SizedBox(height: 16),
+                   
+                    PasswordTextField(controller: _passwordController,),
+                    //Conform password field---------------------
+                    if (!isLoginModeNoti) ...[
+                      const SizedBox(height: 16),
+                      PasswordTextField(controller: _confirmPasswordController,),
+                    ],
+                
+                    const SizedBox(height: 32),
+                
+                    //Login and sign up button--------------
+                    ElevatedButton(
+                      onPressed: () {
+                        if (isLoginModeNoti) {
+                          // context.read<EmailAuthBloc>().add(SignInRequested(...));
+                        } else {
+                          // context.read<EmailAuthBloc>().add(SignUpRequested(...));
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(double.infinity, 55),
+                        backgroundColor: Colors.white,
+                        foregroundColor: AppColors.primary,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                      ),
+                      child: Text(
+                        isLoginModeNoti ? AppStrings.login: AppStrings.signup,
+                        style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                
+                    const SizedBox(height: 24),
+                
+                    //Google signing session-----------
+                    Row(
+                      children: [
+                        const Expanded(child: Divider(color: Colors.white54)),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Text("OR", style: GoogleFonts.poppins(color: Colors.white70)),
+                        ),
+                        const Expanded(child: Divider(color: Colors.white54)),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton.icon(
+                      onPressed: () { /* Handle Google Sign In */ },
+                     
+                      label: Text(AppStrings.continueG, style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(double.infinity, 55),
+                        backgroundColor: Colors.white,
+                        foregroundColor: AppColors.textDark,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                      ),
+                    ),
+                    
+                    const SizedBox(height: 32),
+                
+                    // switch between login and signup
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          isLoginModeNoti ? AppStrings.dontaccount : AppStrings.alreadycc,
+                          style: GoogleFonts.poppins(color: AppColors.kWhite70),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            isLoginMode.value = !isLoginModeNoti;
+                          },
+                          style: TextButton.styleFrom(foregroundColor: AppColors.kWhite),
+                          child: Text(
+                            isLoginModeNoti ? AppStrings.signup : AppStrings.login,
+                            style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              }
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
