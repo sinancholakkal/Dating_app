@@ -2,6 +2,7 @@
 
 
 import 'package:dating_app/view/auth_landing_screen/auth_landing_screen.dart';
+import 'package:dating_app/view/phone_otp_screen/phone_otp_screen.dart';
 import 'package:dating_app/view/screen_onboarding/screen_onboarding.dart';
 import 'package:go_router/go_router.dart';
 
@@ -10,6 +11,7 @@ final GoRouter appRouter = GoRouter(
   routes: [
     GoRoute(path: '/onboarding', builder: (context, state) =>  ScreenOnboarding()),
     GoRoute(path: '/authlanding', builder: (context, state) =>  AuthLandingScreen()),
+    GoRoute(path: '/phoneotp', builder: (context, state) =>  PhoneOtpScreen()),
     // GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
     // GoRoute(
     //   path: '/register',

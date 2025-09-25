@@ -17,3 +17,18 @@ const LinearGradient appGradient = LinearGradient(
   begin: Alignment.topLeft,
   end: Alignment.bottomRight,
 );
+ const Color primary = Color(0xFFFF5F6D); 
+ const Color secondary = Color(0xFFFFC371); 
+
+  // --- ACTION & STATUS COLORS ---
+ const Color success = Colors.green;
+ const Color error = Colors.red;
+
+  // --- TEXT COLORS ---
+ const Color textLight = Colors.white;
+ const Color textDark = Color(0xFF212121); 
+ const Color textGrey = Colors.black54;
+  
+  // --- BACKGROUND & UI ELEMENT COLORS ---
+ const Color backgroundLight = Colors.white;
+ const Color backgroundGrey = Color(0xFFF5F5F5); 

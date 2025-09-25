@@ -1,0 +1,16 @@
+part of 'auth_bloc.dart';
+
+abstract class AuthEvent {}
+
+class SendOtpEvent extends AuthEvent {
+  final String phoneNumber;
+  SendOtpEvent({required this.phoneNumber});
+}
+
+class VerifyOtpEvent extends AuthEvent {
+  final String otp;
+  VerifyOtpEvent({required this.otp});
+}
+
+// Event to go back to the phone input screen
+class ResetAuthEvent extends AuthEvent {}

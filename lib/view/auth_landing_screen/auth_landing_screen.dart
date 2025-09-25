@@ -3,6 +3,7 @@ import 'package:dating_app/utils/app_sizedbox.dart';
 import 'package:dating_app/utils/app_string.dart';
 import 'package:dating_app/view/widgets/auth_button.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AuthLandingScreen extends StatelessWidget {
@@ -35,7 +36,7 @@ class AuthLandingScreen extends StatelessWidget {
               authButton(
                 text: AppStrings.continuePh,
                 icon: Icons.phone_android,
-                onTap: () => Navigator.pushNamed(context, "/phone"),
+                onTap: () => context.push("/phoneotp")
               ),
               AppSizedBox.h16,
 

@@ -29,6 +29,9 @@ class AppStrings {
     static const continuePh = "Continue with Phone";
     static const continueG = "Continue with Google";
     static const continueE = "Continue with Email";
+    static const enterValidNo = "Please enter a valid phone number.";
+    static const phVerified = "Phone number verified!";
+    static const enterNo = "Please enter your phone number";
     static final List<Map<String, String>> onboardingData = [
     {
       "title": "Find Your Match ❤️",
