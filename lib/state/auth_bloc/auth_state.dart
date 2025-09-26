@@ -22,3 +22,6 @@ class AuthErrorState extends AuthState {
   final String message;
   AuthErrorState({required this.message});
 }
+
+class AuthSuccessNavigateToHome extends AuthState{}
+class AuthSuccessNavigateToProfileSetup extends AuthState{}

@@ -14,3 +14,5 @@ class VerifyOtpEvent extends AuthEvent {
 
 // Event to go back to the phone input screen
 class ResetAuthEvent extends AuthEvent {}
+
+class GoogleSigninEvent extends AuthEvent{}

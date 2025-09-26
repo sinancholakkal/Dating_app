@@ -1,3 +1,4 @@
+import 'package:dating_app/services/auth_services.dart';
 import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/utils/app_string.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ class ScreenOnboarding extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AuthService().signOut();
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(gradient: appGradient),
