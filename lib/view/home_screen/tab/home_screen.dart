@@ -1,8 +1,11 @@
 import 'dart:developer';
 import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/utils/app_color.dart' as AppColors;
+import 'package:dating_app/view/home_screen/widget/other_profile_details_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:swipe_cards/draggable_card.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 
@@ -92,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-             Image.asset("asset/girl_image.webp", scale: 18),
+             Image.asset("assets/tinder_logo.png", scale: 18),
               Text(
                 'tinder',
                 style: TextStyle(
@@ -104,6 +107,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
+
+        //Swap card-----------------
         body: SwipeCards(
           matchEngine: _matchEngine,
           upSwipeAllowed: true,
@@ -123,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(10),
                           image: const DecorationImage(
                             fit: BoxFit.cover,
-                            image: AssetImage("asset/girl_image.webp"),
+                            image: AssetImage("assets/girl.png"),
                           ),
                         ),
                       ),
@@ -210,7 +215,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             Material(
                               color: Colors.transparent,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
                                     children: [
@@ -233,14 +239,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ],
                                   ),
+                                  //Showing the info of the person-----------
                                   IconButton(
                                     onPressed: () {
-                                      // pushNewScreen(
-                                      // 	context,
-                                      // 	pageTransitionAnimation: PageTransitionAnimation.slideUp,
-                                      // 	withNavBar: false,
-                                      // 	screen: OtherProfileDetailsScreen(i)
-                                      // );
+                                      pushNewScreen(
+                                      	context,
+                                      	pageTransitionAnimation: PageTransitionAnimation.slideUp,
+                                      	withNavBar: false,
+                                      	screen: OtherProfileDetailsScreen(i,)
+                                      );
+                                    
+                                      //context.push('/profile/$i');
                                     },
                                     icon: const Icon(
                                       CupertinoIcons.info_circle_fill,
@@ -265,14 +274,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                       height: 50,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        border: Border.all(color: Colors.orange),
+                                        border: Border.all(
+                                          color: Colors.orange,
+                                        ),
                                       ),
                                       child: Center(
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: Image.asset(
-                                            //'assets/icons/back.png',
-                                            'asset/girl_image.webp',
+                                            'assets/icons/back.png',
+                                           // 'asset/girl_image.webp',
                                             color: Colors.yellow,
                                             fit: BoxFit.cover,
                                           ),
@@ -300,8 +311,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         child: Padding(
                                           padding: const EdgeInsets.all(12.0),
                                           child: Image.asset(
-                                           // 'assets/icons/clear.png',
-                                           'asset/girl_image.webp',
+                                             'assets/icons/clear.png',
+                                            //'asset/girl_image.webp',
                                             color: Theme.of(
                                               context,
                                             ).colorScheme.primary,
@@ -333,8 +344,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: Image.asset(
-                                           // 'assets/icons/star.png',
-                                           'asset/girl_image.webp',
+                                             'assets/icons/star.png',
+                                            //'asset/girl_image.webp',
                                             color: Colors.lightBlueAccent,
                                             fit: BoxFit.cover,
                                           ),
@@ -364,8 +375,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         child: Padding(
                                           padding: const EdgeInsets.all(10.0),
                                           child: Image.asset(
-                                            //'assets/icons/heart.png',
-                                            'asset/girl_image.webp',
+                                            'assets/icons/heart.png',
+                                            //'asset/girl_image.webp',
                                             color: Colors.greenAccent,
                                             fit: BoxFit.cover,
                                           ),
@@ -385,14 +396,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                       width: 50,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        border: Border.all(color: Colors.purple),
+                                        border: Border.all(
+                                          color: Colors.purple,
+                                        ),
                                       ),
                                       child: Center(
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: Image.asset(
-                                           // 'assets/icons/light.png',
-                                           "asset/girl_image.webp",
+                                             'assets/icons/light.png',
+                                            //"asset/girl_image.webp",
                                             color: const Color.fromRGBO(
                                               183,
                                               71,
