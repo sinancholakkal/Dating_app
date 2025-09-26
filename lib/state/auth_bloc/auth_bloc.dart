@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/services/auth_services.dart';
 import 'package:dating_app/utils/app_string.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:meta/meta.dart';
 
@@ -27,10 +28,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-    // Handler for verifying OTP
     on<VerifyOtpEvent>((event, emit) async {
       emit(AuthLoadingState());
-      await Future.delayed(const Duration(seconds: 2)); // Simulate API call
+      await Future.delayed(const Duration(seconds: 2));
 
       if (event.otp == "123456") {
         // Mock success
@@ -62,10 +62,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             final data = docSnap.data() as Map<String, dynamic>;
 
             if (data['isSetupProfile'] == true) {
-
               emit(AuthSuccessNavigateToHome());
             } else {
-              
               emit(AuthSuccessNavigateToProfileSetup());
             }
           } else {
@@ -85,5 +83,74 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthErrorState(message: e.toString()));
       }
     });
+
+    on<SignUpEvent>((event, emit) async {
+      emit(AuthLoadingState());
+      await Future.delayed(Duration(seconds: 2));
+      try {
+        final user = await authServices.createUserWithEmailAndPassword(
+          event.email,
+          event.password,
+        );
+        log(user!.uid.toString());
+        log("adding in firestore");
+        await FirebaseFirestore.instance.collection("user").doc(user.uid).set({
+          "email": event.email,
+          "password": event.password,
+          "createdAt": FieldValue.serverTimestamp(),
+          "isSetupProfile": false,
+        });
+        emit(AuthSuccessNavigateToProfileSetup());
+      } on FirebaseAuthException catch (e) {
+        log("Somthing wrong while Sign Up ${e.code}");
+        emit(AuthErrorState(message: e.code));
+      }
+    });
+
+
+     //Signin event 
+  on<SignInEvent>(
+      (event, emit) async {
+        emit(AuthLoadingState());
+        await Future.delayed(Duration(seconds: 2));
+        try {
+          final user = await authServices.signInUserWithEmailAndPassword(
+              event.email, event.password,);
+          if(user!=null){
+            final docRef = FirebaseFirestore.instance
+              .collection("user")
+              .doc(user.uid);
+          final docSnap = await docRef.get();
+
+          if (docSnap.exists) {
+            log("User has account");
+            final data = docSnap.data() as Map<String, dynamic>;
+
+            if (data['isSetupProfile'] == true) {
+              emit(AuthSuccessNavigateToHome());
+            } else {
+              emit(AuthSuccessNavigateToProfileSetup());
+            }
+          } else {
+            log("User has not account");
+            await docRef.set({
+              "email": user.email,
+              "name": user.displayName,
+              "createdAt": FieldValue.serverTimestamp(),
+              "isSetupProfile": false,
+            });
+            emit(AuthSuccessNavigateToProfileSetup());
+          }
+          }else{
+            emit(AuthErrorState(message: "Login Failed"));
+          }
+        } on FirebaseAuthException catch (e) {
+          log("Somthing wrong while SignIn ${e.code}");
+          emit(AuthErrorState(message: e.code));
+        }
+      },
+    );
   }
+
+ 
 }

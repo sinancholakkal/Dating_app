@@ -10,7 +10,7 @@ import 'package:dating_app/view/screen_onboarding/screen_onboarding.dart';
 import 'package:go_router/go_router.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/onboarding',
+  initialLocation: '/home',
   routes: [
     GoRoute(path: '/onboarding', builder: (context, state) =>  ScreenOnboarding()),
     GoRoute(path: '/authlanding', builder: (context, state) =>  AuthLandingScreen()),
