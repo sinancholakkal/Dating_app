@@ -14,7 +14,6 @@ class ScreenOnboarding extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AuthService().signOut();
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(gradient: appGradient),

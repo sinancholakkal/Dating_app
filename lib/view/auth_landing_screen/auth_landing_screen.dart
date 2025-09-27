@@ -18,7 +18,7 @@ class AuthLandingScreen extends StatelessWidget {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if(state is AuthSuccessNavigateToHome){
-          context.go("/home");
+          context.go("/easytab");
         }else if(state is AuthSuccessNavigateToProfileSetup){
           context.go("/profilesetup");
         }

@@ -1,6 +1,7 @@
 import 'package:dating_app/utils/app_color.dart';
-import 'package:dating_app/view/home_screen/tab/home_screen.dart';
-import 'package:dating_app/view/home_screen/tab/profile_screen.dart';
+import 'package:dating_app/view/chat_screen.dart/chat_screen.dart';
+import 'package:dating_app/view/home_screen/home_screen.dart';
+import 'package:dating_app/view/profile_screen.dart/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:bottom_cupertino_tabbar/bottom_cupertino_tabbar.dart';
 
@@ -49,9 +50,7 @@ class _EasyTabbarState extends State<EasyTabbar> {
             icon: Icon(Icons.chat, size: 30),
             label: "Chat",
           ),
-          page: Scaffold(
-            body: Center(child: Text("Chat Screen")),
-          ),
+          page: ChatListScreen(),
         ),
 
         BottomCupertinoTab(

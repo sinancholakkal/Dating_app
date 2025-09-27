@@ -40,7 +40,7 @@ class _OtherProfileDetailsScreenState extends State<OtherProfileDetailsScreen> {
 																image: DecorationImage(
 																	fit: BoxFit.cover,
 																	image: AssetImage(
-																		"assets/girl.png"
+																		"asset/girl_image.webp"
 																	)
 																)
 															),

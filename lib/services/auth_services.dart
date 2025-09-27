@@ -15,9 +15,10 @@ final  GoogleSignIn signIn = GoogleSignIn.instance;
   }
 
   //cheking login status
-  bool checkLoginStatus() {
-    return (_auth.currentUser == null) ? false : true;
-  }
+  // User? checkLoginStatus() {
+  //   // return (_auth.currentUser == null) ? false : true;
+  //   return getCurrentUser();
+  // }
 
    Future<User?> signInWithGoogle() async {
    try{

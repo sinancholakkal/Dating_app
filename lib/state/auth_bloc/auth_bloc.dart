@@ -14,6 +14,43 @@ part 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final authServices = AuthService();
   AuthBloc() : super(AuthInitial()) {
+    on<CheckLoginStatusEvent>((event, emit) async {
+      User? user;
+      try {
+        await Future.delayed(Duration(seconds: 2), () {
+          user = authServices.getCurrentUser();
+        });
+
+        if (user != null) {
+          final docRef = FirebaseFirestore.instance
+              .collection("user")
+              .doc(user!.uid);
+          final docSnap = await docRef.get();
+
+          if (docSnap.exists) {
+            log("User has account");
+            final data = docSnap.data() as Map<String, dynamic>;
+
+            if (data['isSetupProfile'] == true) {
+              emit(AuthSuccessNavigateToHome());
+            } else {
+               emit(AuthSuccessNavigateToProfileSetup());
+              //emit(AuthSuccessNavigateToHome());
+            }
+          } else {
+            log("User has not account");
+
+            //emit(AuthSuccessNavigateToProfileSetup());
+            emit(AuthSuccessNavigateToHome());
+          }
+        } else {
+          emit(AuthNoFountState());
+        }
+      } catch (e) {
+        log("error $e");
+      }
+    });
+
     // Handler for sending OTP
     on<SendOtpEvent>((event, emit) async {
       emit(AuthLoadingState());
@@ -65,6 +102,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               emit(AuthSuccessNavigateToHome());
             } else {
               emit(AuthSuccessNavigateToProfileSetup());
+              //emit(AuthSuccessNavigateToHome());
             }
           } else {
             log("User has not account");
@@ -74,7 +112,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               "createdAt": FieldValue.serverTimestamp(),
               "isSetupProfile": false,
             });
-            emit(AuthSuccessNavigateToProfileSetup());
+             emit(AuthSuccessNavigateToProfileSetup());
+           // emit(AuthSuccessNavigateToHome());
           }
         } else {
           emit(AuthErrorState(message: "Login Failed"));
@@ -92,32 +131,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           event.email,
           event.password,
         );
-        log(user!.uid.toString());
-        log("adding in firestore");
-        await FirebaseFirestore.instance.collection("user").doc(user.uid).set({
-          "email": event.email,
-          "password": event.password,
-          "createdAt": FieldValue.serverTimestamp(),
-          "isSetupProfile": false,
-        });
-        emit(AuthSuccessNavigateToProfileSetup());
-      } on FirebaseAuthException catch (e) {
-        log("Somthing wrong while Sign Up ${e.code}");
-        emit(AuthErrorState(message: e.code));
-      }
-    });
-
-
-     //Signin event 
-  on<SignInEvent>(
-      (event, emit) async {
-        emit(AuthLoadingState());
-        await Future.delayed(Duration(seconds: 2));
-        try {
-          final user = await authServices.signInUserWithEmailAndPassword(
-              event.email, event.password,);
-          if(user!=null){
-            final docRef = FirebaseFirestore.instance
+        if (user != null) {
+          final docRef = FirebaseFirestore.instance
               .collection("user")
               .doc(user.uid);
           final docSnap = await docRef.get();
@@ -130,6 +145,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               emit(AuthSuccessNavigateToHome());
             } else {
               emit(AuthSuccessNavigateToProfileSetup());
+              //emit(AuthSuccessNavigateToHome());
             }
           } else {
             log("User has not account");
@@ -139,18 +155,72 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               "createdAt": FieldValue.serverTimestamp(),
               "isSetupProfile": false,
             });
-            emit(AuthSuccessNavigateToProfileSetup());
+             emit(AuthSuccessNavigateToProfileSetup());
+            //emit(AuthSuccessNavigateToHome());
           }
-          }else{
-            emit(AuthErrorState(message: "Login Failed"));
-          }
-        } on FirebaseAuthException catch (e) {
-          log("Somthing wrong while SignIn ${e.code}");
-          emit(AuthErrorState(message: e.code));
+        } else {
+          emit(AuthErrorState(message: "Login Failed"));
         }
-      },
-    );
-  }
+        emit(AuthSuccessNavigateToHome());
+      } on FirebaseAuthException catch (e) {
+        log("Somthing wrong while Sign Up ${e.code}");
+        emit(AuthErrorState(message: e.code));
+      }
+    });
 
- 
+    //Signin event
+    on<SignInEvent>((event, emit) async {
+      emit(AuthLoadingState());
+      await Future.delayed(Duration(seconds: 2));
+      try {
+        final user = await authServices.signInUserWithEmailAndPassword(
+          event.email,
+          event.password,
+        );
+        if (user != null) {
+          final docRef = FirebaseFirestore.instance
+              .collection("user")
+              .doc(user.uid);
+          final docSnap = await docRef.get();
+
+          if (docSnap.exists) {
+            log("User has account");
+            final data = docSnap.data() as Map<String, dynamic>;
+
+            if (data['isSetupProfile'] == true) {
+              emit(AuthSuccessNavigateToHome());
+            } else {
+               emit(AuthSuccessNavigateToProfileSetup());
+              //emit(AuthSuccessNavigateToHome());
+            }
+          } else {
+            log("User has not account");
+            await docRef.set({
+              "email": user.email,
+              "name": user.displayName,
+              "createdAt": FieldValue.serverTimestamp(),
+              "isSetupProfile": false,
+            });
+            // emit(AuthSuccessNavigateToProfileSetup());
+            emit(AuthSuccessNavigateToHome());
+          }
+        } else {
+          emit(AuthErrorState(message: "Login Failed"));
+        }
+      } on FirebaseAuthException catch (e) {
+        log("Somthing wrong while SignIn ${e.code}");
+        emit(AuthErrorState(message: e.code));
+      }
+    });
+
+    on<SignOutEvent>((event, emit) async {
+      try {
+        await authServices.signOut();
+        emit(LogoutSuccessState());
+      } catch (e) {
+        log("Somthing wrong during signout $e");
+        emit(AuthErrorState(message: e.toString()));
+      }
+    });
+  }
 }

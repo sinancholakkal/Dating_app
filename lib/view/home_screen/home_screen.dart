@@ -128,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(10),
                           image: const DecorationImage(
                             fit: BoxFit.cover,
-                            image: AssetImage("assets/girl.png"),
+                            image: AssetImage("asset/girl_image.webp"),
                           ),
                         ),
                       ),

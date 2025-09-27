@@ -54,7 +54,7 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
         }else if(state is AuthSuccessNavigateToHome){
             context.pop();
           flutterToast(msg: AppStrings.login);
-          context.go("/home");
+          context.go("/easytab");
         } else if (state is AuthErrorState) {
           context.pop();
           flutterToast(msg: state.message);

@@ -25,3 +25,5 @@ class AuthErrorState extends AuthState {
 
 class AuthSuccessNavigateToHome extends AuthState{}
 class AuthSuccessNavigateToProfileSetup extends AuthState{}
+class AuthNoFountState extends AuthState{}
+class LogoutSuccessState extends AuthState{}

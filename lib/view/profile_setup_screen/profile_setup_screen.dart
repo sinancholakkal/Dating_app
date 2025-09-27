@@ -138,6 +138,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                   }else if(interests.isEmpty){
                     flutterToast(msg: "Please select your interests");
                   }else{
+                     this.bio = bio;
                      context.read<ProfileSetupBloc>().add(
                     ContinueTappedEvent(
                       pageController: _pageController,
@@ -145,6 +146,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                     ),
                   );
                   }
+                 
                   log(bio.toString());
                   log(interests.toString());
                  
@@ -159,7 +161,14 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                 if(selfieImage==null){
                   flutterToast(msg: "Please upload your selfie");
                 }else{
-                  context.push("/home");
+                  //context.push("/home");
+                  log(_nameController.text);
+                  log(_ageController.text);
+                  log(selectedGender.value.toString());
+                  log(images.toString());
+                  log(bio.toString());
+                  log(selfie.toString());
+                  //log(message)
                 }
               }),
             ],
