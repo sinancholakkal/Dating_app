@@ -9,3 +9,5 @@ class AddUserProfileSetupEvent extends UserEvent{
   AddUserProfileSetupEvent({required this.userProfile});
   
 } 
+
+class GetUserProfileEvent extends UserEvent{}

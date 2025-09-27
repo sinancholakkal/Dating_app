@@ -21,5 +21,22 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(ErrorState(msg: "Your profile setup has failed!"));
       }
     });
+
+
+    on<GetUserProfileEvent>((event, emit)async {
+      try{
+        emit(ProfileLoadingState());
+        final userProfile = await userService.fetchUserProfile();
+        if(userProfile!=null){
+          emit(GetSuccessState(userProfile: userProfile));
+        }else{
+          emit(ErrorState(msg: "Something wrong"));
+        }
+        
+      }catch(e){
+        log("something issue while fetch data $e");
+        emit(ErrorState(msg: "Your profile setup has failed!"));
+      }
+    });
   }
 }

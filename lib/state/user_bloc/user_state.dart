@@ -14,3 +14,8 @@ class ErrorState extends UserState{
 
   ErrorState({required this.msg});
 }
+class GetSuccessState extends UserState{
+  final UserProfile userProfile;
+
+  GetSuccessState({required this.userProfile});
+}

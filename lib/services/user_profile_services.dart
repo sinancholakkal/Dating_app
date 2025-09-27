@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/models/user_profile_model.dart';
+import 'package:dating_app/services/auth_services.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class UserProfileServices {
@@ -13,13 +14,13 @@ class UserProfileServices {
       log(userProfile.id);
       log("user data add service called");
       String selfie = await uploadImageToFirebase(
-        File(userProfile.selfieImageUrl.path),
+        File(userProfile.selfieImageUrl!.path),
         userProfile.id,
-        true
+        true,
       );
-      for (var image in userProfile.imageUrls) {
+      for (var image in userProfile.imageUrls!) {
         images.add(
-          await uploadImageToFirebase(File(image.path), userProfile.id,false),
+          await uploadImageToFirebase(File(image.path), userProfile.id, false),
         );
       }
       await FirebaseFirestore.instance
@@ -42,11 +43,15 @@ class UserProfileServices {
     }
   }
 
-  Future<String> uploadImageToFirebase(File imageFile, String userId,bool isSelfie) async {
+  Future<String> uploadImageToFirebase(
+    File imageFile,
+    String userId,
+    bool isSelfie,
+  ) async {
     log("user image upload service called");
     try {
       final String fileName =
-          '${isSelfie?"selfie":""}${DateTime.now().millisecondsSinceEpoch}.jpg';
+          '${isSelfie ? "selfie" : ""}${DateTime.now().millisecondsSinceEpoch}.jpg';
 
       final Reference storageReference = FirebaseStorage.instance
           .ref()
@@ -65,4 +70,42 @@ class UserProfileServices {
       rethrow;
     }
   }
+
+ Future<UserProfile?> fetchUserProfile() async {
+  try {
+    String userId = AuthService().getCurrentUser()!.uid;
+    log("Fetching profile for user: $userId");
+
+    final docSnapshot = await FirebaseFirestore.instance
+        .collection("user")
+        .doc(userId)
+        .get();
+
+    if (docSnapshot.exists && docSnapshot.data() != null) {
+      final data = docSnapshot.data()!;
+
+      final userProfile = UserProfile(
+        id: data["id"] as String,
+        name: data["name"] as String,
+        age: data['age'] as String,
+        gender: data['gender'] as String,
+        bio: data['bio'] as String,
+
+        getImages: List<String>.from(data['images'] ?? []),
+
+        getSelfie: data["selfie"] as String,
+
+        interests: Set<String>.from(data['interests'] ?? []),
+      );
+
+      return userProfile;
+    } else {
+      log("No profile document found for user: $userId");
+      return null;
+    }
+  } catch (e) {
+    log("An error occurred while fetching the user profile: $e");
+    return null;
+  }
+}
 }
