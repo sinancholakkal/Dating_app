@@ -168,6 +168,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                   log(images.toString());
                   log(bio.toString());
                   log(selfie.toString());
+                  
                   //log(message)
                 }
               }),
