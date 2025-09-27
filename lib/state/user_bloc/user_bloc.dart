@@ -1,0 +1,25 @@
+import 'dart:developer';
+
+import 'package:bloc/bloc.dart';
+import 'package:dating_app/models/user_profile_model.dart';
+import 'package:dating_app/services/user_profile_services.dart';
+import 'package:meta/meta.dart';
+
+part 'user_event.dart';
+part 'user_state.dart';
+
+class UserBloc extends Bloc<UserEvent, UserState> {
+  final userService = UserProfileServices();
+  UserBloc() : super(UserInitial()) {
+    on<AddUserProfileSetupEvent>((event, emit)async {
+      try{
+        emit(ProfileLoadingState());
+        await userService.userProfileStoring(userProfile: event.userProfile);
+        emit(ProfileSuccessState());
+      }catch(e){
+        log("something issue while add data $e");
+        emit(ErrorState(msg: "Your profile setup has failed!"));
+      }
+    });
+  }
+}

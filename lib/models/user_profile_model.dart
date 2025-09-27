@@ -1,11 +1,13 @@
+import 'package:image_picker/image_picker.dart';
+
 class UserProfile {
   final String id;
   final String name;
-  final int age;            
+  final String age;            
   final String gender;       
   final String bio;          
-  final List<String> imageUrls;
-  final String selfieImageUrl; 
+  final List<XFile> imageUrls;
+  final XFile selfieImageUrl; 
   final Set<String> interests;
 
   const UserProfile({

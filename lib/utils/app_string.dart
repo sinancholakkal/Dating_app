@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 class AppStrings {
   static const String forgotPassword = "Forgot Password";
-  static const String login = "Log In";
+  static const String login = "Sign In";
   static const String signup = "Sign Up";
   static const String email = "Email";
   static const String password = "Password";
@@ -14,6 +14,7 @@ class AppStrings {
   static const String conformpassword = "Confirm Password";
   static const String alreadycc = "Already have an account";
   static const String lSuccessMsg = "Successfully logged in";
+  static const String userSetup = "Your account has been set up successfully";
   static const String cancel = "cancel";
   static const conform = "Yes, Confirm";
   static const logout = "Logout";

@@ -48,6 +48,7 @@ dependencies:
   persistent_bottom_nav_bar_v2: ^4.2.8
   bottom_cupertino_tabbar: ^2.0.1
   dotted_border: ^3.1.0
+  firebase_storage: ^13.0.2
 
 dev_dependencies:
   flutter_test:

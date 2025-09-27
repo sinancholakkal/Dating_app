@@ -2,6 +2,7 @@ import 'package:dating_app/firebase_options.dart';
 import 'package:dating_app/routes/app_router.dart';
 import 'package:dating_app/state/auth_bloc/auth_bloc.dart';
 import 'package:dating_app/state/profile_setup_bloc/profile_setup_bloc.dart';
+import 'package:dating_app/state/user_bloc/user_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,6 +24,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ProfileSetupBloc(),
+        ),
+        BlocProvider(
+          create: (context) => UserBloc(),
         ),
         
       ],
