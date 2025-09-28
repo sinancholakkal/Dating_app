@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:dating_app/models/user_current_model.dart';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/services/user_profile_services.dart';
 import 'package:meta/meta.dart';
@@ -35,7 +36,21 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         
       }catch(e){
         log("something issue while fetch data $e");
-        emit(ErrorState(msg: "Your profile setup has failed!"));
+        emit(ErrorState(msg: "Your profile fetch has failed!"));
+      }
+    });
+
+    //Update event---------
+     on<UpdateUserPrfileEvent>((event, emit)async {
+      try{
+        emit(UpdateProfileLoadingState());
+         await userService.updateUserProfile(deleteImages: event.deleteImages,userModel: event.userCurrentModel);
+        
+        emit(UpdatedProfileState());
+        
+      }catch(e){
+        log("something issue while update data $e");
+        emit(ErrorState(msg: "Your profile update has failed!"));
       }
     });
   }

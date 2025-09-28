@@ -11,3 +11,11 @@ class AddUserProfileSetupEvent extends UserEvent{
 } 
 
 class GetUserProfileEvent extends UserEvent{}
+
+class UpdateUserPrfileEvent extends UserEvent{
+  final UserCurrentModel userCurrentModel;
+  final List<String>deleteImages;
+
+  UpdateUserPrfileEvent({required this.userCurrentModel, required this.deleteImages});
+  
+}

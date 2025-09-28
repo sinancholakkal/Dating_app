@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -55,10 +57,7 @@ class ProfileSetupBloc extends Bloc<ProfileSetupEvent, ProfileSetupState> {
     });
 
     on<ImageRemoveEvent>((event, emit) {
-      final images = event.images;
-      images.removeAt(event.index);
-      event.images.removeAt(event.index);
-      emit(ImageRemovedState(images: images));
+      emit(ImageRemovedState(index: event.index));
     });
   }
 }

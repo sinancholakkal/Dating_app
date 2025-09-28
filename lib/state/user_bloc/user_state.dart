@@ -7,6 +7,8 @@ final class UserInitial extends UserState {}
 
 class GetProfileLoadingState extends UserState{}
 class AddProfileLoadingState extends UserState{}
+class UpdateProfileLoadingState extends UserState{}
+class UpdatedProfileState extends UserState{}
 class ProfileSuccessState extends UserState{}
 
 class ErrorState extends UserState{

@@ -22,8 +22,7 @@ class SelfieImageUploadEvent extends ProfileSetupEvent{
 }
 class ImageRemoveEvent extends ProfileSetupEvent{
   final int index;
-   List<dynamic>images;
 
-  ImageRemoveEvent({required this.index, required this.images});
+  ImageRemoveEvent({required this.index});
   
 }

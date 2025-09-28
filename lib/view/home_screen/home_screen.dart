@@ -23,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentPhoto = 0;
   late MatchEngine _matchEngine;
 
+//Swipe items---------------------
   List<SwipeItem> items = [
     SwipeItem(
       content: "Liz",
@@ -37,10 +38,11 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       onSlideUpdate: (SlideRegion? region) async {
         log("Region $region");
+             return region;
       },
     ),
     SwipeItem(
-      content: "Liz",
+      content: "Muhammed Sinan",
       likeAction: () {
         log("Like");
       },
@@ -52,10 +54,12 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       onSlideUpdate: (SlideRegion? region) async {
         log("Region $region");
+             return region;
       },
     ),
     SwipeItem(
-      content: "Liz",
+      content: "Hrithunath",
+
       likeAction: () {
         log("Like");
       },
@@ -66,7 +70,9 @@ class _HomeScreenState extends State<HomeScreen> {
         log("Superlike");
       },
       onSlideUpdate: (SlideRegion? region) async {
-        log("Region $region");
+         log("Region $region");
+        return region;
+       
       },
     ),
   ];
@@ -110,9 +116,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
         //Swap card-----------------
         body: SwipeCards(
+          itemChanged: (p0, p1) {
+            final a =p0.superlikeAction;
+            //final val =p0.onSlideUpdate;
+            log("Index of current action user");
+            log(p1.toString());
+          },
           matchEngine: _matchEngine,
           upSwipeAllowed: true,
-          onStackFinished: () {},
+          //This executing after complete all user
+          onStackFinished: () {
+            log("Action completed------");
+          },
           itemBuilder: (context, i) {
             return Padding(
               padding: const EdgeInsets.fromLTRB(10, 0, 10, 20),
@@ -123,12 +138,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   tag: "imageTag$i",
                   child: Stack(
                     children: [
+                      //This is the image of th users
                       Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           image: const DecorationImage(
                             fit: BoxFit.cover,
-                            image: AssetImage("asset/girl_image.webp"),
+                            
+                            image: AssetImage("assets/girl.png"),
                           ),
                         ),
                       ),
@@ -144,6 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       Row(
                         children: [
+                          //Show next image of one user-------------
                           Expanded(
                             child: GestureDetector(
                               onTap: () {
@@ -156,6 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Container(color: Colors.transparent),
                             ),
                           ),
+                          //Show the previews image of one user----------
                           Expanded(
                             child: GestureDetector(
                               onTap: () {
@@ -170,6 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ],
                       ),
+                      //Top current status bar of image---------
                       Align(
                         alignment: Alignment.topCenter,
                         child: Padding(
@@ -179,6 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             height: 6,
                             child: ListView.builder(
                               physics: const NeverScrollableScrollPhysics(),
+                              //Count of image for one user----------
                               itemCount: numberPhotos,
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, int i) {
@@ -220,6 +241,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 children: [
                                   Row(
                                     children: [
+                                      //This is the name of user----
                                       Text(
                                         items[i].content,
                                         style: const TextStyle(
@@ -229,6 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       ),
                                       const SizedBox(width: 5),
+                                      //This is the age of the user-----
                                       const Text(
                                         "25",
                                         style: TextStyle(
@@ -249,7 +272,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                       	screen: OtherProfileDetailsScreen(i,)
                                       );
                                     
-                                      //context.push('/profile/$i');
                                     },
                                     icon: const Icon(
                                       CupertinoIcons.info_circle_fill,
@@ -292,6 +314,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ),
                                 ),
+                                //Left swipe (deslike)
                                 Material(
                                   color: Colors.transparent,
                                   child: InkWell(
@@ -299,6 +322,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     borderRadius: BorderRadius.circular(100),
                                     onTap: () {
                                       _matchEngine.currentItem!.nope();
+                                      log("Deslike");
                                     },
                                     child: Container(
                                       height: 60,
