@@ -13,7 +13,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc() : super(UserInitial()) {
     on<AddUserProfileSetupEvent>((event, emit)async {
       try{
-        emit(ProfileLoadingState());
+        emit(AddProfileLoadingState());
         await userService.userProfileStoring(userProfile: event.userProfile);
         emit(ProfileSuccessState());
       }catch(e){
@@ -25,7 +25,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
     on<GetUserProfileEvent>((event, emit)async {
       try{
-        emit(ProfileLoadingState());
+        emit(GetProfileLoadingState());
         final userProfile = await userService.fetchUserProfile();
         if(userProfile!=null){
           emit(GetSuccessState(userProfile: userProfile));

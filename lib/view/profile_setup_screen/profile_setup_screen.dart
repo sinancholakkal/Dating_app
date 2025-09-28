@@ -49,27 +49,38 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   @override
   void dispose() {
     _pageController.dispose();
+    _nameController.dispose();
+    _ageController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(gradient: appGradient),
-      child: BlocListener<UserBloc, UserState>(
-        listener: (context, state) {
-          if(state is ProfileLoadingState){
-            loadingWidget(context);
-          }else if(state is ProfileSuccessState){
-            log("user profile set up success");
-            context.pop();
-          flutterToast(msg: AppStrings.userSetup);
-          context.go("/easytab");
-          }else if(state is ErrorState){
-            context.pop();
-          flutterToast(msg: state.msg);
+    return BlocListener<UserBloc, UserState>(
+      listener: (context, state) {
+        if(state is AddProfileLoadingState){
+          loadingWidget(context);
+        }else if(state is ProfileSuccessState){
+          log("user profile set up success");
+          if(Navigator.canPop(context)){
+            Navigator.of(context).pop();
+              log("Loading poped");
+          }else{
+              log("Can't pop");
           }
-        },
+           log("user profile set up success");
+           flutterToast(msg: AppStrings.userSetup);
+          
+          log("Loading poped");
+        flutterToast(msg: AppStrings.userSetup);
+        context.go("/easytab");
+        }else if(state is ErrorState){
+          context.pop();
+        flutterToast(msg: state.msg);
+        }
+      },
+      child: Container(
+        decoration: const BoxDecoration(gradient: appGradient),
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(

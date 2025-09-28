@@ -49,7 +49,7 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
           loadingWidget(context);
         } else if (state is AuthSuccessNavigateToProfileSetup) {
           context.pop();
-          flutterToast(msg: AppStrings.login);
+          flutterToast(msg: AppStrings.signup);
           context.go("/profilesetup");
         }else if(state is AuthSuccessNavigateToHome){
             context.pop();

@@ -151,7 +151,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             log("User has not account");
             await docRef.set({
               "email": user.email,
-              "name": user.displayName,
               "createdAt": FieldValue.serverTimestamp(),
               "isSetupProfile": false,
             });
@@ -159,9 +158,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             //emit(AuthSuccessNavigateToHome());
           }
         } else {
-          emit(AuthErrorState(message: "Login Failed"));
+          emit(AuthErrorState(message: "SignUp Failed"));
         }
-        emit(AuthSuccessNavigateToHome());
+        //emit(AuthSuccessNavigateToHome());
       } on FirebaseAuthException catch (e) {
         log("Somthing wrong while Sign Up ${e.code}");
         emit(AuthErrorState(message: e.code));

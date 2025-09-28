@@ -53,5 +53,12 @@ class ProfileSetupBloc extends Bloc<ProfileSetupEvent, ProfileSetupState> {
         }
       }
     });
+
+    on<ImageRemoveEvent>((event, emit) {
+      final images = event.images;
+      images.removeAt(event.index);
+      event.images.removeAt(event.index);
+      emit(ImageRemovedState(images: images));
+    });
   }
 }

@@ -32,3 +32,10 @@ class ImageUploadedState extends ProfileSetupState{
 
   ImageUploadedState({required this.pickedFile});
 }
+
+class ImageRemovedState extends ProfileSetupState{
+   List<dynamic>images;
+
+  ImageRemovedState({required this.images});
+
+}

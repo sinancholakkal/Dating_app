@@ -1,11 +1,14 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/state/auth_bloc/auth_bloc.dart';
+import 'package:dating_app/state/profile_setup_bloc/profile_setup_bloc.dart';
 import 'package:dating_app/state/user_bloc/user_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/utils/app_sizedbox.dart';
 import 'package:dating_app/utils/app_string.dart';
 import 'package:dating_app/view/profile_setup_screen/widget/interested_setup.dart';
+import 'package:dating_app/view/widgets/loading.dart';
 import 'package:dating_app/view/widgets/show_diolog.dart';
 import 'package:dating_app/view/widgets/toast.dart';
 import 'package:flutter/material.dart';
@@ -22,16 +25,14 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  // --- MOCK DATA ---
-  // In a real app, this data would come from your User model via a BLoC state
-  final String _userName = "Jessica, 24";
-  final List<File> _userPhotos = [];
+  final List<XFile> _userPhotos = [];
   final Set<String> _userInterests = {
     'Travel',
     'Photography',
     'Music',
     'Fitness',
   };
+  List<dynamic> getImages = [];
   late final TextEditingController _bioController;
 
   @override
@@ -43,6 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           "Lover of sunsets, travel, and finding the best coffee shops. Looking for someone to share new adventures with!",
     );
   }
+  bool isLoading =false;
 
   @override
   void dispose() {
@@ -59,11 +61,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
           context.go("/onboarding");
         }
       },
-      child: BlocBuilder<UserBloc, UserState>(
+      child: BlocConsumer<UserBloc, UserState>(
+        listener: (context, state) {
+          if (state is GetSuccessState) {
+            getImages.addAll(state.userProfile.getImages!);
+          }
+        },
         builder: (context, state) {
           if (state is ProfileSuccessState) {
             return Center(child: CircularProgressIndicator());
           } else if (state is GetSuccessState) {
+            log("rebuilding");
             return Container(
               decoration: const BoxDecoration(gradient: appGradient),
               child: Scaffold(
@@ -102,11 +110,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildProfileHeader(profileUrl: state.userProfile.getSelfie!),
+                        _buildProfileHeader(
+                          profileUrl: state.userProfile.getSelfie!,
+                          name: state.userProfile.name
+                        ),
                         AppSizedBox.h30,
                         _buildSectionHeader("My Photos"),
                         AppSizedBox.h16,
-                        _buildPhotoGrid(images: state.userProfile.getImages!),
+                        _buildPhotoGrid(),
                         AppSizedBox.h30,
                         _buildSectionHeader("About Me"),
                         AppSizedBox.h16,
@@ -121,15 +132,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 floatingActionButton: FloatingActionButton(
-                  onPressed: () {
-                    /* Save profile changes */
+                  onPressed: ()async {
+                //     setState(() {
+                //       isLoading = true;
+                //     });
+                 
+
+                //       loadingWidget(context);
+                //       await Future.delayed(Duration(seconds: 2));
+                //       setState(() {
+                //         isLoading = false;
+                //       });
+                //  context.pop();
                   },
                   backgroundColor: primary, // Use your theme color
                   child: Icon(Icons.check, color: kWhite),
                 ),
+
               ),
             );
-          }else{
+          } else {
             return SizedBox();
           }
         },
@@ -139,20 +161,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   // --- WIDGET BUILDER METHODS ---
 
-  Widget _buildProfileHeader({String? profileUrl}) {
+  Widget _buildProfileHeader({String? profileUrl,required String name}) {
     return Center(
       child: Column(
         children: [
           CircleAvatar(
             radius: 60,
             backgroundColor: kWhite.withOpacity(0.2),
-            backgroundImage: profileUrl!=null? NetworkImage(profileUrl):null,
+            backgroundImage: profileUrl != null
+                ? NetworkImage(profileUrl)
+                : null,
             // backgroundImage: _userPhotos.isNotEmpty ? FileImage(_userPhotos.first) : null,
-            child: profileUrl==null? Icon(Icons.person, size: 60, color: kWhite):null,
+            child: profileUrl == null
+                ? Icon(Icons.person, size: 60, color: kWhite)
+                : null,
           ),
           AppSizedBox.h16,
           Text(
-            _userName,
+            name,
             style: GoogleFonts.poppins(
               fontSize: 22,
               fontWeight: FontWeight.bold,
@@ -175,45 +201,85 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildPhotoGrid({required List<String> images}) {
-  return GridView.builder(
-    shrinkWrap: true,
-    physics: const NeverScrollableScrollPhysics(),
-    itemCount: 6,
-    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 3,
-      crossAxisSpacing: 16,
-      mainAxisSpacing: 16,
-    ),
-    itemBuilder: (context, index) {
-      if (index < images.length) {
-        return ClipRRect( 
-          borderRadius: BorderRadius.circular(16),
-          child: Image.network(
-            images[index],
-            fit: BoxFit.cover, 
-            loadingBuilder: (context, child, progress) {
-              if (progress == null) return child;
-              return const Center(child: CircularProgressIndicator());
-            },
-            errorBuilder: (context, error, stackTrace) {
-              return  Icon(Icons.error, color: kWhite54);
-            },
+  Widget _buildPhotoGrid() {
+    return BlocConsumer<ProfileSetupBloc, ProfileSetupState>(
+      listener: (context, state) {
+        if (state is ImageUploadedState) {
+          getImages.add(state.pickedFile);
+        }else if(state is ImageRemovedState){
+          
+          getImages = state.images;
+        }
+      },
+      builder: (context, state) {
+        log(getImages.length.toString());
+        log(_userPhotos.length.toString());
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: getImages.length+1,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
           ),
+          itemBuilder: (context, index) {
+            if(index==getImages.length){
+              return GestureDetector(
+                onTap: () {
+                  context.read<ProfileSetupBloc>().add(
+                          SelfieImageUploadEvent(source: ImageSource.gallery),
+                        );
+                },
+                onLongPress: () {
+                 
+                },
+                child: Container(
+                decoration: BoxDecoration(
+                  color: kWhite.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(16),
+                
+                  border: Border.all(color: kWhite.withOpacity(0.3)),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Icon(Icons.add),
+                
+                ),
+                            ),
+              );
+            }
+            return GestureDetector(
+              onLongPress: () {
+                 log("Long press taped");
+                  showDiolog(context: context, title: "Remove", content: "Are you sure want to remove?",cancelTap: () => context.pop(),confirmTap: () {
+                    context.pop();
+                    getImages.removeAt(index);
+                    setState(() {
+                      
+                    });
+                      //context.read<ProfileSetupBloc>().add(ImageRemoveEvent(index: index, images: getImages));
+                  },);
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: kWhite.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(16),
+              
+                  border: Border.all(color: kWhite.withOpacity(0.3)),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child:(getImages[index] is String)? Image.network(getImages[index], fit: BoxFit.cover):Image.file(File(getImages[index].path),fit: BoxFit.cover),
+                
+                ),
+              ),
+            );
+          },
         );
-      } else {
-        return Container(
-          decoration: BoxDecoration(
-            color: kWhite.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: kWhite.withOpacity(0.3)),
-          ),
-          child:  Icon(Icons.add, color: kWhite54, size: 40),
-        );
-      }
-    },
-  );
-}
+      },
+    );
+  }
 
   Widget _buildBioEditor({required String bio}) {
     _bioController.text = bio;
@@ -245,7 +311,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   //     children: _userInterests.map((interest) {
   //       return InterestChip(
   //         label: interest,
-  //         isSelected: true, 
+  //         isSelected: true,
   //         onSelected: (selected) {},
   //       );
   //     }).toList(),
