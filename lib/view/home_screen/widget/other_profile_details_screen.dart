@@ -1,18 +1,24 @@
+import 'package:dating_app/models/user_profile_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OtherProfileDetailsScreen extends StatefulWidget {
-	final int index;
-  const OtherProfileDetailsScreen(this.index, {super.key});
+	final UserProfile userProfile;
+  final int index;
+  const OtherProfileDetailsScreen({super.key,required this.userProfile,required this.index});
 
   @override
   State<OtherProfileDetailsScreen> createState() => _OtherProfileDetailsScreenState();
 }
 
 class _OtherProfileDetailsScreenState extends State<OtherProfileDetailsScreen> {
-  int numberPhotos = 4;
+  late int numberPhotos;
 	int currentPhoto = 0;
-
+@override
+  void initState() {
+    numberPhotos = widget.userProfile.getImages!.length;
+    super.initState();
+  }
 	@override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,15 +39,14 @@ class _OtherProfileDetailsScreenState extends State<OtherProfileDetailsScreen> {
 												tag: "imageTag${widget.index}",
 												child: Stack(
 													children: [
+                            //Image adding-----------
 														Container(
 															width: MediaQuery.of(context).size.width,
 															height: (MediaQuery.of(context).size.height * 0.6) - 25,
-															decoration: const BoxDecoration(
+															decoration:  BoxDecoration(
 																image: DecorationImage(
 																	fit: BoxFit.cover,
-																	image: AssetImage(
-																		"asset/girl_image.webp"
-																	)
+																	image: NetworkImage(widget.userProfile.getImages![currentPhoto]),
 																)
 															),
 														),
@@ -161,12 +166,13 @@ class _OtherProfileDetailsScreenState extends State<OtherProfileDetailsScreen> {
 											mainAxisAlignment: MainAxisAlignment.end,
 											crossAxisAlignment: CrossAxisAlignment.start,
 											children: [
-												const Padding(
+												 Padding(
 													padding: EdgeInsets.fromLTRB(16, 0, 16, 5),
 													child: Row(
 														children: [
+                              //Name display--------
 															Text(
-															"Liz",
+															widget.userProfile.name,
 															style: TextStyle(
 																color: Colors.black,
 																fontWeight: FontWeight.w600,
@@ -174,8 +180,9 @@ class _OtherProfileDetailsScreenState extends State<OtherProfileDetailsScreen> {
 															),
 														),
 														SizedBox(width: 5,),
+                            //Age display
 														Text(
-															"25",
+															widget.userProfile.age,
 															style: TextStyle(
 																color: Colors.black,
 																fontWeight: FontWeight.w300,
@@ -185,27 +192,28 @@ class _OtherProfileDetailsScreenState extends State<OtherProfileDetailsScreen> {
 														],
 													),
 												),
-												Padding(
-													padding: const EdgeInsets.symmetric(horizontal: 16),
-													child: Row(
-														children: [
-															Icon(
-																CupertinoIcons.placemark,
-																color: Colors.grey.shade600,
-																size: 15,
-															),
-															const SizedBox(width: 5,),
-															Text(
-																"25 km away",
-																style: TextStyle(
-																	color: Colors.grey.shade600,
-																	fontWeight: FontWeight.w300,
-																	fontSize: 15
-																),
-															),
-														],
-													),
-												),
+                        //Km away----------
+												// Padding(
+												// 	padding: const EdgeInsets.symmetric(horizontal: 16),
+												// 	child: Row(
+												// 		children: [
+												// 			Icon(
+												// 				CupertinoIcons.placemark,
+												// 				color: Colors.grey.shade600,
+												// 				size: 15,
+												// 			),
+												// 			const SizedBox(width: 5,),
+												// 			Text(
+												// 				"25 km away",
+												// 				style: TextStyle(
+												// 					color: Colors.grey.shade600,
+												// 					fontWeight: FontWeight.w300,
+												// 					fontSize: 15
+												// 				),
+												// 			),
+												// 		],
+												// 	),
+												// ),
 												Padding(
 													padding: const EdgeInsets.symmetric(vertical: 16),
 													child: Divider(
@@ -226,7 +234,7 @@ class _OtherProfileDetailsScreenState extends State<OtherProfileDetailsScreen> {
 												Padding(
 													padding: const EdgeInsets.fromLTRB(16, 5, 16, 0),
 													child: Text(
-														"blabalbalblal\nbalbafzegzegizrio\ngnzgzuegfefzefhiuzehfzuehfuzefizehfozehofze\nzegfzeoifgjziejifnze",
+														widget.userProfile.bio,
 														style: TextStyle(
 															color: Colors.grey.shade600,
 														),

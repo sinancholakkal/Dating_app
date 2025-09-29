@@ -1,13 +1,17 @@
 import 'dart:developer';
+import 'package:dating_app/models/user_profile_model.dart';
+import 'package:dating_app/state/home_user_bloc/home_user_bloc.dart';
+import 'package:dating_app/state/user_actions_bloc/user_actions_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/utils/app_color.dart' as AppColors;
 import 'package:dating_app/view/home_screen/widget/other_profile_details_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
-import 'package:swipe_cards/draggable_card.dart';
 import 'package:swipe_cards/swipe_cards.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,76 +21,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _controller = PageController(initialPage: 0);
-
-  int numberPhotos = 10;
-  int currentPhoto = 0;
-  late MatchEngine _matchEngine;
-
-//Swipe items---------------------
-  List<SwipeItem> items = [
-    SwipeItem(
-      content: "Liz",
-      likeAction: () {
-        log("Like");
-      },
-      nopeAction: () {
-        log("Nope");
-      },
-      superlikeAction: () {
-        log("Superlike");
-      },
-      onSlideUpdate: (SlideRegion? region) async {
-        log("Region $region");
-             return region;
-      },
-    ),
-    SwipeItem(
-      content: "Muhammed Sinan",
-      likeAction: () {
-        log("Like");
-      },
-      nopeAction: () {
-        log("Nope");
-      },
-      superlikeAction: () {
-        log("Superlike");
-      },
-      onSlideUpdate: (SlideRegion? region) async {
-        log("Region $region");
-             return region;
-      },
-    ),
-    SwipeItem(
-      content: "Hrithunath",
-
-      likeAction: () {
-        log("Like");
-      },
-      nopeAction: () {
-        log("Nope");
-      },
-      superlikeAction: () {
-        log("Superlike");
-      },
-      onSlideUpdate: (SlideRegion? region) async {
-         log("Region $region");
-        return region;
-       
-      },
-    ),
-  ];
-
   @override
   void initState() {
-    _matchEngine = MatchEngine(swipeItems: items);
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+    // Fetch users when the screen is first initialized.
+    context.read<HomeUserBloc>().add(FetchHomeAllUsers());
   }
 
   @override
@@ -101,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-             Image.asset("assets/tinder_logo.png", scale: 18),
+              Image.asset("assets/tinder_logo.png", scale: 18),
               Text(
                 'tinder',
                 style: TextStyle(
@@ -113,347 +52,268 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
+        body: BlocBuilder<HomeUserBloc, HomeUserState>(
+          builder: (context, state) {
+            if (state is FetchAllUsersLoadingState) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-        //Swap card-----------------
-        body: SwipeCards(
-          itemChanged: (p0, p1) {
-            final a =p0.superlikeAction;
-            //final val =p0.onSlideUpdate;
-            log("Index of current action user");
-            log(p1.toString());
+            if (state is FetchAllUsersLoadedState) {
+              final List<SwipeItem> swipeItems = state.userProfiles.map((profile) {
+                return SwipeItem(
+                  content: profile,
+                  likeAction: () => log("Liked ${profile.name}"),
+                  nopeAction: () {
+                    log("Noped ${profile.name}");
+                    context.read<UserActionsBloc>().add(UserDislikeActionEvent(dislikeUserId: profile.id));
+                  },
+                  superlikeAction: () => log("Superliked ${profile.name}"),
+                );
+              }).toList();
+
+              if (swipeItems.isEmpty) {
+                return Center(
+                  child: Text("No more profiles!",
+                      style: GoogleFonts.poppins(color: kWhite)),
+                );
+              }
+
+              final MatchEngine matchEngine = MatchEngine(swipeItems: swipeItems);
+
+              return Column(
+                children: [
+                  Expanded(
+                    child: SwipeCards(
+                      matchEngine: matchEngine,
+                      upSwipeAllowed: true,
+                      onStackFinished: () {
+                        log("Stack Finished");
+                      },
+                      itemBuilder: (context, i) {
+                        final profile = swipeItems[i].content as UserProfile;
+                        return ProfileCard(
+                          profile: profile,
+                          onInfoTap: () {
+                             pushNewScreen(
+                                context,
+                                pageTransitionAnimation: PageTransitionAnimation.slideUp,
+                                withNavBar: false,
+                                screen: OtherProfileDetailsScreen(
+                                  index: i,
+                                  userProfile: profile,
+                                ),
+                              );
+                          }
+                        );
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                         _buildActionButton(onTap: () {}, asset: 'assets/icons/back.png', color: Colors.yellow),
+                         _buildActionButton(onTap: () {
+                           log("Noped ${matchEngine.currentItem!.content.name}");
+                    context.read<UserActionsBloc>().add(UserDislikeActionEvent(dislikeUserId: matchEngine.currentItem!.content.id));
+                         }, asset: 'assets/icons/clear.png', color: Colors.red, isLarge: true),
+                         _buildActionButton(onTap: () => matchEngine.currentItem?.superLike(), asset: 'assets/icons/star.png', color: Colors.lightBlueAccent),
+                         _buildActionButton(onTap: () => matchEngine.currentItem?.like(), asset: 'assets/icons/heart.png', color: Colors.greenAccent, isLarge: true),
+                         _buildActionButton(onTap: () {}, asset: 'assets/icons/light.png', color: Colors.purple),
+                      ],
+                    ),
+                  )
+                ],
+              );
+            }
+            
+            return const SizedBox.shrink();
           },
-          matchEngine: _matchEngine,
-          upSwipeAllowed: true,
-          //This executing after complete all user
-          onStackFinished: () {
-            log("Action completed------");
-          },
-          itemBuilder: (context, i) {
-            return Padding(
-              padding: const EdgeInsets.fromLTRB(10, 0, 10, 20),
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                child: Hero(
-                  tag: "imageTag$i",
-                  child: Stack(
-                    children: [
-                      //This is the image of th users
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          image: const DecorationImage(
-                            fit: BoxFit.cover,
-                            
-                            image: AssetImage("assets/girl.png"),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          gradient: const LinearGradient(
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.center,
-                            colors: [Colors.black, Colors.transparent],
-                          ),
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          //Show next image of one user-------------
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                if (currentPhoto != 0) {
-                                  setState(() {
-                                    currentPhoto = currentPhoto - 1;
-                                  });
-                                }
-                              },
-                              child: Container(color: Colors.transparent),
-                            ),
-                          ),
-                          //Show the previews image of one user----------
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                if (currentPhoto < (numberPhotos - 1)) {
-                                  setState(() {
-                                    currentPhoto = currentPhoto + 1;
-                                  });
-                                }
-                              },
-                              child: Container(color: Colors.transparent),
-                            ),
-                          ),
-                        ],
-                      ),
-                      //Top current status bar of image---------
-                      Align(
-                        alignment: Alignment.topCenter,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionButton({required VoidCallback onTap, required String asset, required Color color, bool isLarge = false}) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        splashColor: color.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(100),
+        onTap: onTap,
+        child: Container(
+          height: isLarge ? 60 : 50,
+          width: isLarge ? 60 : 50,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: color),
+          ),
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.all(isLarge ? 12.0 : 8.0),
+              child: Image.asset(asset, color: color, fit: BoxFit.cover),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+class ProfileCard extends StatefulWidget {
+  final UserProfile profile;
+  final VoidCallback onInfoTap;
+
+  const ProfileCard({
+    super.key,
+    required this.profile,
+    required this.onInfoTap,
+  });
+
+  @override
+  State<ProfileCard> createState() => _ProfileCardState();
+}
+
+class _ProfileCardState extends State<ProfileCard> {
+  int _currentPhoto = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final int numberPhotos = widget.profile.getImages!.length;
+    final bool hasImages = numberPhotos > 0;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(10, 0, 10, 20),
+      child: Hero(
+        tag: "profile_hero_${widget.profile.id}",
+        child: Stack(
+          children: [
+            // Image Container
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey.shade800, 
+                borderRadius: BorderRadius.circular(10),
+                image: hasImages
+                    ? DecorationImage(
+                        fit: BoxFit.cover,
+                        image: NetworkImage(widget.profile.getImages![_currentPhoto]),
+                      )
+                    : null,
+              ),
+              child: !hasImages
+                  ? const Center(child: Icon(Icons.person, color: Colors.white, size: 60))
+                  : null,
+            ),
+            // Black Gradient Overlay
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                gradient: const LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.center,
+                  colors: [Colors.black87, Colors.transparent],
+                ),
+              ),
+            ),
+            // Photo Navigation Taps
+            if(hasImages && numberPhotos > 1)
+              Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        if (_currentPhoto > 0) {
+                          setState(() => _currentPhoto--);
+                        }
+                      },
+                      child: Container(color: Colors.transparent),
+                    ),
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        if (_currentPhoto < (numberPhotos - 1)) {
+                          setState(() => _currentPhoto++);
+                        }
+                      },
+                      child: Container(color: Colors.transparent),
+                    ),
+                  ),
+                ],
+              ),
+            // Top Status Bars for Photos
+            if (hasImages && numberPhotos > 1)
+              Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: List.generate(numberPhotos, (index) {
+                      return Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 6.0),
-                          child: SizedBox(
-                            width: MediaQuery.of(context).size.width - 20,
-                            height: 6,
-                            child: ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              //Count of image for one user----------
-                              itemCount: numberPhotos,
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (context, int i) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
-                                  child: Container(
-                                    width:
-                                        ((MediaQuery.of(context).size.width -
-                                            (20 + ((numberPhotos + 1) * 8))) /
-                                        numberPhotos),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(
-                                        color: Colors.white,
-                                        width: 0.5,
-                                      ),
-                                      color: currentPhoto == i
-                                          ? Colors.white
-                                          : Kred,
-                                    ),
-                                  ),
-                                );
-                              },
+                          padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                          child: Container(
+                            height: 4,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              // FIX: 'Kred' typo is fixed, and logic simplified.
+                              color: _currentPhoto == index
+                                  ? Colors.white
+                                  : Colors.white.withOpacity(0.5),
                             ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Material(
-                              color: Colors.transparent,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      //This is the name of user----
-                                      Text(
-                                        items[i].content,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 25,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 5),
-                                      //This is the age of the user-----
-                                      const Text(
-                                        "25",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 25,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  //Showing the info of the person-----------
-                                  IconButton(
-                                    onPressed: () {
-                                      pushNewScreen(
-                                      	context,
-                                      	pageTransitionAnimation: PageTransitionAnimation.slideUp,
-                                      	withNavBar: false,
-                                      	screen: OtherProfileDetailsScreen(i,)
-                                      );
-                                    
-                                    },
-                                    icon: const Icon(
-                                      CupertinoIcons.info_circle_fill,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    onTap: () {},
-                                    splashColor: Colors.orange,
-                                    borderRadius: BorderRadius.circular(100),
-                                    child: Container(
-                                      width: 50,
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: Colors.orange,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Image.asset(
-                                            'assets/icons/back.png',
-                                           // 'asset/girl_image.webp',
-                                            color: Colors.yellow,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                //Left swipe (deslike)
-                                Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    splashColor: Colors.red,
-                                    borderRadius: BorderRadius.circular(100),
-                                    onTap: () {
-                                      _matchEngine.currentItem!.nope();
-                                      log("Deslike");
-                                    },
-                                    child: Container(
-                                      height: 60,
-                                      width: 60,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(color: Colors.red),
-                                      ),
-                                      child: Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(12.0),
-                                          child: Image.asset(
-                                             'assets/icons/clear.png',
-                                            //'asset/girl_image.webp',
-                                            color: Theme.of(
-                                              context,
-                                            ).colorScheme.primary,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    splashColor: Colors.lightBlue,
-                                    borderRadius: BorderRadius.circular(100),
-                                    onTap: () {
-                                      _matchEngine.currentItem!.superLike();
-                                    },
-                                    child: Container(
-                                      height: 50,
-                                      width: 50,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: Colors.lightBlue,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Image.asset(
-                                             'assets/icons/star.png',
-                                            //'asset/girl_image.webp',
-                                            color: Colors.lightBlueAccent,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    onTap: () {
-                                      _matchEngine.currentItem!.like();
-                                    },
-                                    splashColor: Colors.greenAccent,
-                                    borderRadius: BorderRadius.circular(100),
-                                    child: Container(
-                                      height: 60,
-                                      width: 60,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: Colors.greenAccent,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: Image.asset(
-                                            'assets/icons/heart.png',
-                                            //'asset/girl_image.webp',
-                                            color: Colors.greenAccent,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    onTap: () {},
-                                    splashColor: Colors.purple,
-                                    borderRadius: BorderRadius.circular(100),
-                                    child: Container(
-                                      height: 50,
-                                      width: 50,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: Colors.purple,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Image.asset(
-                                             'assets/icons/light.png',
-                                            //"asset/girl_image.webp",
-                                            color: const Color.fromRGBO(
-                                              183,
-                                              71,
-                                              203,
-                                              1,
-                                            ),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                      );
+                    }),
                   ),
                 ),
               ),
-            );
-          },
+            // User Info
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Flexible(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.alphabetic,
+                        children: [
+                          Text(
+                            widget.profile.name,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 25),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            widget.profile.age.toString(),
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 22),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: widget.onInfoTap,
+                      icon: const Icon(
+                        CupertinoIcons.info_circle_fill,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
