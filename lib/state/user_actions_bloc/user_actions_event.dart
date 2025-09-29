@@ -13,3 +13,12 @@ class UserDislikeActionEvent extends UserActionsEvent{
   const UserDislikeActionEvent({required this.dislikeUserId});
 
 }
+class UserLikeActionEvent extends UserActionsEvent{
+  final String likeUserId;
+  final String likeUserName;
+  final String currentUserId;
+  final String currentUserName;
+
+  const UserLikeActionEvent({required this.likeUserId, required this.likeUserName,required this.currentUserId, required this.currentUserName});
+
+}

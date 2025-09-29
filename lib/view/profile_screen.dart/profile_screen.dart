@@ -87,6 +87,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               child: Center(child: CircularProgressIndicator()));
           } else if (state is GetSuccessState) {
+            
             log("rebuilding");
             return Container(
               decoration: const BoxDecoration(gradient: appGradient),

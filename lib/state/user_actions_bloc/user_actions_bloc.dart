@@ -15,5 +15,11 @@ class UserActionsBloc extends Bloc<UserActionsEvent, UserActionsState> {
       emit(UserActionSuccessState());
       log("User dislike success");
     });
+
+    on<UserLikeActionEvent>((event, emit)async {
+      await service.likeAction(currentUserId: event.currentUserId,currentUserName: event.currentUserName,likeUserId: event.likeUserId,likeUserName: event.likeUserName);
+      emit(UserActionSuccessState());
+      log("User like  success");
+    });
   }
 }

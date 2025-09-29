@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/state/home_user_bloc/home_user_bloc.dart';
 import 'package:dating_app/state/user_actions_bloc/user_actions_bloc.dart';
+import 'package:dating_app/state/user_bloc/user_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/utils/app_color.dart' as AppColors;
 import 'package:dating_app/view/home_screen/widget/other_profile_details_screen.dart';
@@ -12,7 +13,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -21,6 +21,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  late UserProfile accUserProfile;
   @override
   void initState() {
     super.initState();
@@ -30,112 +32,170 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(gradient: AppColors.appGradient),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
+    return BlocListener<UserBloc, UserState>(
+      listener: (context, state) {
+        if(state is GetSuccessState){
+          accUserProfile = state.userProfile;
+        }
+      },
+      child: Container(
+        decoration: const BoxDecoration(gradient: AppColors.appGradient),
+        child: Scaffold(
           backgroundColor: Colors.transparent,
-          elevation: 0,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset("assets/tinder_logo.png", scale: 18),
-              Text(
-                'tinder',
-                style: TextStyle(
-                  color: kWhite,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset("assets/tinder_logo.png", scale: 18),
+                Text(
+                  'tinder',
+                  style: TextStyle(
+                    color: kWhite,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        body: BlocBuilder<HomeUserBloc, HomeUserState>(
-          builder: (context, state) {
-            if (state is FetchAllUsersLoadingState) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            if (state is FetchAllUsersLoadedState) {
-              final List<SwipeItem> swipeItems = state.userProfiles.map((profile) {
-                return SwipeItem(
-                  content: profile,
-                  likeAction: () => log("Liked ${profile.name}"),
-                  nopeAction: () {
-                    log("Noped ${profile.name}");
-                    context.read<UserActionsBloc>().add(UserDislikeActionEvent(dislikeUserId: profile.id));
-                  },
-                  superlikeAction: () => log("Superliked ${profile.name}"),
-                );
-              }).toList();
-
-              if (swipeItems.isEmpty) {
-                return Center(
-                  child: Text("No more profiles!",
-                      style: GoogleFonts.poppins(color: kWhite)),
-                );
+          body: BlocBuilder<HomeUserBloc, HomeUserState>(
+            builder: (context, state) {
+              if (state is FetchAllUsersLoadingState) {
+                return const Center(child: CircularProgressIndicator());
               }
 
-              final MatchEngine matchEngine = MatchEngine(swipeItems: swipeItems);
+              if (state is FetchAllUsersLoadedState) {
+                final List<SwipeItem> swipeItems = state.userProfiles.map((
+                  profile,
+                ) {
+                  return SwipeItem(
+                    content: profile,
+                    likeAction: () {
+                      log("Liked ${profile.name}");
+                      log(accUserProfile.name);
+                      log(accUserProfile.id);
+                     context.read<UserActionsBloc>().add(UserLikeActionEvent(likeUserId: profile.id, likeUserName: profile.name, currentUserId: accUserProfile.id, currentUserName: accUserProfile.name));
+                    },
+                    nopeAction: () {
+                      log("Noped ${profile.name}");
+                      context.read<UserActionsBloc>().add(
+                        UserDislikeActionEvent(dislikeUserId: profile.id),
+                      );
+                    },
+                    superlikeAction: () => log("Superliked ${profile.name}"),
+                  );
+                }).toList();
 
-              return Column(
-                children: [
-                  Expanded(
-                    child: SwipeCards(
-                      matchEngine: matchEngine,
-                      upSwipeAllowed: true,
-                      onStackFinished: () {
-                        log("Stack Finished");
-                      },
-                      itemBuilder: (context, i) {
-                        final profile = swipeItems[i].content as UserProfile;
-                        return ProfileCard(
-                          profile: profile,
-                          onInfoTap: () {
-                             pushNewScreen(
+                if (swipeItems.isEmpty) {
+                  return Center(
+                    child: Text(
+                      "No more profiles!",
+                      style: GoogleFonts.poppins(color: kWhite),
+                    ),
+                  );
+                }
+
+                final MatchEngine matchEngine = MatchEngine(
+                  swipeItems: swipeItems,
+                );
+
+                return Column(
+                  children: [
+                    Expanded(
+                      child: SwipeCards(
+                        matchEngine: matchEngine,
+                        upSwipeAllowed: true,
+                        onStackFinished: () {
+                          log("Stack Finished");
+                        },
+                        itemBuilder: (context, i) {
+                          final profile = swipeItems[i].content as UserProfile;
+                          return ProfileCard(
+                            profile: profile,
+                            onInfoTap: () {
+                              pushNewScreen(
                                 context,
-                                pageTransitionAnimation: PageTransitionAnimation.slideUp,
+                                pageTransitionAnimation:
+                                    PageTransitionAnimation.slideUp,
                                 withNavBar: false,
                                 screen: OtherProfileDetailsScreen(
                                   index: i,
                                   userProfile: profile,
                                 ),
                               );
-                          }
-                        );
-                      },
+                            },
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                         _buildActionButton(onTap: () {}, asset: 'assets/icons/back.png', color: Colors.yellow),
-                         _buildActionButton(onTap: () {
-                           log("Noped ${matchEngine.currentItem!.content.name}");
-                    context.read<UserActionsBloc>().add(UserDislikeActionEvent(dislikeUserId: matchEngine.currentItem!.content.id));
-                         }, asset: 'assets/icons/clear.png', color: Colors.red, isLarge: true),
-                         _buildActionButton(onTap: () => matchEngine.currentItem?.superLike(), asset: 'assets/icons/star.png', color: Colors.lightBlueAccent),
-                         _buildActionButton(onTap: () => matchEngine.currentItem?.like(), asset: 'assets/icons/heart.png', color: Colors.greenAccent, isLarge: true),
-                         _buildActionButton(onTap: () {}, asset: 'assets/icons/light.png', color: Colors.purple),
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 20.0,
+                        horizontal: 16.0,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildActionButton(
+                            onTap: () {},
+                            asset: 'assets/icons/back.png',
+                            color: Colors.yellow,
+                          ),
+                          _buildActionButton(
+                            onTap: () {
+                              log(
+                                "Noped ${matchEngine.currentItem!.content.name}",
+                              );
+                              context.read<UserActionsBloc>().add(
+                                UserDislikeActionEvent(
+                                  dislikeUserId:
+                                      matchEngine.currentItem!.content.id,
+                                ),
+                              );
+                            },
+                            asset: 'assets/icons/clear.png',
+                            color: Colors.red,
+                            isLarge: true,
+                          ),
+                          _buildActionButton(
+                            onTap: () => matchEngine.currentItem?.superLike(),
+                            asset: 'assets/icons/star.png',
+                            color: Colors.lightBlueAccent,
+                          ),
+                          _buildActionButton(
+                            onTap: () => matchEngine.currentItem?.like(),
+                            asset: 'assets/icons/heart.png',
+                            color: Colors.greenAccent,
+                            isLarge: true,
+                          ),
+                          _buildActionButton(
+                            onTap: () {},
+                            asset: 'assets/icons/light.png',
+                            color: Colors.purple,
+                          ),
+                        ],
+                      ),
                     ),
-                  )
-                ],
-              );
-            }
-            
-            return const SizedBox.shrink();
-          },
+                  ],
+                );
+              }
+
+              return const SizedBox.shrink();
+            },
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildActionButton({required VoidCallback onTap, required String asset, required Color color, bool isLarge = false}) {
+  Widget _buildActionButton({
+    required VoidCallback onTap,
+    required String asset,
+    required Color color,
+    bool isLarge = false,
+  }) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -160,8 +220,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-
 
 class ProfileCard extends StatefulWidget {
   final UserProfile profile;
@@ -194,17 +252,21 @@ class _ProfileCardState extends State<ProfileCard> {
             // Image Container
             Container(
               decoration: BoxDecoration(
-                color: Colors.grey.shade800, 
+                color: Colors.grey.shade800,
                 borderRadius: BorderRadius.circular(10),
                 image: hasImages
                     ? DecorationImage(
                         fit: BoxFit.cover,
-                        image: NetworkImage(widget.profile.getImages![_currentPhoto]),
+                        image: NetworkImage(
+                          widget.profile.getImages![_currentPhoto],
+                        ),
                       )
                     : null,
               ),
               child: !hasImages
-                  ? const Center(child: Icon(Icons.person, color: Colors.white, size: 60))
+                  ? const Center(
+                      child: Icon(Icons.person, color: Colors.white, size: 60),
+                    )
                   : null,
             ),
             // Black Gradient Overlay
@@ -219,7 +281,7 @@ class _ProfileCardState extends State<ProfileCard> {
               ),
             ),
             // Photo Navigation Taps
-            if(hasImages && numberPhotos > 1)
+            if (hasImages && numberPhotos > 1)
               Row(
                 children: [
                   Expanded(
@@ -288,15 +350,18 @@ class _ProfileCardState extends State<ProfileCard> {
                           Text(
                             widget.profile.name,
                             style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 25),
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 25,
+                            ),
                           ),
                           const SizedBox(width: 8),
                           Text(
                             widget.profile.age.toString(),
                             style: const TextStyle(
-                                color: Colors.white, fontSize: 22),
+                              color: Colors.white,
+                              fontSize: 22,
+                            ),
                           ),
                         ],
                       ),
