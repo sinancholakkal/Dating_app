@@ -33,9 +33,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     'Fitness',
   };
   List<dynamic> getImages = [];
-  List<String>deleteImage =[];
-  
-  late UserCurrentModel getUserModel;
+  List<String> deleteImage = [];
+
+   
   late final TextEditingController _bioController;
 
   @override
@@ -58,36 +58,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthBloc, AuthState>(
-      listener: (context, state) {
-        if (state is LogoutSuccessState) {
-          flutterToast(msg: AppStrings.logoutS);
-          context.go("/onboarding");
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<AuthBloc, AuthState>(
+          listener: (context, state) {
+            if (state is LogoutSuccessState) {
+              flutterToast(msg: AppStrings.logoutS);
+              context.go("/onboarding");
+            }
+          },
+        ),
+        BlocListener<UserBloc, UserState>(
+          listener: (context, state) {
+            if(state is GetSuccessState){
+              
+            }
+          },
+        ),
+      ],
       child: BlocConsumer<UserBloc, UserState>(
         listener: (context, state) {
-          if (state is GetSuccessState ) {
+          if (state is GetSuccessState) {
             getImages.clear();
             getImages.addAll(state.userProfile.getImages!);
             _bioController.text = state.userProfile.bio;
-            getUserModel = UserCurrentModel(bio: _bioController.text, images: state.userProfile.getImages!,userId: state.userProfile.id);
-          }else if(state is UpdatedProfileState){
+          } else if (state is UpdatedProfileState) {
             context.read<UserBloc>().add(GetUserProfileEvent());
           }
         },
         builder: (context, state) {
-          if (state is GetProfileLoadingState || state is UpdateProfileLoadingState) {
+          if (state is GetProfileLoadingState ||
+              state is UpdateProfileLoadingState) {
             return Container(
-              
               width: double.infinity,
               height: double.infinity,
-              decoration: BoxDecoration(
-                gradient: appGradient
-              ),
-              child: Center(child: CircularProgressIndicator()));
+              decoration: BoxDecoration(gradient: appGradient),
+              child: Center(child: CircularProgressIndicator()),
+            );
           } else if (state is GetSuccessState) {
-            
+            UserCurrentModel getUserModel =UserCurrentModel(bio: _bioController.text, images: state.userProfile.getImages!,userId: state.userProfile.id);
             log("rebuilding");
             return Container(
               decoration: const BoxDecoration(gradient: appGradient),
@@ -148,7 +157,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                 ),
-                floatingActionButton: ProfileUpdateButton(bioController: _bioController, getImages: getImages, getUserModel: getUserModel,deleteImages: deleteImage,),
+                floatingActionButton: ProfileUpdateButton(
+                  bioController: _bioController,
+                  getImages: getImages,
+                  getUserModel: getUserModel,
+                  deleteImages: deleteImage,
+                ),
               ),
             );
           } else {
@@ -208,7 +222,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           getImages.add(state.pickedFile);
         } else if (state is ImageRemovedState) {
           //getImages = state.images;
-          if(getImages[state.index] is String){
+          if (getImages[state.index] is String) {
             deleteImage.add(getImages[state.index]);
             log("This image for delete from firebase");
           }
@@ -260,8 +274,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   cancelTap: () => context.pop(),
                   confirmTap: () {
                     context.pop();
-                   // setState(() {});
-                    context.read<ProfileSetupBloc>().add(ImageRemoveEvent(index: index,));
+                    // setState(() {});
+                    context.read<ProfileSetupBloc>().add(
+                      ImageRemoveEvent(index: index),
+                    );
                   },
                 );
               },
@@ -290,7 +306,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildBioEditor() {
-   
     return TextField(
       controller: _bioController,
       maxLines: 4,
@@ -332,31 +347,39 @@ class ProfileUpdateButton extends StatelessWidget {
     super.key,
     required TextEditingController bioController,
     required this.getImages,
-    required this.getUserModel, required this.deleteImages,
+    required this.getUserModel,
+    required this.deleteImages,
   }) : _bioController = bioController;
 
   final TextEditingController _bioController;
   final List getImages;
   final UserCurrentModel getUserModel;
-  final List<String>deleteImages;
+  final List<String> deleteImages;
 
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
       onPressed: () async {
-    
-        final newModel = UserCurrentModel(bio: _bioController.text.trim(), images: getImages,userId: getUserModel.userId);
-    
+        final newModel = UserCurrentModel(
+          bio: _bioController.text.trim(),
+          images: getImages,
+          userId: getUserModel.userId,
+        );
+
         log(getUserModel.images.length.toString());
         log(newModel.images.length.toString());
-        log("${getUserModel==newModel}");
-        if(getUserModel==newModel){
+        log("${getUserModel == newModel}");
+        if (getUserModel == newModel) {
           flutterToast(msg: "No updates");
-        }else{
+        } else {
           //Call update event
-          context.read<UserBloc>().add(UpdateUserPrfileEvent(userCurrentModel: newModel, deleteImages: deleteImages));
+          context.read<UserBloc>().add(
+            UpdateUserPrfileEvent(
+              userCurrentModel: newModel,
+              deleteImages: deleteImages,
+            ),
+          );
         }
-          
       },
       backgroundColor: primary, // Use your theme color
       child: Icon(Icons.check, color: kWhite),

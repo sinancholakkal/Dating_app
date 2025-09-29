@@ -80,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       log("Liked ${profile.name}");
                       log(accUserProfile.name);
                       log(accUserProfile.id);
-                     context.read<UserActionsBloc>().add(UserLikeActionEvent(likeUserId: profile.id, likeUserName: profile.name, currentUserId: accUserProfile.id, currentUserName: accUserProfile.name,image: profile.getImages![0]));
+                     context.read<UserActionsBloc>().add(UserLikeActionEvent(likeUserId: profile.id, likeUserName: profile.name, currentUserId: accUserProfile.id, currentUserName: accUserProfile.name,image: accUserProfile.getImages![0]));
                     },
                     nopeAction: () {
                       log("Noped ${profile.name}");

@@ -63,11 +63,11 @@ class _RequestCardState extends State<RequestCard> {
             children: [
               IconButton(
                 icon: const Icon(CupertinoIcons.clear_circled, color: Colors.redAccent, size: 30),
-                onPressed: widget.onDecline, // Use the callback
+                onPressed: widget.onDecline,
               ),
               IconButton(
                 icon: const Icon(CupertinoIcons.check_mark_circled, color: Colors.greenAccent, size: 30),
-                onPressed: widget.onAccept, // Use the callback
+                onPressed: widget.onAccept,
               ),
             ],
           )

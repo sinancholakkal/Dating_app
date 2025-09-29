@@ -102,10 +102,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 return RequestCard(
                   request: request,
                   onAccept: () {
-                    //_acceptRequest(request.senderId)
+                   context.read<RequestBloc>().add(AcceptRequestEvent(request: request));
                   },
                   onDecline: () {
                     //=> _declineRequest(request.senderId)
+                    log("Decline event called");
+                    context.read<RequestBloc>().add(DeclineRequestEvent(request: request));
                   },
                 );
               },
