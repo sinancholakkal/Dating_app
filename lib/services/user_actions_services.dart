@@ -27,6 +27,7 @@ class UserActionsServices {
     required String likeUserName,
     required String currentUserId,
     required String currentUserName,
+    required String image
   }) async {
     try{
       //final currentUserId = AuthService().getCurrentUser()!.uid;
@@ -42,6 +43,7 @@ class UserActionsServices {
         {
           "sendername":currentUserName,
           "senderid":currentUserId,
+          "image":image,
           "isAccept":false,
         }
       ])

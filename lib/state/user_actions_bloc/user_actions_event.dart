@@ -18,7 +18,7 @@ class UserLikeActionEvent extends UserActionsEvent{
   final String likeUserName;
   final String currentUserId;
   final String currentUserName;
-
-  const UserLikeActionEvent({required this.likeUserId, required this.likeUserName,required this.currentUserId, required this.currentUserName});
+final String image;
+  const UserLikeActionEvent({required this.likeUserId, required this.likeUserName,required this.currentUserId, required this.currentUserName,required this.image});
 
 }

@@ -35,7 +35,11 @@ class _HomeScreenState extends State<HomeScreen> {
     return BlocListener<UserBloc, UserState>(
       listener: (context, state) {
         if(state is GetSuccessState){
+          log("User profile executed----------");
+          
           accUserProfile = state.userProfile;
+
+          log(accUserProfile.name);
         }
       },
       child: Container(
@@ -76,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       log("Liked ${profile.name}");
                       log(accUserProfile.name);
                       log(accUserProfile.id);
-                     context.read<UserActionsBloc>().add(UserLikeActionEvent(likeUserId: profile.id, likeUserName: profile.name, currentUserId: accUserProfile.id, currentUserName: accUserProfile.name));
+                     context.read<UserActionsBloc>().add(UserLikeActionEvent(likeUserId: profile.id, likeUserName: profile.name, currentUserId: accUserProfile.id, currentUserName: accUserProfile.name,image: profile.getImages![0]));
                     },
                     nopeAction: () {
                       log("Noped ${profile.name}");

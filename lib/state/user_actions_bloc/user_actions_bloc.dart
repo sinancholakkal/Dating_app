@@ -17,7 +17,7 @@ class UserActionsBloc extends Bloc<UserActionsEvent, UserActionsState> {
     });
 
     on<UserLikeActionEvent>((event, emit)async {
-      await service.likeAction(currentUserId: event.currentUserId,currentUserName: event.currentUserName,likeUserId: event.likeUserId,likeUserName: event.likeUserName);
+      await service.likeAction(image: event.image, currentUserId: event.currentUserId,currentUserName: event.currentUserName,likeUserId: event.likeUserId,likeUserName: event.likeUserName);
       emit(UserActionSuccessState());
       log("User like  success");
     });
