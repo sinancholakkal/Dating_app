@@ -3,6 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/models/chat_user_model.dart';
 import 'package:dating_app/services/chat_service.dart';
 import 'package:dating_app/state/chat_bloc/chat_bloc.dart';
+import 'package:dating_app/state/conversation_bloc/conversation_bloc.dart';
+import 'package:dating_app/state/conversation_bloc/conversation_event.dart';
+import 'package:dating_app/state/conversation_bloc/conversation_state.dart';
 import 'package:dating_app/utils/app_color.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -255,6 +258,7 @@ class ChatListScreen extends StatelessWidget {
                   style: GoogleFonts.poppins(color: kWhite54, fontSize: 12),
                 ),
                 onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ConversationScreen(chatRoomId: chat.chatRoomId, otherUser: chat),));
                   // Navigate to the conversation screen
                   // Navigator.push(
                   //   context,
@@ -292,6 +296,152 @@ class ChatListScreen extends StatelessWidget {
   }
 }
 
+
+class ConversationScreen extends StatefulWidget {
+  final String chatRoomId;
+  final ChatUserModel otherUser;
+  
+  const ConversationScreen({
+    super.key,
+    required this.chatRoomId,
+    required this.otherUser,
+  });
+
+  @override
+  State<ConversationScreen> createState() => _ConversationScreenState();
+}
+
+class _ConversationScreenState extends State<ConversationScreen> {
+  late final TextEditingController _messageController;
+  
+  @override
+  void initState() {
+    super.initState();
+    _messageController = TextEditingController();
+    // Start loading messages when the screen opens
+    context.read<ConversationBloc>().add(LoadMessagesEvent(chatRoomId: widget.chatRoomId));
+  }
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    super.dispose();
+  }
+  
+  void _sendMessage() {
+    if (_messageController.text.trim().isNotEmpty) {
+      context.read<ConversationBloc>().add(SendMessageEvent(
+        chatRoomId: widget.chatRoomId,
+        messageText: _messageController.text.trim(),
+        senderId: FirebaseAuth.instance.currentUser!.uid,
+      ));
+      _messageController.clear();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final currentUserId = FirebaseAuth.instance.currentUser!.uid;
+    return Container(
+      decoration: const BoxDecoration(gradient: appGradient),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          iconTheme: IconThemeData(color: kWhite),
+          title: Text(widget.otherUser.name, style: GoogleFonts.poppins(color: kWhite, fontWeight: FontWeight.bold)),
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: BlocBuilder<ConversationBloc, ConversationState>(
+                builder: (context, state) {
+                  if (state is ConversationLoading) {
+                    return  Center(child: CircularProgressIndicator(color: kWhite));
+                  }
+                  if (state is ConversationLoaded) {
+                    return ListView.builder(
+                      padding: const EdgeInsets.all(16.0),
+                      reverse: true,
+                      itemCount: state.messages.length,
+                      itemBuilder: (context, index) {
+                        final messageDoc = state.messages[index];
+                        final messageData = messageDoc.data() as Map<String, dynamic>;
+                        final bool isMe = messageData['senderId'] == currentUserId;
+                        return _MessageBubble(isMe: isMe, text: messageData['text']);
+                      },
+                    );
+                  }
+                  return  Center(child: Text("No messages yet.", style: TextStyle(color: kWhite)));
+                },
+              ),
+            ),
+            _buildMessageInputField(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMessageInputField() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+      decoration: BoxDecoration(color: bgcard.withOpacity(0.5)),
+      child: SafeArea(
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _messageController,
+                style: GoogleFonts.poppins(color: kWhite),
+                decoration: InputDecoration(
+                  hintText: "Type a message...",
+                  hintStyle: GoogleFonts.poppins(color: kWhite70),
+                  filled: true,
+                  fillColor: kWhite.withOpacity(0.1),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide.none),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            IconButton(
+              icon:  Icon(Icons.send, color: kWhite),
+              onPressed: _sendMessage,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MessageBubble extends StatelessWidget {
+  final bool isMe;
+  final String text;
+  const _MessageBubble({required this.isMe, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 4.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+        decoration: BoxDecoration(
+          color: isMe ? primary : kWhite.withOpacity(0.2),
+          borderRadius: BorderRadius.only(
+            topLeft: const Radius.circular(20),
+            topRight: const Radius.circular(20),
+            bottomLeft: isMe ? const Radius.circular(20) : const Radius.circular(4),
+            bottomRight: isMe ? const Radius.circular(4) : const Radius.circular(20),
+          ),
+        ),
+        child: Text(text, style: GoogleFonts.poppins(color: kWhite)),
+      ),
+    );
+  }
+}
 
 // class ChatListScreen extends StatelessWidget {
 //   const ChatListScreen({super.key});
@@ -435,167 +585,167 @@ class ChatListScreen extends StatelessWidget {
 
 
 
-class ConversationScreen extends StatefulWidget {
-  final ChatContact contact;
-  const ConversationScreen({super.key, required this.contact});
+// class ConversationScreen extends StatefulWidget {
+//   final ChatContact contact;
+//   const ConversationScreen({super.key, required this.contact});
 
-  @override
-  State<ConversationScreen> createState() => _ConversationScreenState();
-}
+//   @override
+//   State<ConversationScreen> createState() => _ConversationScreenState();
+// }
 
-class _ConversationScreenState extends State<ConversationScreen> {
-  late final TextEditingController _messageController;
-  // --- MOCK DATA ---
-  final List<ChatMessage> _messages = [
-    ChatMessage(
-      text: "Hey, how's it going?",
-      isSentByMe: false,
-      timestamp: DateTime.now().subtract(const Duration(minutes: 5)),
-    ),
-    ChatMessage(
-      text: "Pretty good! Just finished a workout. You?",
-      isSentByMe: true,
-      timestamp: DateTime.now().subtract(const Duration(minutes: 4)),
-    ),
-    ChatMessage(
-      text:
-          "Nice! I'm just relaxing. So, I was thinking about that new cafe we talked about.",
-      isSentByMe: false,
-      timestamp: DateTime.now().subtract(const Duration(minutes: 3)),
-    ),
-    ChatMessage(
-      text: "Oh yeah! We should definitely go this weekend.",
-      isSentByMe: true,
-      timestamp: DateTime.now(),
-    ),
-  ];
+// class _ConversationScreenState extends State<ConversationScreen> {
+//   late final TextEditingController _messageController;
+//   // --- MOCK DATA ---
+//   final List<ChatMessage> _messages = [
+//     ChatMessage(
+//       text: "Hey, how's it going?",
+//       isSentByMe: false,
+//       timestamp: DateTime.now().subtract(const Duration(minutes: 5)),
+//     ),
+//     ChatMessage(
+//       text: "Pretty good! Just finished a workout. You?",
+//       isSentByMe: true,
+//       timestamp: DateTime.now().subtract(const Duration(minutes: 4)),
+//     ),
+//     ChatMessage(
+//       text:
+//           "Nice! I'm just relaxing. So, I was thinking about that new cafe we talked about.",
+//       isSentByMe: false,
+//       timestamp: DateTime.now().subtract(const Duration(minutes: 3)),
+//     ),
+//     ChatMessage(
+//       text: "Oh yeah! We should definitely go this weekend.",
+//       isSentByMe: true,
+//       timestamp: DateTime.now(),
+//     ),
+//   ];
 
-  @override
-  void initState() {
-    super.initState();
-    _messageController = TextEditingController();
-  }
+//   @override
+//   void initState() {
+//     super.initState();
+//     _messageController = TextEditingController();
+//   }
 
-  @override
-  void dispose() {
-    _messageController.dispose();
-    super.dispose();
-  }
+//   @override
+//   void dispose() {
+//     _messageController.dispose();
+//     super.dispose();
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(gradient: appGradient),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          title: Row(
-            children: [
-              CircleAvatar(backgroundColor: kWhite, radius: 20),
-              const SizedBox(width: 12),
-              Text(
-                widget.contact.name,
-                style: GoogleFonts.poppins(
-                  color: kWhite,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ),
-        body: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.all(16.0),
-                reverse: true, // Shows latest messages at the bottom
-                itemCount: _messages.length,
-                itemBuilder: (context, index) {
-                  final message = _messages.reversed.toList()[index];
-                  return _MessageBubble(message: message);
-                },
-              ),
-            ),
-            _buildMessageInputField(),
-          ],
-        ),
-      ),
-    );
-  }
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       decoration: const BoxDecoration(gradient: appGradient),
+//       child: Scaffold(
+//         backgroundColor: Colors.transparent,
+//         appBar: AppBar(
+//           backgroundColor: Colors.transparent,
+//           elevation: 0,
+//           title: Row(
+//             children: [
+//               CircleAvatar(backgroundColor: kWhite, radius: 20),
+//               const SizedBox(width: 12),
+//               Text(
+//                 widget.contact.name,
+//                 style: GoogleFonts.poppins(
+//                   color: kWhite,
+//                   fontWeight: FontWeight.bold,
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//         body: Column(
+//           children: [
+//             Expanded(
+//               child: ListView.builder(
+//                 padding: const EdgeInsets.all(16.0),
+//                 reverse: true, // Shows latest messages at the bottom
+//                 itemCount: _messages.length,
+//                 itemBuilder: (context, index) {
+//                   final message = _messages.reversed.toList()[index];
+//                   return _MessageBubble(message: message);
+//                 },
+//               ),
+//             ),
+//             _buildMessageInputField(),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
 
-  Widget _buildMessageInputField() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-      decoration: BoxDecoration(color: bgcard.withOpacity(0.5)),
-      child: SafeArea(
-        child: Row(
-          children: [
-            Expanded(
-              child: TextField(
-                controller: _messageController,
-                style: GoogleFonts.poppins(color: kWhite),
-                decoration: InputDecoration(
-                  hintText: "Type a message...",
-                  hintStyle: GoogleFonts.poppins(color: kWhite70),
-                  filled: true,
-                  fillColor: kWhite.withOpacity(0.1),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 10,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            IconButton(
-              icon: Icon(Icons.send, color: kWhite),
-              onPressed: () {
-                /* Send message logic */
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+//   Widget _buildMessageInputField() {
+//     return Container(
+//       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+//       decoration: BoxDecoration(color: bgcard.withOpacity(0.5)),
+//       child: SafeArea(
+//         child: Row(
+//           children: [
+//             Expanded(
+//               child: TextField(
+//                 controller: _messageController,
+//                 style: GoogleFonts.poppins(color: kWhite),
+//                 decoration: InputDecoration(
+//                   hintText: "Type a message...",
+//                   hintStyle: GoogleFonts.poppins(color: kWhite70),
+//                   filled: true,
+//                   fillColor: kWhite.withOpacity(0.1),
+//                   border: OutlineInputBorder(
+//                     borderRadius: BorderRadius.circular(30),
+//                     borderSide: BorderSide.none,
+//                   ),
+//                   contentPadding: const EdgeInsets.symmetric(
+//                     horizontal: 20,
+//                     vertical: 10,
+//                   ),
+//                 ),
+//               ),
+//             ),
+//             const SizedBox(width: 12),
+//             IconButton(
+//               icon: Icon(Icons.send, color: kWhite),
+//               onPressed: () {
+//                 /* Send message logic */
+//               },
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
 
-class _MessageBubble extends StatelessWidget {
-  final ChatMessage message;
-  const _MessageBubble({required this.message});
+// class _MessageBubble extends StatelessWidget {
+//   final ChatMessage message;
+//   const _MessageBubble({required this.message});
 
-  @override
-  Widget build(BuildContext context) {
-    final isMe = message.isSentByMe;
-    return Align(
-      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 4.0),
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-        decoration: BoxDecoration(
-          color: isMe ? primary : kWhite.withOpacity(0.2),
-          borderRadius: BorderRadius.only(
-            topLeft: const Radius.circular(20),
-            topRight: const Radius.circular(20),
-            bottomLeft: isMe
-                ? const Radius.circular(20)
-                : const Radius.circular(4),
-            bottomRight: isMe
-                ? const Radius.circular(4)
-                : const Radius.circular(20),
-          ),
-        ),
-        child: Text(message.text, style: GoogleFonts.poppins(color: kWhite)),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     final isMe = message.isSentByMe;
+//     return Align(
+//       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+//       child: Container(
+//         margin: const EdgeInsets.symmetric(vertical: 4.0),
+//         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+//         decoration: BoxDecoration(
+//           color: isMe ? primary : kWhite.withOpacity(0.2),
+//           borderRadius: BorderRadius.only(
+//             topLeft: const Radius.circular(20),
+//             topRight: const Radius.circular(20),
+//             bottomLeft: isMe
+//                 ? const Radius.circular(20)
+//                 : const Radius.circular(4),
+//             bottomRight: isMe
+//                 ? const Radius.circular(4)
+//                 : const Radius.circular(20),
+//           ),
+//         ),
+//         child: Text(message.text, style: GoogleFonts.poppins(color: kWhite)),
+//       ),
+//     );
+//   }
+// }
 
 // import 'package:dating_app/state/chat_bloc/chat_bloc.dart';
 // import 'package:flutter/material.dart';

@@ -120,4 +120,50 @@ class ChatService {
     return throw "$e";
   }
   }
+
+
+
+
+
+
+
+
+
+   Future<void> sendMessage({
+    required String chatRoomId,
+    required String messageText,
+    required String senderId,
+  }) async {
+    try {
+      // Add the new message to the 'messages' subcollection
+      await _firestore
+          .collection('chats')
+          .doc(chatRoomId)
+          .collection('messages')
+          .add({
+        'text': messageText,
+        'senderId': senderId,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      // Update the 'lastMessage' in the parent chat room document
+      await _firestore.collection('chats').doc(chatRoomId).update({
+        'lastMessage': messageText,
+        'lastMessageTimestamp': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      log("Error sending message: $e");
+      rethrow;
+    }
+  }
+
+  /// Gets a real-time stream of messages for a specific chat room.
+  Stream<QuerySnapshot> getMessagesStream({required String chatRoomId}) {
+    return _firestore
+        .collection('chats')
+        .doc(chatRoomId)
+        .collection('messages')
+        .orderBy('timestamp', descending: true) // Newest messages first
+        .snapshots();
+  }
 }

@@ -3,6 +3,7 @@ import 'package:dating_app/routes/app_router.dart';
 import 'package:dating_app/services/chat_service.dart';
 import 'package:dating_app/state/auth_bloc/auth_bloc.dart';
 import 'package:dating_app/state/chat_bloc/chat_bloc.dart';
+import 'package:dating_app/state/conversation_bloc/conversation_bloc.dart';
 import 'package:dating_app/state/home_user_bloc/home_user_bloc.dart';
 import 'package:dating_app/state/profile_setup_bloc/profile_setup_bloc.dart';
 import 'package:dating_app/state/request_bloc/request_bloc.dart';
@@ -12,8 +13,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-void main() async{
-      WidgetsFlutterBinding.ensureInitialized();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
@@ -23,59 +24,38 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider(
-          create: (context) => ChatService(),
-        ),
-      ],
+      providers: [RepositoryProvider(create: (context) => ChatService())],
       child: MultiBlocProvider(
         providers: [
+          BlocProvider(create: (context) => AuthBloc()),
+          BlocProvider(create: (context) => ProfileSetupBloc()),
+          BlocProvider(create: (context) => UserBloc()),
+          BlocProvider(create: (context) => HomeUserBloc()),
+          BlocProvider(create: (context) => UserActionsBloc()),
+          BlocProvider(create: (context) => RequestBloc()),
           BlocProvider(
-            create: (context) => AuthBloc(),
-          ),
-          BlocProvider(
-            create: (context) => ProfileSetupBloc(),
-          ),
-          BlocProvider(
-            create: (context) => UserBloc(),
-          ),
-          BlocProvider(
-            create: (context) => HomeUserBloc(),
-          ),
-          BlocProvider(
-            create: (context) => UserActionsBloc(),
-          ),
-          BlocProvider(
-            create: (context) => RequestBloc(),
-          ),
-                    BlocProvider(
-            // The BLoC gets the ChatService it needs from the context
             create: (context) => ChatBloc(context.read<ChatService>()),
           ),
-
-          
-          
+          BlocProvider(create: (context) => ConversationBloc(context.read<ChatService>()),)
         ],
         child: MaterialApp.router(
           debugShowCheckedModeBanner: false,
           routerConfig: appRouter,
           theme: ThemeData(
             colorScheme: ColorScheme.light(
-            background: Colors.grey.shade200,
-            onBackground: Colors.black,
-            primary: const Color(0xFFFe3c72),
-            onPrimary: Colors.black,
-            secondary: const Color(0xFF424242),
-            onSecondary: Colors.white,
-                tertiary: const Color.fromRGBO(255, 204, 128, 1),
-            error: Colors.red,
-                outline: const Color(0xFF424242)
-          )
+              background: Colors.grey.shade200,
+              onBackground: Colors.black,
+              primary: const Color(0xFFFe3c72),
+              onPrimary: Colors.black,
+              secondary: const Color(0xFF424242),
+              onSecondary: Colors.white,
+              tertiary: const Color.fromRGBO(255, 204, 128, 1),
+              error: Colors.red,
+              outline: const Color(0xFF424242),
+            ),
           ),
-          
         ),
       ),
     );
   }
 }
-
