@@ -26,6 +26,7 @@ class ConversationBloc extends Bloc<ConversationEvent, ConversationState> {
 
     on<SendMessageEvent>((event, emit) {
       _chatService.sendMessage(
+        recipientId: event.recipientId,
         chatRoomId: event.chatRoomId,
         messageText: event.messageText,
         senderId: event.senderId,

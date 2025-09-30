@@ -1,4 +1,6 @@
 // To represent a single message
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/models/chat_user_model.dart';
 import 'package:dating_app/services/chat_service.dart';
@@ -7,6 +9,7 @@ import 'package:dating_app/state/conversation_bloc/conversation_bloc.dart';
 import 'package:dating_app/state/conversation_bloc/conversation_event.dart';
 import 'package:dating_app/state/conversation_bloc/conversation_state.dart';
 import 'package:dating_app/utils/app_color.dart';
+import 'package:dating_app/view/conversation_screen.dart/conversation_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,12 +28,11 @@ class ChatMessage {
   });
 }
 
-// To represent a contact in the chat list
 class ChatContact {
   final String name;
   final String lastMessage;
   final String timestamp;
-  final String imageUrl; // URL for the profile picture
+  final String imageUrl;
 
   ChatContact({
     required this.name,
@@ -39,173 +41,6 @@ class ChatContact {
     required this.imageUrl,
   });
 }
-
-// import 'package:dating_app/state/chat_bloc/chat_bloc.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-
-// class ChatListScreen extends StatefulWidget {
-//   const ChatListScreen({super.key});
-
-//   @override
-//   State<ChatListScreen> createState() => _ChatListScreenState();
-// }
-
-// class _ChatListScreenState extends State<ChatListScreen> {
-//   @override
-//   void initState() {
-//     super.initState();
-//     // Start listening to chats when the screen is first loaded
-//     context.read<ChatBloc>().add(LoadChatsEvent());
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       child: Scaffold(
-//         appBar: AppBar(title: const Text("Chats")),
-//         body: BlocBuilder<ChatBloc, ChatState>(
-//           builder: (context, state) {
-//             if (state is ChatLoading || state is ChatInitial) {
-//               return const Center(child: CircularProgressIndicator());
-//             }
-//             if (state is ChatLoaded) {
-//               if (state.chats.isEmpty) {
-//                 return const Center(child: Text("No conversations yet."));
-//               }
-//               return ListView.builder(
-//                 itemCount: state.chats.length,
-//                 itemBuilder: (context, index) {
-//                   final chat = state.chats[index];
-//                   return ListTile(
-//                     title: Text(chat.name),
-//                     subtitle: Text(chat.lastMessage),
-//                   );
-//                 },
-//               );
-//             }
-//             // if (state is ChatError)
-//             return const Center(child: Text("Something went wrong."));
-//           },
-//         ),
-//       ),
-//     );
-//   }
-// }
-// class ChatListScreen extends StatefulWidget {
-//   const ChatListScreen({super.key});
-
-//   @override
-//   State<ChatListScreen> createState() => _ChatListScreenState();
-// }
-
-// class _ChatListScreenState extends State<ChatListScreen> {
-//   // --- MOCK DATA ---
-//   final List<ChatContact> _chatContacts = [
-//     ChatContact(
-//       name: "Priya",
-//       lastMessage: "See you then! 😊",
-//       timestamp: "10:42 PM",
-//       imageUrl: "https://example.com/priya.jpg",
-//     ),
-//     ChatContact(
-//       name: "Rohan",
-//       lastMessage: "Haha, that's hilarious.",
-//       timestamp: "8:15 PM",
-//       imageUrl: "https://example.com/rohan.jpg",
-//     ),
-//     ChatContact(
-//       name: "Aisha",
-//       lastMessage: "I'll check it out, thanks!",
-//       timestamp: "Yesterday",
-//       imageUrl: "https://example.com/aisha.jpg",
-//     ),
-//   ];
-
-//   @override
-//   void initState() {
-//     context.read<ChatBloc>().add(LoadChatsEvent());
-//     super.initState();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       decoration: BoxDecoration(gradient: appGradient),
-//       child: Scaffold(
-//         backgroundColor: Colors.transparent, // Use your dark theme background
-//         appBar: AppBar(
-//           title: Text(
-//             'Chats',
-//             style: GoogleFonts.poppins(
-//               color: kWhite,
-//               fontWeight: FontWeight.bold,
-//             ),
-//           ),
-//           backgroundColor: Colors.transparent,
-//           elevation: 0,
-//         ),
-//         body: BlocBuilder<ChatBloc, ChatState>(
-//           builder: (context, state) {
-//             if (state is ChatLoading || state is ChatInitial) {
-//               return const Center(child: CircularProgressIndicator());
-//             }
-//             if (state is ChatLoaded) {
-//               if (state.chats.isEmpty) {
-//                 return const Center(child: Text("No conversations yet."));
-//               }
-//               return ListView.separated(
-//                 itemCount: _chatContacts.length,
-//                 itemBuilder: (context, index) {
-//                   final contact = _chatContacts[index];
-//                   return ListTile(
-//                     leading: CircleAvatar(
-//                       radius: 30,
-//                       backgroundColor: primary.withOpacity(0.5),
-//                       backgroundImage: AssetImage("asset/girl_image.webp"),
-//                       // backgroundImage: NetworkImage(contact.imageUrl),
-//                     ),
-//                     title: Text(
-//                       contact.name,
-//                       style: GoogleFonts.poppins(
-//                         color: kWhite,
-//                         fontWeight: FontWeight.bold,
-//                       ),
-//                     ),
-//                     subtitle: Text(
-//                       contact.lastMessage,
-//                       style: GoogleFonts.poppins(color: kWhite70),
-//                     ),
-//                     trailing: Text(
-//                       contact.timestamp,
-//                       style: GoogleFonts.poppins(color: kWhite54, fontSize: 12),
-//                     ),
-//                     onTap: () {
-//                       Navigator.push(
-//                         context,
-//                         MaterialPageRoute(
-//                           builder: (context) =>
-//                               ConversationScreen(contact: contact),
-//                         ),
-//                       );
-//                     },
-//                   );
-//                 },
-//                 separatorBuilder: (context, index) =>
-//                     Divider(color: kWhite.withOpacity(0.1), indent: 80),
-//               );
-//             }
-//             return const Center(child: Text("Something went wrong."));
-//           },
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-
-
-
 
 class ChatListScreen extends StatelessWidget {
   const ChatListScreen({super.key});
@@ -222,7 +57,13 @@ class ChatListScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: bgcard,
       appBar: AppBar(
-        title: Text('Chats', style: GoogleFonts.poppins(color: kWhite, fontWeight: FontWeight.bold)),
+        title: Text(
+          'Chats',
+          style: GoogleFonts.poppins(
+            color: kWhite,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -230,13 +71,23 @@ class ChatListScreen extends StatelessWidget {
         stream: chatService.getChatsStream(currentUserId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return  Center(child: CircularProgressIndicator(color: kWhite));
+            return Center(child: CircularProgressIndicator(color: kWhite));
           }
           if (snapshot.hasError) {
-            return Center(child: Text("Something went wrong.", style: GoogleFonts.poppins(color: kWhite70)));
+            return Center(
+              child: Text(
+                "Something went wrong.",
+                style: GoogleFonts.poppins(color: kWhite70),
+              ),
+            );
           }
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text("No conversations yet.", style: GoogleFonts.poppins(color: kWhite70)));
+            return Center(
+              child: Text(
+                "No conversations yet.",
+                style: GoogleFonts.poppins(color: kWhite70),
+              ),
+            );
           }
 
           final chatList = snapshot.data!;
@@ -251,29 +102,77 @@ class ChatListScreen extends StatelessWidget {
                   backgroundImage: NetworkImage(chat.imageUrl),
                   backgroundColor: primary.withOpacity(0.5),
                 ),
-                title: Text(chat.name, style: GoogleFonts.poppins(color: kWhite, fontWeight: FontWeight.bold)),
-                subtitle: Text(chat.lastMessage, style: GoogleFonts.poppins(color: kWhite70), maxLines: 1, overflow: TextOverflow.ellipsis),
-                trailing: Text(
-                  _formatTimestamp(chat.lastMessageTimestamp),
-                  style: GoogleFonts.poppins(color: kWhite54, fontSize: 12),
+                title: Text(
+                  chat.name,
+                  style: GoogleFonts.poppins(
+                    color: kWhite,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
+                subtitle: Text(
+                  chat.lastMessage,
+                  style: GoogleFonts.poppins(color: kWhite70),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                trailing: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      _formatTimestamp(chat.lastMessageTimestamp),
+                      style: GoogleFonts.poppins(color: kWhite54, fontSize: 12),
+                    ),
+                    if (chat.unreadCount > 0) ...[
+                      const SizedBox(height: 4),
+                      CircleAvatar(
+                        radius: 10,
+                        backgroundColor: primary,
+                        child: Text(
+                          chat.unreadCount.toString(),
+                          style: TextStyle(
+                            color: kWhite,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+                // onTap: () {
+                //   Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //       builder: (context) => ConversationScreen(
+                //         chatRoomId: chat.chatRoomId,
+                //         otherUser: chat,
+                //       ),
+                //     ),
+                //   );
+                // },
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ConversationScreen(chatRoomId: chat.chatRoomId, otherUser: chat),));
-                  // Navigate to the conversation screen
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => ConversationScreen(
-                  //       // Pass the necessary data to the next screen
-                  //       chatRoomId: chat.chatRoomId,
-                  //       otherUser: chat, // You can pass the whole model
-                  //     ),
-                  //   ),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => BlocProvider(
+                        create: (context) =>
+                            ConversationBloc(context.read<ChatService>()),
+
+                        child: ConversationScreen(
+                          chatRoomId: chat.chatRoomId,
+                          otherUser: chat,
+                        ),
+                      ),
+                    ),
+                  );
                 },
               );
             },
-            separatorBuilder: (context, index) => Divider(color: kWhite.withOpacity(0.1), indent: 80, endIndent: 16),
+            separatorBuilder: (context, index) => Divider(
+              color: kWhite.withOpacity(0.1),
+              indent: 80,
+              endIndent: 16,
+            ),
           );
         },
       ),
@@ -284,162 +183,19 @@ class ChatListScreen extends StatelessWidget {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final yesterday = DateTime(now.year, now.month, now.day - 1);
-    final dateToCheck = DateTime(timestamp.year, timestamp.month, timestamp.day);
+    final dateToCheck = DateTime(
+      timestamp.year,
+      timestamp.month,
+      timestamp.day,
+    );
 
     if (dateToCheck == today) {
-      return DateFormat.jm().format(timestamp); 
+      return DateFormat.jm().format(timestamp);
     } else if (dateToCheck == yesterday) {
       return "Yesterday";
     } else {
-      return DateFormat('dd/MM/yy').format(timestamp); 
+      return DateFormat('dd/MM/yy').format(timestamp);
     }
-  }
-}
-
-
-class ConversationScreen extends StatefulWidget {
-  final String chatRoomId;
-  final ChatUserModel otherUser;
-  
-  const ConversationScreen({
-    super.key,
-    required this.chatRoomId,
-    required this.otherUser,
-  });
-
-  @override
-  State<ConversationScreen> createState() => _ConversationScreenState();
-}
-
-class _ConversationScreenState extends State<ConversationScreen> {
-  late final TextEditingController _messageController;
-  
-  @override
-  void initState() {
-    super.initState();
-    _messageController = TextEditingController();
-    // Start loading messages when the screen opens
-    context.read<ConversationBloc>().add(LoadMessagesEvent(chatRoomId: widget.chatRoomId));
-  }
-
-  @override
-  void dispose() {
-    _messageController.dispose();
-    super.dispose();
-  }
-  
-  void _sendMessage() {
-    if (_messageController.text.trim().isNotEmpty) {
-      context.read<ConversationBloc>().add(SendMessageEvent(
-        chatRoomId: widget.chatRoomId,
-        messageText: _messageController.text.trim(),
-        senderId: FirebaseAuth.instance.currentUser!.uid,
-      ));
-      _messageController.clear();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final currentUserId = FirebaseAuth.instance.currentUser!.uid;
-    return Container(
-      decoration: const BoxDecoration(gradient: appGradient),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          iconTheme: IconThemeData(color: kWhite),
-          title: Text(widget.otherUser.name, style: GoogleFonts.poppins(color: kWhite, fontWeight: FontWeight.bold)),
-        ),
-        body: Column(
-          children: [
-            Expanded(
-              child: BlocBuilder<ConversationBloc, ConversationState>(
-                builder: (context, state) {
-                  if (state is ConversationLoading) {
-                    return  Center(child: CircularProgressIndicator(color: kWhite));
-                  }
-                  if (state is ConversationLoaded) {
-                    return ListView.builder(
-                      padding: const EdgeInsets.all(16.0),
-                      reverse: true,
-                      itemCount: state.messages.length,
-                      itemBuilder: (context, index) {
-                        final messageDoc = state.messages[index];
-                        final messageData = messageDoc.data() as Map<String, dynamic>;
-                        final bool isMe = messageData['senderId'] == currentUserId;
-                        return _MessageBubble(isMe: isMe, text: messageData['text']);
-                      },
-                    );
-                  }
-                  return  Center(child: Text("No messages yet.", style: TextStyle(color: kWhite)));
-                },
-              ),
-            ),
-            _buildMessageInputField(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMessageInputField() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-      decoration: BoxDecoration(color: bgcard.withOpacity(0.5)),
-      child: SafeArea(
-        child: Row(
-          children: [
-            Expanded(
-              child: TextField(
-                controller: _messageController,
-                style: GoogleFonts.poppins(color: kWhite),
-                decoration: InputDecoration(
-                  hintText: "Type a message...",
-                  hintStyle: GoogleFonts.poppins(color: kWhite70),
-                  filled: true,
-                  fillColor: kWhite.withOpacity(0.1),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide.none),
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            IconButton(
-              icon:  Icon(Icons.send, color: kWhite),
-              onPressed: _sendMessage,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _MessageBubble extends StatelessWidget {
-  final bool isMe;
-  final String text;
-  const _MessageBubble({required this.isMe, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 4.0),
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-        decoration: BoxDecoration(
-          color: isMe ? primary : kWhite.withOpacity(0.2),
-          borderRadius: BorderRadius.only(
-            topLeft: const Radius.circular(20),
-            topRight: const Radius.circular(20),
-            bottomLeft: isMe ? const Radius.circular(20) : const Radius.circular(4),
-            bottomRight: isMe ? const Radius.circular(4) : const Radius.circular(20),
-          ),
-        ),
-        child: Text(text, style: GoogleFonts.poppins(color: kWhite)),
-      ),
-    );
   }
 }
 
@@ -488,102 +244,6 @@ class _MessageBubble extends StatelessWidget {
 //     );
 //   }
 // }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // class ConversationScreen extends StatefulWidget {
 //   final ChatContact contact;

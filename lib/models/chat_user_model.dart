@@ -5,8 +5,10 @@ class ChatUserModel {
   final String imageUrl;
   final String lastMessage;
   final DateTime lastMessageTimestamp;
+  final int unreadCount;
 
-  ChatUserModel({
+  ChatUserModel( {
+    required this.unreadCount,
     required this.chatRoomId,
     required this.otherUserId,
     required this.name,

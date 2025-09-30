@@ -13,11 +13,13 @@ class SendMessageEvent extends ConversationEvent {
   final String chatRoomId;
   final String messageText;
   final String senderId;
+  final String recipientId;
 
   SendMessageEvent({
     required this.chatRoomId,
     required this.messageText,
     required this.senderId,
+    required this.recipientId,
   });
 }
 
