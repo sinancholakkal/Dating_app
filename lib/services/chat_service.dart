@@ -58,6 +58,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:developer';
 
 import 'package:dating_app/models/chat_user_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ChatService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -219,4 +220,37 @@ class ChatService {
       rethrow;
     }
   }
+
+
+
+Future<void> reportUser({
+  required String reportedUserId,
+  required String reason,
+  required String chatRoomId,
+}) async {
+  final firestore = FirebaseFirestore.instance;
+  final currentUser = FirebaseAuth.instance.currentUser;
+
+  if (currentUser == null) {
+    throw Exception("No user is currently logged in.");
+  }
+
+  final reportData = {
+    'reporterId': currentUser.uid,
+    'reportedUserId': reportedUserId,
+    'reason': reason,
+    'chatRoomId': chatRoomId,
+    'timestamp': FieldValue.serverTimestamp(),
+    'status': 'pending_review', 
+  };
+
+  try {
+    
+    await firestore.collection('reports').add(reportData);
+    log('Successfully submitted report for user: $reportedUserId');
+  } catch (e) {
+    log('Error submitting report: $e');
+    rethrow;
+  }
+}
 }

@@ -6,6 +6,7 @@ import 'package:dating_app/state/conversation_bloc/conversation_bloc.dart';
 import 'package:dating_app/state/conversation_bloc/conversation_event.dart';
 import 'package:dating_app/state/conversation_bloc/conversation_state.dart';
 import 'package:dating_app/state/user_bloc_and_report_bloc/user_bloc_and_report_bloc.dart' hide UserBlocSuccess;
+import 'package:dating_app/view/conversation_screen.dart/widget/show_report_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -53,7 +54,7 @@ void showActionSheet(BuildContext context, ChatUserModel chatUserModel) {
         CupertinoActionSheetAction(
           onPressed: () {
             Navigator.pop(context);
-            print('Report user tapped');
+            showReportDialog(context, otherUser: chatUserModel,bloc: context.read<UserBlocAndReportBloc>());
           },
           child: const Text('Report'),
         ),

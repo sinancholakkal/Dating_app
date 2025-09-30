@@ -20,3 +20,11 @@ class UserUnblockEvent extends UserBlocAndReportEvent{
 
   const UserUnblockEvent({required this.chatRoomId});
 }
+
+
+class UserReportSubmitEvent extends UserBlocAndReportEvent{
+  final String reporUserId;
+  final String reason;
+  final String chatId;
+  const UserReportSubmitEvent( {required this.reporUserId,required this.reason,required this.chatId});
+}
