@@ -96,7 +96,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Center(child: CircularProgressIndicator()),
             );
           } else if (state is GetSuccessState) {
-            UserCurrentModel getUserModel =UserCurrentModel(bio: _bioController.text, images: state.userProfile.getImages!,userId: state.userProfile.id);
+            UserCurrentModel getUserModel =UserCurrentModel(bio: _bioController.text, images: state.userProfile.getImages!,userId: state.userProfile.id,interests: state.userProfile.interests);
             log("rebuilding");
             return Container(
               decoration: const BoxDecoration(gradient: appGradient),
@@ -149,9 +149,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         AppSizedBox.h16,
                         _buildBioEditor(),
                         AppSizedBox.h30,
-                        // _buildSectionHeader("My Interests"),
-                        // AppSizedBox.h16,
-                        // _buildInterestsWrap(),
+                        _buildSectionHeader("My Interests"),
+                        AppSizedBox.h16,
+                        _buildInterestsWrap(userInterests: getUserModel.interests),
                         // AppSizedBox.h70, // Space for the FAB
                       ],
                     ),
@@ -327,19 +327,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // Widget _buildInterestsWrap() {
-  //   return Wrap(
-  //     spacing: 12.0,
-  //     runSpacing: 12.0,
-  //     children: _userInterests.map((interest) {
-  //       return InterestChip(
-  //         label: interest,
-  //         isSelected: true,
-  //         onSelected: (selected) {},
-  //       );
-  //     }).toList(),
-  //   );
-  // }
+  Widget _buildInterestsWrap({required Set<String>userInterests}) {
+    return Wrap(
+      spacing: 12.0,
+      runSpacing: 12.0,
+      children: userInterests.map((interest) {
+        return InterestChip(
+          label: interest,
+          isSelected: true,
+          onSelected: (selected) {},
+        );
+      }).toList(),
+    );
+  }
 }
 
 class ProfileUpdateButton extends StatelessWidget {
@@ -364,6 +364,7 @@ class ProfileUpdateButton extends StatelessWidget {
           bio: _bioController.text.trim(),
           images: getImages,
           userId: getUserModel.userId,
+          interests: getUserModel.interests
         );
 
         log(getUserModel.images.length.toString());
