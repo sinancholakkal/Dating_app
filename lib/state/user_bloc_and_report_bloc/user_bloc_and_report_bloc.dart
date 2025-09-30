@@ -18,11 +18,23 @@ class UserBlocAndReportBloc extends Bloc<UserBlocAndReportEvent, UserBlocAndRepo
       log(res.toString());
       if(res){
         log("Going to emit success");
-      emit(UserBlocSuccess());
+      emit(UserBlockSuccess());
       }else{
         log("Error state");
       }
       
     });
+
+    on<UserUnblockEvent>((event, emit)async {
+      await _chatService.unblockChat(
+        chatRoomId: event.chatRoomId,
+      );
+      
+        log("Unblock Suceess");
+      
+      emit(UserUnblockSuccess());
+      
+    });
+    
   }
 }

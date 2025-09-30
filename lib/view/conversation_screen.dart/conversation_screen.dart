@@ -97,7 +97,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
     final currentUserId = FirebaseAuth.instance.currentUser!.uid;
     return BlocListener<UserBlocAndReportBloc, UserBlocAndReportState>(
       listener: (context, state) {
-       if(state is UserBlocSuccess){
+       if(state is UserBlockSuccess){
         log("Success fully blocked and navigated to chatlist Screen");
         Navigator.pop(context);
        }

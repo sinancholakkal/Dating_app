@@ -62,11 +62,9 @@ import 'package:dating_app/models/chat_user_model.dart';
 class ChatService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  /// Gets a real-time stream of chat rooms for a specific user.
-  ///
+  
   /// [userId] is the ID of the user whose chats you want to listen to.
   Stream<List<ChatUserModel>> getChatsStream(String userId) {
-    // 1. Get the stream of the user's chat room documents
 
     try {
       return _firestore
@@ -75,7 +73,6 @@ class ChatService {
           .orderBy('lastMessageTimestamp', descending: true)
           .snapshots()
           .asyncMap((chatSnapshot) async {
-            // 2. For each update, get the list of the other users' IDs
             final otherUserIds = chatSnapshot.docs.map((doc) {
               final users = List<String>.from(doc['users']);
               return users.firstWhere((id) => id != userId);
@@ -85,18 +82,15 @@ class ChatService {
               return [];
             }
 
-            // 3. Fetch all the other users' profile documents in a SINGLE efficient query
             final userProfilesSnapshot = await _firestore
                 .collection('user')
                 .where(FieldPath.documentId, whereIn: otherUserIds)
                 .get();
 
-            // Create a map for easy lookup of user data by ID
             final userProfilesMap = {
               for (var doc in userProfilesSnapshot.docs) doc.id: doc.data(),
             };
 
-            // 4. Combine the chat data with the user profile data
             return chatSnapshot.docs.map((chatDoc) {
               final chatData = chatDoc.data() as Map<String, dynamic>;
               final otherUserId = List<String>.from(
@@ -109,7 +103,7 @@ class ChatService {
               final unreadCount = unreadCountMap?[userId] as int? ?? 0;
 
               return ChatUserModel(
-                blockedBy: chatData['blockedBy'] ??"",
+                blockedBy: chatData['blockedBy'] ?? "",
                 unreadCount: unreadCount,
                 chatRoomId: chatDoc.id,
                 otherUserId: otherUserId,
@@ -134,8 +128,7 @@ class ChatService {
     required String recipientId,
   }) async {
     try {
-      // 1. Add the new message to the 'messages' subcollection.
-      //    This document should only contain data for this specific message.
+      
       await _firestore
           .collection('chats')
           .doc(chatRoomId)
@@ -149,7 +142,6 @@ class ChatService {
       await _firestore.collection('chats').doc(chatRoomId).update({
         'lastMessage': messageText,
         'lastMessageTimestamp': FieldValue.serverTimestamp(),
-        // The unreadCount logic belongs here.
         'unreadCount.$recipientId': FieldValue.increment(1),
       });
     } catch (e) {
@@ -164,7 +156,7 @@ class ChatService {
         .collection('chats')
         .doc(chatRoomId)
         .collection('messages')
-        .orderBy('timestamp', descending: true) // Newest messages first
+        .orderBy('timestamp', descending: true) 
         .snapshots();
   }
 
@@ -196,22 +188,35 @@ class ChatService {
       'unreadCount.$currentUserId': 0,
     });
   }
+
   //Bloc chat---------------------------
   Future<bool> blockChat({
-  required String chatRoomId,
-  required String currentUserId,
-}) async {
-  try {
-    final chatRoomRef = _firestore.collection('chats').doc(chatRoomId);
-    // Set the ID of the user who is performing the block action
-    await chatRoomRef.update({
-      'blockedBy': currentUserId,
-    });
-    log("Chat room $chatRoomId has been blocked by user $currentUserId");
-    return true;
-  } catch (e) {
-    log("Error blocking chat: $e");
-    return false;
+    required String chatRoomId,
+    required String currentUserId,
+  }) async {
+    try {
+      final chatRoomRef = _firestore.collection('chats').doc(chatRoomId);
+      await chatRoomRef.update({'blockedBy': currentUserId});
+      log("Chat room $chatRoomId has been blocked by user $currentUserId");
+      return true;
+    } catch (e) {
+      log("Error blocking chat: $e");
+      return false;
+    }
   }
-}
+
+
+  //Unblock chat-----------------
+  Future<void> unblockChat({required String chatRoomId}) async {
+    try {
+      final chatRoomRef = _firestore.collection('chats').doc(chatRoomId);
+
+      await chatRoomRef.update({'blockedBy': ""});
+
+      log("Chat room $chatRoomId has been unblocked.");
+    } catch (e) {
+      log("Error unblocking chat: $e");
+      rethrow;
+    }
+  }
 }

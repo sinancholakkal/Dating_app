@@ -8,4 +8,5 @@ sealed class UserBlocAndReportState extends Equatable {
 }
 
 final class UserBlocAndReportInitial extends UserBlocAndReportState {}
-class UserBlocSuccess extends UserBlocAndReportState{}
+class UserBlockSuccess extends UserBlocAndReportState{}
+class UserUnblockSuccess extends UserBlocAndReportState{}
