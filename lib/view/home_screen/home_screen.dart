@@ -21,7 +21,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   late UserProfile accUserProfile;
   @override
   void initState() {
@@ -34,9 +33,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return BlocListener<UserBloc, UserState>(
       listener: (context, state) {
-        if(state is GetSuccessState){
+        if (state is GetSuccessState) {
           log("User profile executed----------");
-          
+
           accUserProfile = state.userProfile;
 
           log(accUserProfile.name);
@@ -80,7 +79,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       log("Liked ${profile.name}");
                       log(accUserProfile.name);
                       log(accUserProfile.id);
-                     context.read<UserActionsBloc>().add(UserLikeActionEvent(likeUserId: profile.id, likeUserName: profile.name, currentUserId: accUserProfile.id, currentUserName: accUserProfile.name,image: accUserProfile.getImages![0]));
+                      context.read<UserActionsBloc>().add(
+                        UserLikeActionEvent(
+                          likeUserId: profile.id,
+                          likeUserName: profile.name,
+                          currentUserId: accUserProfile.id,
+                          currentUserName: accUserProfile.name,
+                          image: accUserProfile.getImages![0],
+                        ),
+                      );
                     },
                     nopeAction: () {
                       log("Noped ${profile.name}");
@@ -169,7 +176,20 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.lightBlueAccent,
                           ),
                           _buildActionButton(
-                            onTap: () => matchEngine.currentItem?.like(),
+                            onTap: () {
+                              matchEngine.currentItem?.like();
+                              context.read<UserActionsBloc>().add(
+                                UserLikeActionEvent(
+                                  likeUserId:
+                                      matchEngine.currentItem!.content.id,
+                                  likeUserName:
+                                      matchEngine.currentItem!.content.name,
+                                  currentUserId: accUserProfile.id,
+                                  currentUserName: accUserProfile.name,
+                                  image: accUserProfile.getImages![0],
+                                ),
+                              );
+                            },
                             asset: 'assets/icons/heart.png',
                             color: Colors.greenAccent,
                             isLarge: true,
