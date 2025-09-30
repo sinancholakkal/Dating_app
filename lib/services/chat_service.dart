@@ -109,6 +109,7 @@ class ChatService {
               final unreadCount = unreadCountMap?[userId] as int? ?? 0;
 
               return ChatUserModel(
+                blockedBy: chatData['blockedBy'] ??"",
                 unreadCount: unreadCount,
                 chatRoomId: chatDoc.id,
                 otherUserId: otherUserId,
@@ -195,4 +196,22 @@ class ChatService {
       'unreadCount.$currentUserId': 0,
     });
   }
+  //Bloc chat---------------------------
+  Future<bool> blockChat({
+  required String chatRoomId,
+  required String currentUserId,
+}) async {
+  try {
+    final chatRoomRef = _firestore.collection('chats').doc(chatRoomId);
+    // Set the ID of the user who is performing the block action
+    await chatRoomRef.update({
+      'blockedBy': currentUserId,
+    });
+    log("Chat room $chatRoomId has been blocked by user $currentUserId");
+    return true;
+  } catch (e) {
+    log("Error blocking chat: $e");
+    return false;
+  }
+}
 }

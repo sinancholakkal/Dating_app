@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/services/chat_service.dart';
@@ -16,8 +17,8 @@ class ConversationBloc extends Bloc<ConversationEvent, ConversationState> {
       _messagesSubscription = _chatService
           .getMessagesStream(chatRoomId: event.chatRoomId)
           .listen((snapshot) {
-        add(MessagesUpdatedEvent(snapshot.docs));
-      });
+            add(MessagesUpdatedEvent(snapshot.docs));
+          });
     });
 
     on<MessagesUpdatedEvent>((event, emit) {
@@ -32,6 +33,8 @@ class ConversationBloc extends Bloc<ConversationEvent, ConversationState> {
         senderId: event.senderId,
       );
     });
+
+    
   }
 
   @override

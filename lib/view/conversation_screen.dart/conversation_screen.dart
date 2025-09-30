@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/models/chat_user_model.dart';
@@ -7,11 +8,15 @@ import 'package:dating_app/services/chat_service.dart';
 import 'package:dating_app/state/conversation_bloc/conversation_bloc.dart';
 import 'package:dating_app/state/conversation_bloc/conversation_event.dart';
 import 'package:dating_app/state/conversation_bloc/conversation_state.dart';
+import 'package:dating_app/state/user_bloc_and_report_bloc/user_bloc_and_report_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
+import 'package:dating_app/view/conversation_screen.dart/widget/drop_down_widget.dart';
 import 'package:dating_app/view/conversation_screen.dart/widget/message_bubble.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ConversationScreen extends StatefulWidget {
@@ -33,7 +38,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
   Timer? _typingTimer;
   final _chatService = ChatService();
   void _onTextChanged({required String value, required String currentUserId}) {
-    
     if (_typingTimer?.isActive ?? false) _typingTimer?.cancel();
 
     _chatService.updateUserTypingStatus(
@@ -55,7 +59,10 @@ class _ConversationScreenState extends State<ConversationScreen> {
   void initState() {
     super.initState();
     _messageController = TextEditingController();
-    _chatService.markChatAsRead(chatRoomId: widget.chatRoomId, currentUserId: AuthService().getCurrentUser()!.uid);
+    _chatService.markChatAsRead(
+      chatRoomId: widget.chatRoomId,
+      currentUserId: AuthService().getCurrentUser()!.uid,
+    );
     context.read<ConversationBloc>().add(
       LoadMessagesEvent(chatRoomId: widget.chatRoomId),
     );
@@ -63,6 +70,10 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   @override
   void dispose() {
+    _chatService.markChatAsRead(
+      chatRoomId: widget.chatRoomId,
+      currentUserId: AuthService().getCurrentUser()!.uid,
+    );
     _messageController.dispose();
     super.dispose();
   }
@@ -84,88 +95,102 @@ class _ConversationScreenState extends State<ConversationScreen> {
   @override
   Widget build(BuildContext context) {
     final currentUserId = FirebaseAuth.instance.currentUser!.uid;
-    return Container(
-      decoration: const BoxDecoration(gradient: appGradient),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
+    return BlocListener<UserBlocAndReportBloc, UserBlocAndReportState>(
+      listener: (context, state) {
+       if(state is UserBlocSuccess){
+        log("Success fully blocked and navigated to chatlist Screen");
+        Navigator.pop(context);
+       }
+      },
+      child: Container(
+        decoration: const BoxDecoration(gradient: appGradient),
+        child: Scaffold(
           backgroundColor: Colors.transparent,
-          elevation: 0,
-          iconTheme: IconThemeData(color: kWhite),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            iconTheme: IconThemeData(color: kWhite),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  widget.otherUser.name,
+                  style: GoogleFonts.poppins(
+                    color: kWhite,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                StreamBuilder<DocumentSnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('chats')
+                      .doc(widget.chatRoomId)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final data =
+                          snapshot.data!.data() as Map<String, dynamic>;
+                      final typingUsers = List<String>.from(
+                        data['typingUsers'] ?? [],
+                      );
+                      if (typingUsers.contains(widget.otherUser.otherUserId)) {
+                        return Text(
+                          'is typing...',
+                          style: TextStyle(color: kWhite70, fontSize: 17),
+                        );
+                      }
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
+              ],
+            ),
+            //DropDown Action-------
+            actions: [DropDownWidget(chatUserModel: widget.otherUser)],
+          ),
+          body: Column(
             children: [
-              Text(
-                widget.otherUser.name,
-                style: GoogleFonts.poppins(
-                  color: kWhite,
-                  fontWeight: FontWeight.bold,
+              Expanded(
+                child: BlocBuilder<ConversationBloc, ConversationState>(
+                  builder: (context, state) {
+                    if (state is ConversationLoading) {
+                      return Center(
+                        child: CircularProgressIndicator(color: kWhite),
+                      );
+                    }
+                    if (state is ConversationLoaded) {
+                      return ListView.builder(
+                        padding: const EdgeInsets.all(16.0),
+                        reverse: true,
+                        itemCount: state.messages.length,
+                        itemBuilder: (context, index) {
+                          final messageDoc = state.messages[index];
+                          final messageData =
+                              messageDoc.data() as Map<String, dynamic>;
+                          final bool isMe =
+                              messageData['senderId'] == currentUserId;
+                          return MessageBubble(
+                            isMe: isMe,
+                            text: messageData['text'],
+                          );
+                        },
+                      );
+                    }
+                    return Center(
+                      child: Text(
+                        "No messages yet.",
+                        style: TextStyle(color: kWhite),
+                      ),
+                    );
+                  },
                 ),
               ),
-              StreamBuilder<DocumentSnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('chats')
-                    .doc(widget.chatRoomId)
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    final data = snapshot.data!.data() as Map<String, dynamic>;
-                    final typingUsers = List<String>.from(
-                      data['typingUsers'] ?? [],
-                    );
-                    if (typingUsers.contains(widget.otherUser.otherUserId)) {
-                      return Text('is typing...', style: TextStyle(color: kWhite70,fontSize: 17));
-                    }
-                  }
-                  return const SizedBox.shrink();
-                },
+              _buildMessageInputField(
+                (value) =>
+                    _onTextChanged(value: value, currentUserId: currentUserId),
               ),
             ],
           ),
-        ),
-        body: Column(
-          children: [
-            Expanded(
-              child: BlocBuilder<ConversationBloc, ConversationState>(
-                builder: (context, state) {
-                  if (state is ConversationLoading) {
-                    return Center(
-                      child: CircularProgressIndicator(color: kWhite),
-                    );
-                  }
-                  if (state is ConversationLoaded) {
-                    return ListView.builder(
-                      padding: const EdgeInsets.all(16.0),
-                      reverse: true,
-                      itemCount: state.messages.length,
-                      itemBuilder: (context, index) {
-                        final messageDoc = state.messages[index];
-                        final messageData =
-                            messageDoc.data() as Map<String, dynamic>;
-                        final bool isMe =
-                            messageData['senderId'] == currentUserId;
-                        return MessageBubble(
-                          isMe: isMe,
-                          text: messageData['text'],
-                        );
-                      },
-                    );
-                  }
-                  return Center(
-                    child: Text(
-                      "No messages yet.",
-                      style: TextStyle(color: kWhite),
-                    ),
-                  );
-                },
-              ),
-            ),
-            _buildMessageInputField(
-              (value) =>
-                  _onTextChanged(value: value, currentUserId: currentUserId),
-            ),
-          ],
         ),
       ),
     );
@@ -206,4 +231,3 @@ class _ConversationScreenState extends State<ConversationScreen> {
     );
   }
 }
-

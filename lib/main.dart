@@ -9,7 +9,9 @@ import 'package:dating_app/state/profile_setup_bloc/profile_setup_bloc.dart';
 import 'package:dating_app/state/request_bloc/request_bloc.dart';
 import 'package:dating_app/state/user_actions_bloc/user_actions_bloc.dart';
 import 'package:dating_app/state/user_bloc/user_bloc.dart';
+import 'package:dating_app/state/user_bloc_and_report_bloc/user_bloc_and_report_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -36,22 +38,28 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => ChatBloc(context.read<ChatService>()),
           ),
-          BlocProvider(create: (context) => ConversationBloc(context.read<ChatService>()),)
+          BlocProvider(create: (context) => ConversationBloc(context.read<ChatService>()),),
+            BlocProvider(create: (context) => UserBlocAndReportBloc(context.read<ChatService>())),
         ],
-        child: MaterialApp.router(
-          debugShowCheckedModeBanner: false,
-          routerConfig: appRouter,
-          theme: ThemeData(
-            colorScheme: ColorScheme.light(
-              background: Colors.grey.shade200,
-              onBackground: Colors.black,
-              primary: const Color(0xFFFe3c72),
-              onPrimary: Colors.black,
-              secondary: const Color(0xFF424242),
-              onSecondary: Colors.white,
-              tertiary: const Color.fromRGBO(255, 204, 128, 1),
-              error: Colors.red,
-              outline: const Color(0xFF424242),
+        child: CupertinoTheme(
+          data: const CupertinoThemeData(
+            brightness: Brightness.dark
+          ),
+          child: MaterialApp.router(
+            debugShowCheckedModeBanner: false,
+            routerConfig: appRouter,
+            theme: ThemeData(
+              colorScheme: ColorScheme.light(
+                background: Colors.grey.shade200,
+                onBackground: Colors.black,
+                primary: const Color(0xFFFe3c72),
+                onPrimary: Colors.black,
+                secondary: const Color(0xFF424242),
+                onSecondary: Colors.white,
+                tertiary: const Color.fromRGBO(255, 204, 128, 1),
+                error: Colors.red,
+                outline: const Color(0xFF424242),
+              ),
             ),
           ),
         ),

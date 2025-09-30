@@ -6,9 +6,11 @@ class ChatUserModel {
   final String lastMessage;
   final DateTime lastMessageTimestamp;
   final int unreadCount;
+  final String blockedBy;
 
   ChatUserModel( {
     required this.unreadCount,
+    required this.blockedBy,
     required this.chatRoomId,
     required this.otherUserId,
     required this.name,

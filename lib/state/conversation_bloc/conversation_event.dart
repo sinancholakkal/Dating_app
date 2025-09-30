@@ -28,3 +28,4 @@ class MessagesUpdatedEvent extends ConversationEvent {
   final List<QueryDocumentSnapshot> messages;
   MessagesUpdatedEvent(this.messages);
 }
+
