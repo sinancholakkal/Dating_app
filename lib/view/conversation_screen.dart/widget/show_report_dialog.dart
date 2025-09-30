@@ -39,12 +39,8 @@ void showReportDialog(
           onPressed: () {
             final reason = reportController.text.trim();
             if (reason.isNotEmpty) {
-              // 1. Close the dialog FIRST. This completes the navigation action
-              //    and ensures the widget tree is in a stable state.
               Navigator.pop(dialogContext);
 
-              // 2. NOW, use the original context (which is still valid)
-              //    to find the BLoC and add your event.
               bloc.add(
                 UserReportSubmitEvent(
                   reporUserId: otherUser.otherUserId,

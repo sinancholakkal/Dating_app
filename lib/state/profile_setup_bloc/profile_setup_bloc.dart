@@ -9,7 +9,6 @@ part 'profile_setup_event.dart';
 part 'profile_setup_state.dart';
 
 class ProfileSetupBloc extends Bloc<ProfileSetupEvent, ProfileSetupState> {
-  // 1. Set the initial state to ProfileSetupInitial()
   int currentPage = 0;
   ProfileSetupBloc() : super(ProfileSetupInitial()) {
     on<StartProfileSetup>((event, emit) {
@@ -44,7 +43,7 @@ class ProfileSetupBloc extends Bloc<ProfileSetupEvent, ProfileSetupState> {
       final ImagePicker _picker = ImagePicker();
       final XFile? pickedFile = await _picker.pickImage(
         source: event.source,
-        imageQuality: 80,
+        imageQuality: 80, 
       );
 
       if (pickedFile != null) {
@@ -55,9 +54,24 @@ class ProfileSetupBloc extends Bloc<ProfileSetupEvent, ProfileSetupState> {
         }
       }
     });
+     on<ImagePickEvent>((event, emit) async {
+      final ImagePicker _picker = ImagePicker();
+      final XFile? pickedFile = await _picker.pickImage(
+        source: event.source,
+        imageQuality: 80, 
+      );
+
+      if (pickedFile != null) {
+        emit(ChatImageUploadState(pickedFile: pickedFile));
+      }
+    });
 
     on<ImageRemoveEvent>((event, emit) {
       emit(ImageRemovedState(index: event.index));
+    });
+
+    on<ClearImageEvent>((event, emit) {
+      emit(ClearedImageState());
     });
   }
 }

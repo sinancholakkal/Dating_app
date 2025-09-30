@@ -98,6 +98,7 @@ class UserProfileServices {
     File imageFile,
     String userId,
     bool isSelfie,
+    {String? collection}
   ) async {
     log("user image upload service called");
     try {
@@ -106,7 +107,7 @@ class UserProfileServices {
 
       final Reference storageReference = FirebaseStorage.instance
           .ref()
-          .child('user_photos')
+          .child(collection??'user_photos')
           .child(userId)
           .child(fileName);
 

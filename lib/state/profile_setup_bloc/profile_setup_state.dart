@@ -36,3 +36,12 @@ class ImageRemovedState extends ProfileSetupState{
   ImageRemovedState({required this.index});
 
 }
+
+class ChatImageUploadState extends ProfileSetupState{
+  final XFile pickedFile;
+
+  ChatImageUploadState({required this.pickedFile});
+  
+}
+
+class ClearedImageState extends ProfileSetupState{}

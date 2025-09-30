@@ -1,6 +1,7 @@
 import 'package:dating_app/utils/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:insta_image_viewer/insta_image_viewer.dart';
 
 class MessageBubble extends StatelessWidget {
   final bool isMe;
@@ -11,7 +12,17 @@ class MessageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
+      child:text.startsWith("https://firebasestorage.googleapis.com")?Container(
+        width: 180,
+        height: 230,
+        decoration: BoxDecoration(
+          
+          borderRadius: BorderRadius.circular(20)
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+          child: InstaImageViewer(child: Image.network(text,fit: BoxFit.cover,))),
+      ): Container(
         margin: const EdgeInsets.symmetric(vertical: 4.0),
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
         decoration: BoxDecoration(

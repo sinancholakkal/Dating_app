@@ -20,9 +20,15 @@ class SelfieImageUploadEvent extends ProfileSetupEvent{
 
   SelfieImageUploadEvent({required this.source});
 }
+
+class ImagePickEvent extends ProfileSetupEvent{
+  final ImageSource source;
+
+  ImagePickEvent({required this.source});
+}
 class ImageRemoveEvent extends ProfileSetupEvent{
   final int index;
 
   ImageRemoveEvent({required this.index});
-  
 }
+class ClearImageEvent extends ProfileSetupEvent{}
