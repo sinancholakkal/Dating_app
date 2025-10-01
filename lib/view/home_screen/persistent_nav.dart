@@ -2,9 +2,11 @@ import 'dart:developer';
 
 import 'package:dating_app/services/request_services.dart';
 import 'package:dating_app/state/chat_bloc/chat_bloc.dart';
+import 'package:dating_app/state/favorite_bloc/favorite_bloc.dart';
 import 'package:dating_app/state/request_bloc/request_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/view/chat_screen.dart/chat_screen.dart';
+import 'package:dating_app/view/favorite_screen/favorite_screen.dart';
 import 'package:dating_app/view/home_screen/home_screen.dart';
 import 'package:dating_app/view/notification_screen.dart/notification_screen.dart';
 import 'package:dating_app/view/profile_screen.dart/profile_screen.dart';
@@ -28,14 +30,15 @@ class _EasyTabbarState extends State<EasyTabbar> {
       activeColor: primary,
       inactiveColor: kWhite70,
       
-      // --- Style Update ---
       backgroundColor: bgcard.withOpacity(0.8), 
       
       overrideIconsColor: true,
       onTabPressed: (index, model, nestedNavigator) {
         if (index != model.currentTab) {
-          if(index==2){
+          if(index==3){
             context.read<RequestBloc>().add(FetchRequestsEvent());
+          }else if(index == 2){
+            context.read<FavoriteBloc>().add(FetchAllFavoritesEvent());
           }
           model.changePage(index);
         } else {
@@ -62,7 +65,15 @@ class _EasyTabbarState extends State<EasyTabbar> {
           ),
           page: ChatListScreen(),
         ),
-
+         BottomCupertinoTab(
+          tab: BottomCupertinoTabItem(
+            
+            icon: Icon(Icons.favorite, size: 30),
+            label: "Like",
+            
+          ),
+          page: FavoritesScreen(),
+        ),
         BottomCupertinoTab(
           tab: BottomCupertinoTabItem(
             
@@ -72,6 +83,8 @@ class _EasyTabbarState extends State<EasyTabbar> {
           ),
           page: NotificationScreen(),
         ),
+
+       
         BottomCupertinoTab(
           tab: BottomCupertinoTabItem(
             

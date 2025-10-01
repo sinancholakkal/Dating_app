@@ -4,6 +4,7 @@ import 'package:dating_app/services/chat_service.dart';
 import 'package:dating_app/state/auth_bloc/auth_bloc.dart';
 import 'package:dating_app/state/chat_bloc/chat_bloc.dart';
 import 'package:dating_app/state/conversation_bloc/conversation_bloc.dart';
+import 'package:dating_app/state/favorite_bloc/favorite_bloc.dart';
 import 'package:dating_app/state/home_user_bloc/home_user_bloc.dart';
 import 'package:dating_app/state/profile_setup_bloc/profile_setup_bloc.dart';
 import 'package:dating_app/state/request_bloc/request_bloc.dart';
@@ -40,6 +41,9 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(create: (context) => ConversationBloc(context.read<ChatService>()),),
             BlocProvider(create: (context) => UserBlocAndReportBloc(context.read<ChatService>())),
+            BlocProvider(
+            create: (context) => FavoriteBloc(),
+          )
         ],
         child: CupertinoTheme(
           data: const CupertinoThemeData(

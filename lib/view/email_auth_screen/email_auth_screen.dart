@@ -145,7 +145,16 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
 
                             if (_formKey.currentState!.validate()) {
                               log(" Validated--------------------");
-                              
+                              if(isLoginModeNoti){
+                                context.read<AuthBloc>().add(SignInEvent(email: _emailController.text.trim(), password: _passwordController.text.trim()));
+                              }else{
+                                   context.read<AuthBloc>().add(
+                                SignUpEvent(
+                                  email: _emailController.text.trim(),
+                                  password: _passwordController.text.trim(),
+                                ),
+                              );
+                              }
                             } else {
                               log("Not Validated--------------------");
                             }

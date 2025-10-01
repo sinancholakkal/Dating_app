@@ -22,3 +22,14 @@ final String image;
   const UserLikeActionEvent({required this.likeUserId, required this.likeUserName,required this.currentUserId, required this.currentUserName,required this.image});
 
 }
+
+class SuperLikeEvent extends UserActionsEvent{
+   final String likeUserId;
+  final String likeUserName;
+  final String currentUserId;
+  final String currentUserName;
+final String image;
+
+  const SuperLikeEvent({required this.currentUserId,required this.currentUserName,required this.image,required this.likeUserId,required this.likeUserName});
+  
+}

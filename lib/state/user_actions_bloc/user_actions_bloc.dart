@@ -10,16 +10,41 @@ part 'user_actions_state.dart';
 class UserActionsBloc extends Bloc<UserActionsEvent, UserActionsState> {
   final service = UserActionsServices();
   UserActionsBloc() : super(UserActionsInitial()) {
-    on<UserDislikeActionEvent>((event, emit)async {
+    on<UserDislikeActionEvent>((event, emit) async {
       await service.dislikeAction(dislikeUserId: event.dislikeUserId);
       emit(UserActionSuccessState());
       log("User dislike success");
     });
 
-    on<UserLikeActionEvent>((event, emit)async {
-      await service.likeAction(image: event.image, currentUserId: event.currentUserId,currentUserName: event.currentUserName,likeUserId: event.likeUserId,likeUserName: event.likeUserName);
+    on<UserLikeActionEvent>((event, emit) async {
+      await service.likeAction(
+        image: event.image,
+        currentUserId: event.currentUserId,
+        currentUserName: event.currentUserName,
+        likeUserId: event.likeUserId,
+        likeUserName: event.likeUserName,
+      );
       emit(UserActionSuccessState());
       log("User like  success");
+    });
+    on<SuperLikeEvent>((event, emit) async {
+      // await service.likeAction(image: event.image, currentUserId: event.currentUserId,currentUserName: event.currentUserName,likeUserId: event.likeUserId,likeUserName: event.likeUserName);
+      // emit(UserActionSuccessState());
+      try {
+        await service.addToFavorites(favoriteUserId: event.likeUserId);
+        log("Added into favorite");
+        // await service.likeAction(
+        //   image: event.image,
+        //   currentUserId: event.currentUserId,
+        //   currentUserName: event.currentUserName,
+        //   likeUserId: event.likeUserId,
+        //   likeUserName: event.likeUserName,
+        // );
+        log("Added into like and request");
+        log("Super User like  success");
+      } catch (e) {
+        log("something issue while add to fav $e");
+      }
     });
   }
 }

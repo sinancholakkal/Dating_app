@@ -27,28 +27,28 @@ class UserActionsServices {
     required String likeUserName,
     required String currentUserId,
     required String currentUserName,
-    required String image
+    required String image,
   }) async {
-    try{
+    try {
       //final currentUserId = AuthService().getCurrentUser()!.uid;
-    final instance = FirebaseFirestore.instance;
-    await instance.collection("like").doc(currentUserId).set({
-      "likes": FieldValue.arrayUnion([
-        {"isAccept": false, "likedId": likeUserId, "name": likeUserName},
-      ]),
-    }, SetOptions(merge: true));
+      final instance = FirebaseFirestore.instance;
+      await instance.collection("like").doc(currentUserId).set({
+        "likes": FieldValue.arrayUnion([
+          {"isAccept": false, "likedId": likeUserId, "name": likeUserName},
+        ]),
+      }, SetOptions(merge: true));
 
-    await instance.collection("user").doc(likeUserId).set({
-      "requests":FieldValue.arrayUnion([
-        {
-          "sendername":currentUserName,
-          "senderid":currentUserId,
-          "image":image,
-          "isAccept":false,
-        }
-      ])
-    },SetOptions(merge: true));
-    }catch(e){
+      await instance.collection("user").doc(likeUserId).set({
+        "requests": FieldValue.arrayUnion([
+          {
+            "sendername": currentUserName,
+            "senderid": currentUserId,
+            "image": image,
+            "isAccept": false,
+          },
+        ]),
+      }, SetOptions(merge: true));
+    } catch (e) {
       log("Something issue while like Action $e");
       throw "$e";
     }
@@ -66,5 +66,27 @@ class UserActionsServices {
       dislikeIds.addAll(data["ids"]);
     }
     return dislikeIds;
+  }
+
+  Future<void> addToFavorites({required String favoriteUserId}) async {
+    final currentUserId = AuthService().getCurrentUser()!.uid;
+    final docRef = FirebaseFirestore.instance
+        .collection("favorites")
+        .doc(currentUserId);
+
+    await docRef.set({
+      'favs': FieldValue.arrayUnion([favoriteUserId]),
+    }, SetOptions(merge: true));
+  }
+
+  Future<void> removeFromFavorites({required String favoriteUserId}) async {
+    final currentUserId = AuthService().getCurrentUser()!.uid;
+    final docRef = FirebaseFirestore.instance
+        .collection("favorites")
+        .doc(currentUserId);
+
+    await docRef.update({
+      'favs': FieldValue.arrayRemove([favoriteUserId]),
+    });
   }
 }

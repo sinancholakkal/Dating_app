@@ -15,6 +15,7 @@ class HomeUserBloc extends Bloc<HomeUserEvent, HomeUserState> {
       try{
         emit(FetchAllUsersLoadingState());
         final models = await service.fetchAllUsers();
+        models.shuffle();
         emit(FetchAllUsersLoadedState(userProfiles: models));
       }catch(e){
         log(e.toString());

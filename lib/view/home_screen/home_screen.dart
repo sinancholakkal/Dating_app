@@ -70,6 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
               }
 
               if (state is FetchAllUsersLoadedState) {
+                UserProfile p = state.userProfiles[0];
                 final List<SwipeItem> swipeItems = state.userProfiles.map((
                   profile,
                 ) {
@@ -95,7 +96,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         UserDislikeActionEvent(dislikeUserId: profile.id),
                       );
                     },
-                    superlikeAction: () => log("Superliked ${profile.name}"),
+                    superlikeAction: () {
+                      log("Superliked ${profile.name}");
+                      context.read<UserActionsBloc>().add(
+                        SuperLikeEvent(
+                          likeUserId: profile.id,
+                          likeUserName: profile.name,
+                          currentUserId: accUserProfile.id,
+                          currentUserName: accUserProfile.name,
+                          image: accUserProfile.getImages![0],
+                        ),
+                      );
+                    },
                   );
                 }).toList();
 
@@ -171,7 +183,20 @@ class _HomeScreenState extends State<HomeScreen> {
                             isLarge: true,
                           ),
                           _buildActionButton(
-                            onTap: () => matchEngine.currentItem?.superLike(),
+                            onTap: () {
+                              matchEngine.currentItem?.superLike();
+                              context.read<UserActionsBloc>().add(
+                                SuperLikeEvent(
+                                  likeUserId:
+                                      matchEngine.currentItem!.content.id,
+                                  likeUserName:
+                                      matchEngine.currentItem!.content.name,
+                                  currentUserId: accUserProfile.id,
+                                  currentUserName: accUserProfile.name,
+                                  image: accUserProfile.getImages![0],
+                                ),
+                              );
+                            },
                             asset: 'assets/icons/star.png',
                             color: Colors.lightBlueAccent,
                           ),
