@@ -132,16 +132,6 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
                         //Login and sign up button--------------
                         ElevatedButton(
                           onPressed: () {
-                            // if (isLoginModeNoti) {
-                            //   context.read<AuthBloc>().add(SignInEvent(email: _emailController.text.trim(), password: _passwordController.text.trim()));
-                            // } else {
-                            //   context.read<AuthBloc>().add(
-                            //     SignUpEvent(
-                            //       email: _emailController.text.trim(),
-                            //       password: _passwordController.text.trim(),
-                            //     ),
-                            //   );
-                            // }
 
                             if (_formKey.currentState!.validate()) {
                               log(" Validated--------------------");

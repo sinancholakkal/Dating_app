@@ -33,3 +33,5 @@ final String image;
   const SuperLikeEvent({required this.currentUserId,required this.currentUserName,required this.image,required this.likeUserId,required this.likeUserName});
   
 }
+
+class SwipeLimitWarningAcknowledgedEvent extends UserActionsEvent {}

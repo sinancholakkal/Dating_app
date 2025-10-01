@@ -10,3 +10,4 @@ sealed class UserActionsState extends Equatable {
 final class UserActionsInitial extends UserActionsState {}
 class UserActionSuccessState extends UserActionsState{}
 class SuperLikeSuccessState extends UserActionsState{}
+class SwipeLimitReachedState extends UserActionsState {}

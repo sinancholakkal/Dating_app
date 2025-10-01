@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:dating_app/services/swip_service.dart';
 import 'package:dating_app/services/user_actions_services.dart';
 import 'package:equatable/equatable.dart';
 
@@ -17,15 +18,22 @@ class UserActionsBloc extends Bloc<UserActionsEvent, UserActionsState> {
     });
 
     on<UserLikeActionEvent>((event, emit) async {
-      await service.likeAction(
-        image: event.image,
-        currentUserId: event.currentUserId,
-        currentUserName: event.currentUserName,
-        likeUserId: event.likeUserId,
-        likeUserName: event.likeUserName,
-      );
-      emit(UserActionSuccessState());
-      log("User like  success");
+      final bool canSwipe = await SwipeService().canSwipe();
+      log("can swap $canSwipe");
+      if (canSwipe) {
+        await service.likeAction(
+          image: event.image,
+          currentUserId: event.currentUserId,
+          currentUserName: event.currentUserName,
+          likeUserId: event.likeUserId,
+          likeUserName: event.likeUserName,
+        );
+        emit(UserActionSuccessState());
+        log("User like  success");
+      }else{
+         log("BLoC: Swipe limit reached.");
+        emit(SwipeLimitReachedState());
+      }
     });
     on<SuperLikeEvent>((event, emit) async {
       // await service.likeAction(image: event.image, currentUserId: event.currentUserId,currentUserName: event.currentUserName,likeUserId: event.likeUserId,likeUserName: event.likeUserName);
@@ -45,6 +53,11 @@ class UserActionsBloc extends Bloc<UserActionsEvent, UserActionsState> {
       } catch (e) {
         log("something issue while add to fav $e");
       }
+    });
+
+     on<SwipeLimitWarningAcknowledgedEvent>((event, emit) {
+      // Reset the state to allow the listener to fire again in the future
+      emit(UserActionSuccessState()); // Or whatever your default/neutral state is
     });
   }
 }

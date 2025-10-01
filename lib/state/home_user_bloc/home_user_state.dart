@@ -22,3 +22,4 @@ class ErrorState extends HomeUserState{
   const ErrorState({required this.msg});
   
 }
+

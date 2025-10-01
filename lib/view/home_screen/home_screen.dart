@@ -6,6 +6,7 @@ import 'package:dating_app/state/user_bloc/user_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/utils/app_color.dart' as AppColors;
 import 'package:dating_app/view/home_screen/widget/other_profile_details_screen.dart';
+import 'package:dating_app/view/home_screen/widget/upgrade_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,16 +32,31 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<UserBloc, UserState>(
-      listener: (context, state) {
-        if (state is GetSuccessState) {
-          log("User profile executed----------");
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<UserBloc, UserState>(
+          listener: (context, state) {
+            if (state is GetSuccessState) {
+              log("User profile executed----------");
 
-          accUserProfile = state.userProfile;
+              accUserProfile = state.userProfile;
 
-          log(accUserProfile.name);
-        }
-      },
+              log(accUserProfile.name);
+            }
+          },
+        ),
+        BlocListener<UserActionsBloc, UserActionsState>(
+          listener: (context, state)async {
+            if (state is SwipeLimitReachedState) {
+                   log('SUCCESS: SwipeLimitReachedState was detected!');
+             await showUpgradeSheet(context);
+
+             context.read<UserActionsBloc>().add(SwipeLimitWarningAcknowledgedEvent());
+      log('Reset event dispatched.');
+            }
+          },
+        ),
+      ],
       child: Container(
         decoration: const BoxDecoration(gradient: AppColors.appGradient),
         child: Scaffold(
@@ -77,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   return SwipeItem(
                     content: profile,
                     likeAction: () {
-                      log("Liked ${profile.name}");
+                      log("Liked //${profile.name}");
                       log(accUserProfile.name);
                       log(accUserProfile.id);
                       context.read<UserActionsBloc>().add(
@@ -238,6 +254,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+  
 
   Widget _buildActionButton({
     required VoidCallback onTap,
