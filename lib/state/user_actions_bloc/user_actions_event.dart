@@ -35,3 +35,5 @@ final String image;
 }
 
 class SwipeLimitWarningAcknowledgedEvent extends UserActionsEvent {}
+
+class SwipeLimitWarningShownEvent extends UserActionsEvent {}

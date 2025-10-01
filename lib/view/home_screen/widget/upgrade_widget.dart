@@ -8,9 +8,8 @@ Future<void> showUpgradeSheet(BuildContext context) async {
   return showModalBottomSheet(
     context: context,
     isScrollControlled: true,
-    backgroundColor: Colors.transparent, // Make the default background transparent
+    backgroundColor: Colors.transparent,
     builder: (context) {
-      // Use a fixed height for the sheet
       return SizedBox(
         height: MediaQuery.of(context).size.height * 0.75,
         child: const UpgradeBottomSheet(),
@@ -25,7 +24,6 @@ class UpgradeBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // 1. Use the appGradient and rounded top corners
       decoration: const BoxDecoration(
         gradient: appGradient,
         borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
@@ -35,7 +33,6 @@ class UpgradeBottomSheet extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Draggable handle indicator
             Container(
               width: 50,
               height: 5,
@@ -46,8 +43,6 @@ class UpgradeBottomSheet extends StatelessWidget {
             ),
             const Spacer(),
             
-            // Premium Icon
-            //Icon(CupertinoIcons.crown_fill, color: kWhite, size: 60),
             const SizedBox(height: 16),
             
             // Header Text
@@ -63,7 +58,6 @@ class UpgradeBottomSheet extends StatelessWidget {
             ),
             const SizedBox(height: 48),
 
-            // 2. Clear list of upgrade features
             _buildFeatureRow(icon: CupertinoIcons.heart_fill, text: "Unlimited Likes"),
             _buildFeatureRow(icon: Icons.replay, text: "Rewind Your Last Swipe"),
             _buildFeatureRow(icon: CupertinoIcons.eye_fill, text: "See Who Likes You"),
@@ -71,7 +65,7 @@ class UpgradeBottomSheet extends StatelessWidget {
             
             const Spacer(),
             
-            // 3. Strong Call to Action Button
+          
             ElevatedButton(
               onPressed: () {
                 flutterToast(msg: "Upgrade feature is coming soon!");
@@ -101,7 +95,6 @@ class UpgradeBottomSheet extends StatelessWidget {
     );
   }
 
-  // Helper widget to build each feature row
   Widget _buildFeatureRow({required IconData icon, required String text}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),

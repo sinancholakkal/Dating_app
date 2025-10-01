@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:dating_app/models/user_profile_model.dart';
+import 'package:dating_app/state/favorite_bloc/favorite_bloc.dart';
 import 'package:dating_app/state/home_user_bloc/home_user_bloc.dart';
 import 'package:dating_app/state/user_actions_bloc/user_actions_bloc.dart';
 import 'package:dating_app/state/user_bloc/user_bloc.dart';
@@ -50,9 +51,10 @@ class _HomeScreenState extends State<HomeScreen> {
             if (state is SwipeLimitReachedState) {
                    log('SUCCESS: SwipeLimitReachedState was detected!');
              await showUpgradeSheet(context);
-
+              context.read<UserActionsBloc>().add(SwipeLimitWarningShownEvent());
              context.read<UserActionsBloc>().add(SwipeLimitWarningAcknowledgedEvent());
       log('Reset event dispatched.');
+      
             }
           },
         ),
@@ -178,7 +180,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           _buildActionButton(
-                            onTap: () {},
+                            onTap: () {
+                              context.read<HomeUserBloc>().add(FetchHomeAllUsers());
+                            },
                             asset: 'assets/icons/back.png',
                             color: Colors.yellow,
                           ),
@@ -235,11 +239,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.greenAccent,
                             isLarge: true,
                           ),
-                          _buildActionButton(
-                            onTap: () {},
-                            asset: 'assets/icons/light.png',
-                            color: Colors.purple,
-                          ),
+                          // _buildActionButton(
+                          //   onTap: () {},
+                          //   asset: 'assets/icons/light.png',
+                          //   color: Colors.purple,
+                          // ),
                         ],
                       ),
                     ),

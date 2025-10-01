@@ -35,8 +35,8 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
-      appBar: AppBar(title: TextWidget(text: "Phone Verification"),backgroundColor: primary,iconTheme: IconThemeData(color: kWhite),),
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(title: TextWidget(text: "Phone Verification"),backgroundColor: Colors.transparent,iconTheme: IconThemeData(color: kWhite),),
       body: Container(
         decoration: BoxDecoration(
           gradient: appGradient

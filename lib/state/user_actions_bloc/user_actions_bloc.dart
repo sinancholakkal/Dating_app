@@ -59,5 +59,12 @@ class UserActionsBloc extends Bloc<UserActionsEvent, UserActionsState> {
       // Reset the state to allow the listener to fire again in the future
       emit(UserActionSuccessState()); // Or whatever your default/neutral state is
     });
+
+     on<SwipeLimitWarningShownEvent>((event, emit) {
+      // Get the current list of profiles from the last loaded state
+     // final profiles = (state as UserActionSuccessState);
+      // Re-emit the HomeLoaded state to reset the UI
+      emit(UserActionSuccessState());
+    });
   }
 }

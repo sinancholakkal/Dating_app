@@ -6,9 +6,6 @@ class SwipeService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final int _dailySwipeLimit = 4; // Your limit
 
-  /// Checks if a user can swipe. If they can, it updates their count.
-  /// Returns `true` if the swipe is allowed, `false` if the limit is reached.
-  // In your SwipeService
 
 Future<bool> canSwipe() async {
   final currentUserId = FirebaseAuth.instance.currentUser!.uid;
@@ -21,11 +18,8 @@ Future<bool> canSwipe() async {
     final data = snapshot.data()!;
     final int swipeCount = data['dailySwipeCount'] ?? 0;
     
-    // --- THE FIX ---
-    // 1. Read the timestamp as nullable (Timestamp?) to allow for null values.
     final Timestamp? lastSwipe = data['lastSwipeDate'];
 
-    // 2. If it's null (first swipe ever) or a different day, reset the count.
     bool isNewDay = true;
     if (lastSwipe != null) {
       final String lastSwipeDay = DateFormat('yyyy-MM-dd').format(lastSwipe.toDate());
@@ -34,15 +28,12 @@ Future<bool> canSwipe() async {
     }
     
     if (isNewDay) {
-      // It's a new day or the user's first ever swipe.
-      // Reset the count to 1 and allow the swipe.
       transaction.update(userRef, {
         'dailySwipeCount': 1,
         'lastSwipeDate': FieldValue.serverTimestamp(),
       });
       return true;
     } else {
-      // It's the same day, so check the limit.
       if (swipeCount < _dailySwipeLimit) {
         transaction.update(userRef, {
           'dailySwipeCount': FieldValue.increment(1),
@@ -50,7 +41,6 @@ Future<bool> canSwipe() async {
         });
         return true;
       } else {
-        // Limit reached for today.
         return false;
       }
     }

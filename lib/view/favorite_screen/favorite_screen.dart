@@ -6,6 +6,7 @@ import 'package:dating_app/state/request_bloc/request_bloc.dart';
 import 'package:dating_app/state/user_actions_bloc/user_actions_bloc.dart';
 import 'package:dating_app/state/user_bloc/user_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
+import 'package:dating_app/view/home_screen/widget/upgrade_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,22 +21,38 @@ class FavoritesScreen extends StatefulWidget {
 }
 
 class _FavoritesScreenState extends State<FavoritesScreen> {
-
   late UserProfile accUserProfile;
-
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<UserBloc, UserState>(
-      listener: (context, state) {
-       if (state is GetSuccessState) {
-          log("User profile executed----------");
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<UserBloc, UserState>(
+          listener: (context, state) {
+            if (state is GetSuccessState) {
+              log("User profile executed----------");
 
-          accUserProfile = state.userProfile;
+              accUserProfile = state.userProfile;
 
-          log(accUserProfile.name);
-        }
-      },
+              log(accUserProfile.name);
+            }
+          },
+        ),
+        BlocListener<UserActionsBloc, UserActionsState>(
+          listener: (context, state) async {
+            if (state is SwipeLimitReachedState) {
+              log('SUCCESS: SwipeLimitReachedState was detected!');
+              await showUpgradeSheet(context);
+
+              context.read<UserActionsBloc>().add(
+                SwipeLimitWarningAcknowledgedEvent(),
+              );
+              context.read<FavoriteBloc>().add(FetchAllFavoritesEvent());
+              log('Reset event dispatched.');
+            }
+          },
+        ),
+      ],
       child: Container(
         decoration: BoxDecoration(gradient: appGradient),
         child: Scaffold(
