@@ -27,3 +27,19 @@ class AuthSuccessNavigateToHome extends AuthState{}
 class AuthSuccessNavigateToProfileSetup extends AuthState{}
 class AuthNoFountState extends AuthState{}
 class LogoutSuccessState extends AuthState{}
+// Tells the UI to switch to the OTP input view
+class AuthCodeSentSuccess extends AuthState {
+  final String verificationId;
+  final String phoneNumber;
+  AuthCodeSentSuccess({required this.verificationId,required this.phoneNumber});
+}
+
+// Final success state after verification
+class AuthVerified extends AuthState {}
+
+// Shows an error message
+class AuthError extends AuthState {
+  final String message;
+  AuthError({required this.message});
+}
+class OtpVerifiedState extends AuthState{}

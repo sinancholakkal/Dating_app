@@ -7,6 +7,7 @@ import 'package:dating_app/view/widgets/text_feild.dart';
 import 'package:dating_app/view/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 
 class PhoneOtpScreen extends StatefulWidget {
@@ -47,16 +48,22 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
               
               flutterToast(msg: state.message,backgroundColor: Kred);
             }
-            if(state is InvalidNumberState){
-              flutterToast(msg:state.msg);
+            if(state is AuthError){
+              flutterToast(msg:state.message);
             }
             if (state is AuthVerifiedState) {
               flutterToast(msg: AppStrings.phVerified);
             }
+            if(state is AuthSuccessNavigateToHome){
+             context.go("/easytab");
+            }
+            if(state is AuthSuccessNavigateToProfileSetup){
+              context.go("/profilesetup");
+            }
           },
           child: BlocBuilder<AuthBloc, AuthState>(
             builder: (context, state) {
-              if (state is AuthCodeSentSuccessState) {
+              if (state is AuthCodeSentSuccess) {
                 return OtpInputView(phoneNumber: state.phoneNumber);
               }
               return PhoneInputView();

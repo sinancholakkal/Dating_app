@@ -69,9 +69,9 @@ class _HomeScreenState extends State<HomeScreen> {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset("assets/tinder_logo.png", scale: 18),
+                Image.asset("asset/app_icon.png", scale: 18),
                 Text(
-                  'tinder',
+                  'PairUp Meet',
                   style: TextStyle(
                     color: kWhite,
                     fontWeight: FontWeight.bold,

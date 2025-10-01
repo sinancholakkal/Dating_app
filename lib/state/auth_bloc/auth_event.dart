@@ -12,6 +12,12 @@ class VerifyOtpEvent extends AuthEvent {
   VerifyOtpEvent({required this.otp});
 }
 
+class _OtpSentEvent extends AuthEvent {
+  final String verificationId;
+   final String phoneNumber;
+  _OtpSentEvent({required this.verificationId,required this.phoneNumber});
+}
+
 // Event to go back to the phone input screen
 class ResetAuthEvent extends AuthEvent {}
 

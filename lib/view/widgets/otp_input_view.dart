@@ -1,6 +1,7 @@
 // You can place this in its own file, e.g., features/authentication/widgets/otp_input_view.dart
 
 import 'package:dating_app/state/auth_bloc/auth_bloc.dart';
+import 'package:dating_app/utils/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -50,6 +51,7 @@ class _OtpInputViewState extends State<OtpInputView> {
             style: GoogleFonts.poppins(
               fontSize: 18,
               fontWeight: FontWeight.w600,
+              color: kWhite
             ),
             textAlign: TextAlign.center,
           ),
@@ -62,7 +64,6 @@ class _OtpInputViewState extends State<OtpInputView> {
           const SizedBox(height: 24),
           ElevatedButton(
             onPressed: () {
-              // Add the VerifyOtpEvent to the BLoC
               context.read<AuthBloc>().add(
                 VerifyOtpEvent(otp: _otpController.text),
               );
