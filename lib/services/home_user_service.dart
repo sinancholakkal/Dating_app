@@ -9,6 +9,7 @@ class HomeUserService {
   Future<List<UserProfile>> fetchAllUsers() async {
     List<UserProfile>userModels = [];
     List<String>dislikeIds =[];
+    String? id;
     try{
       final doc = await FirebaseFirestore.instance.collection("user").get();
     final currentUser = AuthService().getCurrentUser()!.uid;
@@ -26,19 +27,20 @@ class HomeUserService {
     final userDocs = doc.docs;
     for (var user in userDocs) {
       log(user.id);
-      if (currentUser != user.id && !dislikeIds.contains(user.id)) {
+      if (currentUser != user.id && !dislikeIds.contains(user.id) && user.data()["id"]!=null) {
         final data = user.data();
         log(data['name']);
         final userProfile = UserProfile(
-          id: data['id'],
-          name: data['name'],
+          id: data['id']??"",
+          name: data['name']??"",
           age: data['age'],
-          gender: data['gender'],
+          gender: data['gender']??"",
           bio: data['bio'],
           interests: Set<String>.from(data['interests'] ?? []),
           getImages: List<String>.from(data['images'] ?? [])
 
         );
+        id = userProfile.id;
         userModels.add(userProfile);
       }
     }
@@ -46,6 +48,7 @@ class HomeUserService {
     return userModels;
     }catch(e){
       log("Something issue while fetching all users data $e");
+      log(id.toString());
       throw "$e";
     }
   }

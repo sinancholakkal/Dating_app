@@ -8,6 +8,7 @@ import 'package:dating_app/state/user_bloc/user_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/utils/app_sizedbox.dart';
 import 'package:dating_app/utils/app_string.dart';
+import 'package:dating_app/view/profile_screen.dart/widget/privacy_button.dart';
 import 'package:dating_app/view/profile_setup_screen/widget/interested_setup.dart';
 import 'package:dating_app/view/widgets/loading.dart';
 import 'package:dating_app/view/widgets/show_diolog.dart';
@@ -152,7 +153,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         _buildSectionHeader("My Interests"),
                         AppSizedBox.h16,
                         _buildInterestsWrap(userInterests: getUserModel.interests),
-                        // AppSizedBox.h70, // Space for the FAB
+                        AppSizedBox.h70, // Space for the FAB
+                        buildPrivacyPolicyLink(context),
+                        
                       ],
                     ),
                   ),
@@ -387,3 +390,5 @@ class ProfileUpdateButton extends StatelessWidget {
     );
   }
 }
+
+

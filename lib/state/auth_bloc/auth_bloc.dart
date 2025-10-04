@@ -96,7 +96,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             },
             onVerificationFailed: (e) {
               log("filed to send otp $e");
-              emit(AuthError(message: e.message ?? "Failed to send OTP"));
+              emit(AuthError(message:"Failed to send OTP"));
             },
           );
         } else if (event.phoneNumber.isEmpty) {

@@ -10,7 +10,8 @@ const kGrey = Colors.grey;
 const kBlue = Colors.blue;
 const KBcolor = Colors.deepPurpleAccent;
 const Kred = Colors.red;
-
+// ignore: non_constant_identifier_names
+Color Kgrey800 = Colors.grey.shade800;
 Color bgcolor = Color.fromARGB(255, 32, 32, 32);
 Color bgcard = Color(0xFF1A1A1A);
 

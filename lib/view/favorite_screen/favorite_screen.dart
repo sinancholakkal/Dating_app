@@ -6,12 +6,14 @@ import 'package:dating_app/state/request_bloc/request_bloc.dart';
 import 'package:dating_app/state/user_actions_bloc/user_actions_bloc.dart';
 import 'package:dating_app/state/user_bloc/user_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
+import 'package:dating_app/view/favorite_screen/widgets/item_show_screen.dart';
 import 'package:dating_app/view/home_screen/widget/upgrade_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:dating_app/models/user_profile_model.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
@@ -172,37 +174,56 @@ class _FavoriteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        image: DecorationImage(
-          image: NetworkImage(user.getImages!.first),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          gradient: const LinearGradient(
-            begin: Alignment.bottomCenter,
-            end: Alignment.center,
-            colors: [Colors.black87, Colors.transparent],
-          ),
-        ),
-        child: Align(
-          alignment: Alignment.bottomLeft,
-          child: Padding(
-            padding: EdgeInsets.all(12.0),
-            child: Text(
-              '${user.name}, ${user.age}',
-              style: GoogleFonts.poppins(
-                color: kWhite,
-                fontWeight: FontWeight.bold,
+    return Stack(
+      children: [
+        GestureDetector(
+          onTap: () {
+            pushNewScreen(
+              context,
+              pageTransitionAnimation: PageTransitionAnimation.slideUp,
+              withNavBar: false,
+              screen: ItemShowScreen(userProfile: user, index: 0),
+            );
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              image: DecorationImage(
+                image: NetworkImage(user.getImages!.first),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                gradient: const LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.center,
+                  colors: [Colors.black87, Colors.transparent],
+                ),
+              ),
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: Text(
+                    '${user.name}, ${user.age}',
+                    style: GoogleFonts.poppins(
+                      color: kWhite,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
         ),
-      ),
+        Positioned(
+          left: 7,
+          top: 5,
+          child: Text("❤", style: TextStyle(color: Colors.grey, fontSize: 30)),
+        ),
+      ],
     );
   }
 }
