@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:dating_app/services/auth_services.dart';
+import 'package:dating_app/services/location_service.dart';
 import 'package:dating_app/services/request_services.dart';
 import 'package:dating_app/state/chat_bloc/chat_bloc.dart';
 import 'package:dating_app/state/favorite_bloc/favorite_bloc.dart';
@@ -9,6 +11,7 @@ import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/view/chat_screen.dart/chat_screen.dart';
 import 'package:dating_app/view/favorite_screen/favorite_screen.dart';
 import 'package:dating_app/view/home_screen/home_screen.dart';
+import 'package:dating_app/view/hotsport_screen/hotspot_screen.dart';
 import 'package:dating_app/view/notification_screen.dart/notification_screen.dart';
 import 'package:dating_app/view/profile_screen.dart/profile_screen.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +28,13 @@ class EasyTabbar extends StatefulWidget {
 }
 
 class _EasyTabbarState extends State<EasyTabbar> {
+
+
+  @override
+  void dispose() {
+      setOffline(AuthService().getCurrentUser()!.uid);
+       super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return BottomCupertinoTabbar(
@@ -85,7 +95,17 @@ class _EasyTabbarState extends State<EasyTabbar> {
           ),
           page: NotificationScreen(),
         ),
-
+        BottomCupertinoTab(
+          tab: BottomCupertinoTabItem(
+            
+            icon: Icon(Icons.content_paste_search_rounded, size: 30),
+            label: "Hotspot screen",
+            
+          ),
+          page: Scaffold(
+            body: HotspotScreen(),
+          ),
+        ),
        
         BottomCupertinoTab(
           tab: BottomCupertinoTabItem(

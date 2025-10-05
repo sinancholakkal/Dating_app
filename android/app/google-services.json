@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "731954711783-4fb0mnf8936bck24s3qgvjpovc6en7g1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.earning.lovematch",
+            "certificate_hash": "cb023879186e0d1bb93bcd72be18ef3c806301bf"
+          }
+        },
+        {
           "client_id": "731954711783-aitpotrkls6vpslg19615unsqsh3num6.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

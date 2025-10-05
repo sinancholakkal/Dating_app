@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -12,6 +13,8 @@ class UserProfile extends Equatable{
   final Set<String> interests;
   List<String>?getImages;
   String?getSelfie;
+  final GeoPoint? currentGeoPoint;
+    final double? distanceInMeters; 
 
    UserProfile({
     required this.id,
@@ -24,6 +27,8 @@ class UserProfile extends Equatable{
     required this.interests,     
     this.getImages,
     this.getSelfie, 
+    this.currentGeoPoint,
+    this.distanceInMeters
   });
     @override
   List<Object?> get props => [

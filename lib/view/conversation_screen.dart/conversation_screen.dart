@@ -184,9 +184,15 @@ class _ConversationScreenState extends State<ConversationScreen> {
                           final bool isMe =
                               messageData['senderId'] == currentUserId;
                           return MessageBubble(
-                            isMe: isMe,
-                            text: messageData['text'],
-                          );
+                          messageId: messageDoc.id,
+                          senderId:  messageData['senderId'],
+                          isMe: isMe,
+                          text: messageData['text'],
+                          reactions: messageData['reactions']??{},
+                          currentUserId: currentUserId,
+                          chatRoomId: widget.chatRoomId, // Pass the chatRoomId from your widget
+                          chatService: _chatService, // Pass the ChatService instance
+                        );
                         },
                       );
                     }

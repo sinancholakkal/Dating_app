@@ -61,7 +61,6 @@ class _OtherProfileDetailsScreenState extends State<OtherProfileDetailsScreen> {
                                   ),
                                 ),
                               ),
-                              if(currentPhoto!=0) PrivacyBlurCard(imageUrl: widget.userProfile.getImages![currentPhoto], isMatched: false),
                               Row(
                                 children: [
                                   Expanded(

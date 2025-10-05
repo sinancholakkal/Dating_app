@@ -58,6 +58,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:developer';
 
 import 'package:dating_app/models/chat_user_model.dart';
+import 'package:dating_app/services/auth_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class ChatService {
@@ -121,6 +122,73 @@ class ChatService {
       return throw "$e";
     }
   }
+
+String _getChatRoomId(String userId1, String userId2) {
+    List<String> ids = [userId1, userId2];
+    ids.sort(); // Ensure consistent order for chat room ID
+    return ids.join('_');
+  }
+
+  // RecipientId here is the 'other' user in the chat, not the message receiver
+  Future<void> addOrRemoveReaction(String messageId, String emoji, String chatRoomId) async {
+    final currentUserId = AuthService().getCurrentUser()!.uid;
+    if (currentUserId == null) {
+      log("Error: User not logged in to react.");
+      return;
+    }
+
+    // Reference to the specific message document
+    final messageRef = _firestore
+        .collection('chats')
+        .doc(chatRoomId)
+        .collection('messages')
+        .doc(messageId);
+
+    try {
+      await _firestore.runTransaction((transaction) async {
+        final messageSnapshot = await transaction.get(messageRef);
+        if (!messageSnapshot.exists) {
+          throw Exception("Message not found!");
+        }
+
+        final Map<String, dynamic> messageData = messageSnapshot.data() as Map<String, dynamic>;
+
+        // Safely retrieve the current reactions map, ensuring correct types
+        final Map<String, String> currentReactions = (messageData['reactions'] as Map<String, dynamic>?)?.map(
+            (key, value) => MapEntry(key, value.toString()),
+          ) ?? {};
+
+        final Map<String, String> updatedReactions = Map.from(currentReactions); // Create a mutable copy
+
+        if (updatedReactions.containsKey(currentUserId)) {
+          // User already has a reaction on this message
+          final existingEmoji = updatedReactions[currentUserId];
+          if (existingEmoji == emoji) {
+            // User reacted with the same emoji again -> remove their reaction
+            updatedReactions.remove(currentUserId);
+            log("Removed user's '$emoji' reaction from message '$messageId'.");
+          } else {
+            // User reacted with a new emoji -> replace their old reaction with the new one
+            updatedReactions[currentUserId] = emoji;
+            log("Replaced user's old reaction with '$emoji' on message '$messageId'.");
+          }
+        } else {
+          // User has no reaction yet -> add this new reaction
+          updatedReactions[currentUserId] = emoji;
+          log("Added user's '$emoji' reaction to message '$messageId'.");
+        }
+
+        // Update the Firestore document with the new reactions map
+        transaction.update(messageRef, {'reactions': updatedReactions});
+      });
+      log("Transaction for reaction on message '$messageId' completed successfully.");
+    } catch (e) {
+      log("Failed to update reaction on message '$messageId': $e");
+      // Consider adding more robust error handling, e.g., using a package like flutter_bloc for state management
+      // or providing a callback to the UI for error feedback.
+    }
+  }
+
 
   Future<void> sendMessage({
     required String chatRoomId,

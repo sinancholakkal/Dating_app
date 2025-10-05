@@ -123,9 +123,9 @@ class UserProfileServices {
     }
   }
 
-  Future<UserProfile?> fetchUserProfile() async {
+  Future<UserProfile?> fetchUserProfile({String? userId}) async {
     try {
-      String userId = AuthService().getCurrentUser()!.uid;
+      userId ??= AuthService().getCurrentUser()!.uid;
       log("Fetching profile for user: $userId");
 
       final docSnapshot = await FirebaseFirestore.instance

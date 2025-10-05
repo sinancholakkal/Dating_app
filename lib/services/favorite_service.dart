@@ -54,6 +54,7 @@ class FavoriteService {
       
       // Manually create the UserProfile object by mapping each field
       return UserProfile(
+        
         id: data['id'] ?? '',
         name: data['name'] ?? '',
         age: data['age'],

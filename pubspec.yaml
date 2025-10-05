@@ -55,6 +55,9 @@ dependencies:
   insta_image_viewer: ^1.0.4
   firebase_app_check: ^0.4.1
   url_launcher: ^6.3.2
+  geolocator: ^14.0.2
+  geoflutterfire_plus: ^0.0.33
+  cloud_functions: ^6.0.2
 
 dev_dependencies:
   flutter_test:

@@ -107,7 +107,7 @@ class RequestServices {
     'pendingRequests': FieldValue.arrayRemove([otherUserId]),
   }, SetOptions(merge: true)); 
 
-  final otherUserRef = firestore.collection('users').doc(otherUserId);
+  final otherUserRef = firestore.collection('user').doc(otherUserId);
   batch.set(otherUserRef, { 
     'matches': FieldValue.arrayUnion([currentUserId]),
   }, SetOptions(merge: true)); 

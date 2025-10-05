@@ -65,6 +65,8 @@ flutter {
 }
 
 dependencies {
+    implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
+    implementation("com.google.firebase:firebase-functions")
     // ...
     implementation("com.google.android.material:material:1.13.0")
     // ...

@@ -23,15 +23,18 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
-class ChatMessage {
+class ChatMessage {final String id;
   final String text;
   final bool isSentByMe;
-  final DateTime timestamp;
+  final Timestamp timestamp;
+  final Map<String, dynamic> reactions;
 
   ChatMessage({
     required this.text,
     required this.isSentByMe,
     required this.timestamp,
+     this.reactions = const {},
+     required this.id,
   });
 }
 
