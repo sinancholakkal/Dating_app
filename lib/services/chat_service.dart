@@ -94,7 +94,7 @@ class ChatService {
             };
 
             return chatSnapshot.docs.map((chatDoc) {
-              final chatData = chatDoc.data() as Map<String, dynamic>;
+              final chatData = chatDoc.data();
               final otherUserId = List<String>.from(
                 chatData['users'],
               ).firstWhere((id) => id != userId);
@@ -132,10 +132,6 @@ String _getChatRoomId(String userId1, String userId2) {
   // RecipientId here is the 'other' user in the chat, not the message receiver
   Future<void> addOrRemoveReaction(String messageId, String emoji, String chatRoomId) async {
     final currentUserId = AuthService().getCurrentUser()!.uid;
-    if (currentUserId == null) {
-      log("Error: User not logged in to react.");
-      return;
-    }
 
     // Reference to the specific message document
     final messageRef = _firestore

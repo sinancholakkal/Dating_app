@@ -27,9 +27,6 @@ class AuthService {
             "731954711783-o7tuesse592kjojgsvr609i9oo0f49lt.apps.googleusercontent.com",
       );
       final account = await signIn.authenticate();
-      if (account == null) {
-        return null;
-      }
       final auth = account.authentication;
       final credential = GoogleAuthProvider.credential(idToken: auth.idToken);
       final userCredential = await FirebaseAuth.instance.signInWithCredential(

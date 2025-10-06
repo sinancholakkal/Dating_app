@@ -4,7 +4,6 @@ import 'package:dating_app/models/chat_user_model.dart';
 import 'package:dating_app/state/user_bloc_and_report_bloc/user_bloc_and_report_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 void showReportDialog(
   BuildContext context, {

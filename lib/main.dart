@@ -70,8 +70,8 @@ class MyApp extends StatelessWidget {
             routerConfig: appRouter,
             theme: ThemeData(
               colorScheme: ColorScheme.light(
-                background: Colors.grey.shade200,
-                onBackground: Colors.black,
+                surface: Colors.grey.shade200,
+                onSurface: Colors.black,
                 primary: const Color(0xFFFe3c72),
                 onPrimary: Colors.black,
                 secondary: const Color(0xFF424242),

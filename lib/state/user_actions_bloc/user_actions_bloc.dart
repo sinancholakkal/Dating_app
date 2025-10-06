@@ -13,6 +13,7 @@ class UserActionsBloc extends Bloc<UserActionsEvent, UserActionsState> {
   UserActionsBloc() : super(UserActionsInitial()) {
     on<UserDislikeActionEvent>((event, emit) async {
       final bool canSwipe = await SwipeService().canSwipe();
+      log("can swip $canSwipe");
       if (canSwipe) {
         await service.dislikeAction(dislikeUserId: event.dislikeUserId);
         emit(UserActionSuccessState());

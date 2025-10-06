@@ -222,12 +222,14 @@ Stream<List<UserProfile>> getNearbyUsersWithProfiles(
       final String otherUserId = data['userId'] as String;
 
       if (!data.containsKey(geoDataField) ||
-          !(data[geoDataField] is Map<String, dynamic>))
+          data[geoDataField] is! Map<String, dynamic>) {
         continue;
+      }
       final Map<String, dynamic> geoMap =
           data[geoDataField] as Map<String, dynamic>;
-      if (!geoMap.containsKey('geopoint') || !(geoMap['geopoint'] is GeoPoint))
+      if (!geoMap.containsKey('geopoint') || geoMap['geopoint'] is! GeoPoint) {
         continue;
+      }
 
       final GeoPoint docGeoPoint = geoMap['geopoint'] as GeoPoint;
 

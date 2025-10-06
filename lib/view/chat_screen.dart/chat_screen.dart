@@ -1,26 +1,19 @@
 // To represent a single message
-import 'dart:async';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/models/chat_user_model.dart';
 import 'package:dating_app/services/chat_service.dart';
-import 'package:dating_app/state/chat_bloc/chat_bloc.dart';
 import 'package:dating_app/state/conversation_bloc/conversation_bloc.dart';
-import 'package:dating_app/state/conversation_bloc/conversation_event.dart';
-import 'package:dating_app/state/conversation_bloc/conversation_state.dart';
 import 'package:dating_app/state/user_bloc_and_report_bloc/user_bloc_and_report_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/view/chat_screen.dart/widget/bottom_sheet.dart';
 import 'package:dating_app/view/conversation_screen.dart/conversation_screen.dart';
 import 'package:dating_app/view/widgets/toast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class ChatMessage {final String id;

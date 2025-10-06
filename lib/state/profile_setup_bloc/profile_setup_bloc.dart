@@ -40,8 +40,8 @@ class ProfileSetupBloc extends Bloc<ProfileSetupEvent, ProfileSetupState> {
     });
 
     on<SelfieImageUploadEvent>((event, emit) async {
-      final ImagePicker _picker = ImagePicker();
-      final XFile? pickedFile = await _picker.pickImage(
+      final ImagePicker picker = ImagePicker();
+      final XFile? pickedFile = await picker.pickImage(
         source: event.source,
         imageQuality: 80, 
       );
@@ -55,8 +55,8 @@ class ProfileSetupBloc extends Bloc<ProfileSetupEvent, ProfileSetupState> {
       }
     });
      on<ImagePickEvent>((event, emit) async {
-      final ImagePicker _picker = ImagePicker();
-      final XFile? pickedFile = await _picker.pickImage(
+      final ImagePicker picker = ImagePicker();
+      final XFile? pickedFile = await picker.pickImage(
         source: event.source,
         imageQuality: 80, 
       );

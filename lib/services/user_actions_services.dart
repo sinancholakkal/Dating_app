@@ -63,7 +63,7 @@ class UserActionsServices {
     final data = reference.data();
 
     if (data != null) {
-      dislikeIds.addAll(data["ids"]);
+      dislikeIds.addAll(data["ids"]??[]);
     }
     return dislikeIds;
   }

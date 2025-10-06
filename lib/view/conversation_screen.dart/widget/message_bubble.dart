@@ -19,7 +19,7 @@ class MessageBubble extends StatelessWidget {
   final ChatService chatService; // Instance of ChatService
 
   const MessageBubble({
-    Key? key,
+    super.key,
     required this.messageId,
     required this.senderId, // Need senderId to determine MainAxisAlignment for reactions
     required this.isMe,
@@ -28,7 +28,7 @@ class MessageBubble extends StatelessWidget {
     required this.currentUserId,
     required this.chatRoomId,
     required this.chatService,
-  }) : super(key: key);
+  });
 
   // --- Helper function to show the reaction picker (moved here) ---
   void _showReactionPicker(BuildContext context) {

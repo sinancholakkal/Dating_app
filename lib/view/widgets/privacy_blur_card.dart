@@ -6,10 +6,10 @@ class PrivacyBlurCard extends StatelessWidget {
   final bool isMatched;
 
   const PrivacyBlurCard({
-    Key? key,
+    super.key,
     required this.imageUrl,
     required this.isMatched,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

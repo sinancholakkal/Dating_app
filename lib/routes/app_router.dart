@@ -5,7 +5,6 @@ import 'package:dating_app/view/home_screen/persistent_nav.dart';
 import 'package:dating_app/view/auth_landing_screen/auth_landing_screen.dart';
 import 'package:dating_app/view/email_auth_screen/email_auth_screen.dart';
 import 'package:dating_app/view/home_screen/home_screen.dart';
-import 'package:dating_app/view/home_screen/widget/other_profile_details_screen.dart';
 import 'package:dating_app/view/phone_otp_screen/phone_otp_screen.dart';
 import 'package:dating_app/view/profile_setup_screen/profile_setup_screen.dart';
 import 'package:dating_app/view/screen_onboarding/screen_onboarding.dart';

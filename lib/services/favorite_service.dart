@@ -50,7 +50,7 @@ class FavoriteService {
 
     // Convert the documents to UserProfile objects manually
     return querySnapshot.docs.map((doc) {
-      final data = doc.data() as Map<String, dynamic>;
+      final data = doc.data();
       
       // Manually create the UserProfile object by mapping each field
       return UserProfile(

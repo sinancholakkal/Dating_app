@@ -9,7 +9,7 @@ class RequestCard extends StatefulWidget {
   final VoidCallback onAccept;
   final VoidCallback onDecline;
 
-  const RequestCard({
+  const RequestCard({super.key, 
     required this.request,
     required this.onAccept,
     required this.onDecline,

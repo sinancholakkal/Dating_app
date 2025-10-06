@@ -18,7 +18,7 @@ class SwipeService {
 
       final data = snapshot.data()!;
       final int swipeCount = data['dailySwipeCount'] ?? 0;
-
+        log("swipe count $swipeCount");
       final Timestamp? lastSwipe = data['lastSwipeDate'];
 
       bool isNewDay = true;
@@ -52,10 +52,6 @@ class SwipeService {
 
     Future<void> resetDailySwipeCount() async {
     final currentUserId = FirebaseAuth.instance.currentUser!.uid;
-    if (currentUserId == null) {
-      log("Error: Cannot reset swipe count, user not logged in.");
-      return;
-    }
 
     final userRef = _firestore.collection('user').doc(currentUserId);
 

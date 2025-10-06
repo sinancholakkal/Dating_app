@@ -19,9 +19,9 @@ class NotificationScreen extends StatefulWidget {
 
 class _NotificationScreenState extends State<NotificationScreen> {
   // --- State Variables ---
-  bool _isLoading = true;
+  final bool _isLoading = true;
   String? _error;
-  List<RequestModel> _requests = [];
+  final List<RequestModel> _requests = [];
 
   @override
   void initState() {

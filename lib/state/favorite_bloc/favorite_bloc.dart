@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
-import 'package:dating_app/models/user_current_model.dart';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/services/favorite_service.dart';
 import 'package:equatable/equatable.dart';

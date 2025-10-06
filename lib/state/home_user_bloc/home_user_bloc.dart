@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/services/home_user_service.dart';
-import 'package:dating_app/services/swip_service.dart';
 import 'package:equatable/equatable.dart';
 
 part 'home_user_event.dart';

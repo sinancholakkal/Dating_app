@@ -140,9 +140,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                           color: Colors.green.withOpacity(0.8),
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: Icon(Icons.favorite, color: kWhite, size: 40),
                         alignment: Alignment.centerLeft,
                         padding: const EdgeInsets.only(left: 20),
+                        child: Icon(Icons.favorite, color: kWhite, size: 40),
                       ),
                       // 4. This is the background for a LEFT swipe (Dislike)
                       secondaryBackground: Container(
@@ -150,9 +150,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                           color: Colors.red.withOpacity(0.8),
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: Icon(Icons.close, color: kWhite, size: 40),
                         alignment: Alignment.centerRight,
                         padding: const EdgeInsets.only(right: 20),
+                        child: Icon(Icons.close, color: kWhite, size: 40),
                       ),
                       child: _FavoriteCard(user: user),
                     );

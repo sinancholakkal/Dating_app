@@ -8,10 +8,10 @@ class ImagePreview extends StatelessWidget {
   final VoidCallback? cancelOnTap;
 
   const ImagePreview({
-    Key? key,
+    super.key,
     required this.xFile,
     this.cancelOnTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -55,7 +55,7 @@ class _ItemShowScreenState extends State<ItemShowScreen> {
                     padding: const EdgeInsets.only(bottom: 50.0),
                     child: Column(
                       children: [
-                        Container(
+                        SizedBox(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height * 0.6,
                           child: Hero(

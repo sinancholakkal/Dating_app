@@ -12,7 +12,7 @@ class ChatLoading extends ChatState {}
 
 class ChatLoaded extends ChatState {
   final List<ChatUserModel> chats;
-  ChatLoaded(this.chats);
+  const ChatLoaded(this.chats);
 }
 
 class ChatError extends ChatState {}

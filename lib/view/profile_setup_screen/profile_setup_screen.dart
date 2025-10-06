@@ -30,8 +30,8 @@ class ProfileSetupScreen extends StatefulWidget {
 
 class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   late final PageController _pageController;
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _ageController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
   //Gender _selectedGender = Gender.none;
   ValueNotifier<Gender> selectedGender = ValueNotifier(Gender.none);
   int _currentPage = 0;

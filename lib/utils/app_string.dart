@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 
 class AppStrings {
   static const String forgotPassword = "Forgot Password";

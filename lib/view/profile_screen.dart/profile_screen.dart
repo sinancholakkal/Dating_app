@@ -403,11 +403,11 @@ class InterestSelectionWrap extends StatelessWidget {
   allInterests; // Pass all interests, or rely on AppStrings.allInterests
 
   const InterestSelectionWrap({
-    Key? key,
+    super.key,
     required this.selectedInterests,
     required this.onInterestSelected,
     required this.allInterests,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

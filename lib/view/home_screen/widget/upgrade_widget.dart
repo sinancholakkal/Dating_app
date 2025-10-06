@@ -2,14 +2,12 @@ import 'dart:async'; // Added for Timer
 import 'dart:developer'; // Added for log
 import 'package:dating_app/state/ad_bloc/ad_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
-import 'package:dating_app/view/widgets/loading.dart';
 import 'package:dating_app/view/widgets/toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:hive_flutter/adapters.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // --- IMPORTANT: Add these missing imports ---

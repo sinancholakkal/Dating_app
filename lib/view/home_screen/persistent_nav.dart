@@ -2,8 +2,6 @@ import 'dart:developer';
 
 import 'package:dating_app/services/auth_services.dart';
 import 'package:dating_app/services/location_service.dart';
-import 'package:dating_app/services/request_services.dart';
-import 'package:dating_app/state/chat_bloc/chat_bloc.dart';
 import 'package:dating_app/state/favorite_bloc/favorite_bloc.dart';
 import 'package:dating_app/state/request_bloc/request_bloc.dart';
 import 'package:dating_app/state/user_actions_bloc/user_actions_bloc.dart';
