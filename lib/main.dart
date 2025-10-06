@@ -1,6 +1,7 @@
 import 'package:dating_app/firebase_options.dart';
 import 'package:dating_app/routes/app_router.dart';
 import 'package:dating_app/services/chat_service.dart';
+import 'package:dating_app/state/ad_bloc/ad_bloc.dart';
 import 'package:dating_app/state/auth_bloc/auth_bloc.dart';
 import 'package:dating_app/state/chat_bloc/chat_bloc.dart';
 import 'package:dating_app/state/conversation_bloc/conversation_bloc.dart';
@@ -16,12 +17,18 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 void main() async {
  WidgetsFlutterBinding.ensureInitialized();
-   WidgetsFlutterBinding.ensureInitialized();
+ MobileAds.instance.initialize();
   await Firebase.initializeApp();
-
+  // --- ADD THIS CODE ---
+  RequestConfiguration configuration = RequestConfiguration(
+    testDeviceIds: ["DBB64DAF31C4A709D4F674EE7B51F2A0"], // Use the ID from your log
+  );
+  MobileAds.instance.updateRequestConfiguration(configuration);
+  // --- END ADDED CODE ---
   await FirebaseAppCheck.instance.activate(
     androidProvider: AndroidProvider.debug, 
   );
@@ -51,7 +58,8 @@ class MyApp extends StatelessWidget {
             BlocProvider(create: (context) => UserBlocAndReportBloc(context.read<ChatService>())),
             BlocProvider(
             create: (context) => FavoriteBloc(),
-          )
+          ),
+             BlocProvider(create: (context) => AdBloc())
         ],
         child: CupertinoTheme(
           data: const CupertinoThemeData(

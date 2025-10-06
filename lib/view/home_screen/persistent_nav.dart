@@ -28,35 +28,46 @@ class EasyTabbar extends StatefulWidget {
 }
 
 class _EasyTabbarState extends State<EasyTabbar> {
-
-
   @override
   void dispose() {
-      setOffline(AuthService().getCurrentUser()!.uid);
-       super.dispose();
+    setOffline(AuthService().getCurrentUser()!.uid);
+    super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return BottomCupertinoTabbar(
       activeColor: primary,
       inactiveColor: kWhite70,
-      
-      backgroundColor: bgcard.withOpacity(0.8), 
-      
+
+      backgroundColor: bgcard.withOpacity(0.8),
+
       overrideIconsColor: true,
       onTabPressed: (index, model, nestedNavigator) {
         if (index != model.currentTab) {
-          if(index==3){
+          if (index == 3) {
             context.read<RequestBloc>().add(FetchRequestsEvent());
-          }else if(index == 2){
+          } else if (index == 2) {
+             if (Navigator.canPop(context)) {
+              log("can pop");
+            } else {
+              log("Can't pop");
+            }
             context.read<FavoriteBloc>().add(FetchAllFavoritesEvent());
-             context.read<UserActionsBloc>().add(SwipeLimitWarningShownEvent());
+            context.read<UserActionsBloc>().add(SwipeLimitWarningShownEvent());
+          } else if (index == 0) {
+            if (Navigator.canPop(context)) {
+              log("can pop");
+            } else {
+              log("Can't pop");
+            }
           }
           model.changePage(index);
         } else {
           if (nestedNavigator[index]?.currentContext != null) {
-            Navigator.of(nestedNavigator[index]!.currentContext!)
-                .popUntil((route) => route.isFirst);
+            Navigator.of(
+              nestedNavigator[index]!.currentContext!,
+            ).popUntil((route) => route.isFirst);
           }
         }
       },
@@ -77,49 +88,35 @@ class _EasyTabbarState extends State<EasyTabbar> {
           ),
           page: ChatListScreen(),
         ),
-         BottomCupertinoTab(
+        BottomCupertinoTab(
           tab: BottomCupertinoTabItem(
-            
             icon: Icon(Icons.favorite, size: 30),
             label: "Like",
-            
           ),
           page: FavoritesScreen(),
         ),
         BottomCupertinoTab(
           tab: BottomCupertinoTabItem(
-            
             icon: Icon(Icons.notifications, size: 30),
             label: "Notification",
-            
           ),
           page: NotificationScreen(),
         ),
         BottomCupertinoTab(
           tab: BottomCupertinoTabItem(
-            
             icon: Icon(Icons.content_paste_search_rounded, size: 30),
             label: "Hotspot screen",
-            
           ),
-          page: Scaffold(
-            body: HotspotScreen(),
-          ),
-        ),
-       
-        BottomCupertinoTab(
-          tab: BottomCupertinoTabItem(
-            
-            icon: Icon(Icons.person, size: 30),
-            label: "Profile",
-            
-          ),
-          page: Scaffold(
-            body: ProfileScreen(),
-          ),
+          page: Scaffold(body: HotspotScreen()),
         ),
 
-        
+        BottomCupertinoTab(
+          tab: BottomCupertinoTabItem(
+            icon: Icon(Icons.person, size: 30),
+            label: "Profile",
+          ),
+          page: Scaffold(body: ProfileScreen()),
+        ),
       ],
     );
   }
