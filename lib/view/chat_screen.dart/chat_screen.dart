@@ -63,11 +63,12 @@ class ChatListScreen extends StatelessWidget {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(
-          'Chats',
+          'Messages',
           style: GoogleFonts.poppins(
             color: kWhite,
             fontWeight: FontWeight.w700,
             letterSpacing: 0.3,
+            fontSize: 20,
           ),
         ),
         backgroundColor: Colors.transparent,
@@ -118,47 +119,77 @@ class ChatListScreen extends StatelessWidget {
                       : 1.0,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: kWhite.withOpacity(0.06),
+                      color: Colors.white.withOpacity(0.04),
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: kWhite.withOpacity(0.1)),
+                      border: Border.all(color: Colors.white.withOpacity(0.08)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.15),
+                          blurRadius: 12,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
                     ),
                     child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      leading: CircleAvatar(
-                        radius: 26,
-                        backgroundColor: primary.withOpacity(0.2),
-                        backgroundImage: NetworkImage(chat.imageUrl),
-                        onBackgroundImageError: (_, __) {},
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      leading: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: CircleAvatar(
+                          radius: 28,
+                          backgroundColor: primary.withOpacity(0.15),
+                          backgroundImage: NetworkImage(chat.imageUrl),
+                          onBackgroundImageError: (_, __) {},
+                          child: chat.imageUrl.isEmpty ? Icon(Icons.person, color: kWhite) : null,
+                        ),
                       ),
                       title: Text(
                         chat.name,
                         style: GoogleFonts.poppins(
                           color: kWhite,
                           fontWeight: FontWeight.w600,
+                          fontSize: 16,
                         ),
                       ),
-                      subtitle: chat.lastMessage.startsWith("https://firebasestorage.googleapis.com")
-                          ? Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.photo_camera,
-                                  color: kWhite.withOpacity(0.5),
-                                  size: 18,
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: chat.lastMessage.startsWith("https://firebasestorage.googleapis.com")
+                            ? Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.photo_camera,
+                                    color: kWhite.withOpacity(0.6),
+                                    size: 16,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    "Photo",
+                                    style: GoogleFonts.poppins(
+                                      color: kWhite.withOpacity(0.6),
+                                      fontSize: 13,
+                                    ),
+                                  )
+                                ],
+                              )
+                            : Text(
+                                chat.lastMessage,
+                                style: GoogleFonts.poppins(
+                                  color: kWhite70,
+                                  fontSize: 13,
                                 ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  "Photo",
-                                  style: TextStyle(color: kWhite.withOpacity(0.5)),
-                                )
-                              ],
-                            )
-                          : Text(
-                              chat.lastMessage,
-                              style: GoogleFonts.poppins(color: kWhite70),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                      ),
                       trailing: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.end,
@@ -167,30 +198,44 @@ class ChatListScreen extends StatelessWidget {
                             _formatTimestamp(chat.lastMessageTimestamp),
                             style: GoogleFonts.poppins(
                               color: kWhite54,
-                              fontSize: 12,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                           if (chat.blockedBy == currentUserId &&
                               chat.blockedBy.isNotEmpty)
-                            Text(
-                              "You blocked",
-                              style: TextStyle(
-                                color: Kred,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4),
+                              child: Text(
+                                "You blocked",
+                                style: GoogleFonts.poppins(
+                                  color: Kred,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           if (chat.unreadCount > 0) ...[
-                            const SizedBox(height: 6),
-                            CircleAvatar(
-                              radius: 10,
-                              backgroundColor: primary,
+                            const SizedBox(height: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: primary,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: primary.withOpacity(0.3),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
                               child: Text(
                                 chat.unreadCount.toString(),
-                                style: const TextStyle(
+                                style: GoogleFonts.poppins(
                                   color: Colors.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                             ),
