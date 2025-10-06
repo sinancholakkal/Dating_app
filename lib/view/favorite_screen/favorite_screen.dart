@@ -62,7 +62,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
               "Favorites",
               style: GoogleFonts.poppins(
                 color: kWhite,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.3,
               ),
             ),
             backgroundColor: Colors.transparent,
@@ -83,13 +84,35 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 log("favorite loaded state emited");
                 List<UserProfile> favoritesList = state.favorites;
                 if (favoritesList.isEmpty) {
-                  return Center(
-                    child: Text(
-                      "No items here",
-                      style: const TextStyle(
-                        color: Colors.redAccent,
-                        fontSize: 16,
-                      ),
+                  return Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(18),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.06),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: Colors.white.withOpacity(0.1)),
+                          ),
+                          child: const Icon(Icons.favorite_border, color: Colors.white, size: 36),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          "No favorites yet",
+                          style: GoogleFonts.poppins(
+                            color: kWhite,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          "Tap the heart on profiles to save them here",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.poppins(color: kWhite70, fontSize: 12),
+                        ),
+                      ],
                     ),
                   );
                 }
@@ -186,40 +209,66 @@ class _FavoriteCard extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              image: DecorationImage(
-                image: NetworkImage(user.getImages!.first),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                gradient: const LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.center,
-                  colors: [Colors.black87, Colors.transparent],
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.18),
+                  blurRadius: 12,
+                  offset: const Offset(0, 8),
                 ),
-              ),
-              child: Align(
-                alignment: Alignment.bottomLeft,
-                child: Padding(
-                  padding: EdgeInsets.all(12.0),
-                  child: Text(
-                    '${user.name}, ${user.age}',
-                    style: GoogleFonts.poppins(
-                      color: kWhite,
-                      fontWeight: FontWeight.bold,
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.network(
+                    user.getImages!.first,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Container(
+                      color: Colors.grey.shade800,
+                      child: const Icon(Icons.broken_image, color: Colors.white54),
                     ),
                   ),
-                ),
+                  Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.center,
+                        colors: [Color(0xCC000000), Colors.transparent],
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Padding(
+                      padding: EdgeInsets.all(12.0),
+                      child: Text(
+                        '${user.name}, ${user.age}',
+                        style: GoogleFonts.poppins(
+                          color: kWhite,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
         ),
         Positioned(
-          left: 7,
-          top: 5,
-          child: Text("❤", style: TextStyle(color: Colors.grey, fontSize: 30)),
+          left: 10,
+          top: 10,
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.18),
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white.withOpacity(0.25)),
+            ),
+            child: const Icon(Icons.favorite, color: Colors.white, size: 18),
+          ),
         ),
       ],
     );
