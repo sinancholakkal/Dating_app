@@ -122,45 +122,132 @@ class _ConversationScreenState extends State<ConversationScreen> {
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
-            iconTheme: IconThemeData(color: kWhite),
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
+            iconTheme: const IconThemeData(color: Colors.white),
+            title: Row(
               children: [
-                Text(
-                  widget.otherUser.name,
-                  style: GoogleFonts.poppins(
-                    color: kWhite,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.3,
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.3),
+                      width: 2,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: ClipOval(
+                    child: widget.otherUser.imageUrl.isNotEmpty
+                        ? Image.network(
+                            widget.otherUser.imageUrl,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Container(
+                              color: Colors.grey.shade700,
+                              child: const Icon(
+                                Icons.person,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
+                          )
+                        : Container(
+                            color: Colors.grey.shade700,
+                            child: const Icon(
+                              Icons.person,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
                   ),
                 ),
-                StreamBuilder<DocumentSnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('chats')
-                      .doc(widget.chatRoomId)
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      final data =
-                          snapshot.data!.data() as Map<String, dynamic>;
-                      final typingUsers = List<String>.from(
-                        data['typingUsers'] ?? [],
-                      );
-                      if (typingUsers.contains(widget.otherUser.otherUserId)) {
-                        return Text(
-                          'is typing...',
-                          style: TextStyle(color: kWhite70, fontSize: 17),
-                        );
-                      }
-                    }
-                    return const SizedBox.shrink();
-                  },
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        widget.otherUser.name,
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.3,
+                          fontSize: 18,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black.withOpacity(0.3),
+                              offset: const Offset(0, 1),
+                              blurRadius: 2,
+                            ),
+                          ],
+                        ),
+                      ),
+                      StreamBuilder<DocumentSnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection('chats')
+                            .doc(widget.chatRoomId)
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            final data =
+                                snapshot.data!.data() as Map<String, dynamic>;
+                            final typingUsers = List<String>.from(
+                              data['typingUsers'] ?? [],
+                            );
+                            if (typingUsers.contains(widget.otherUser.otherUserId)) {
+                              return Row(
+                                children: [
+                                  SizedBox(
+                                    width: 12,
+                                    height: 12,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white.withOpacity(0.7),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'typing...',
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white.withOpacity(0.8),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }
+                          }
+                          return const SizedBox.shrink();
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-            //DropDown Action-------
-            actions: [DropDownWidget(chatUserModel: widget.otherUser)],
+            actions: [
+              Container(
+                margin: const EdgeInsets.only(right: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.2),
+                    width: 1,
+                  ),
+                ),
+                child: DropDownWidget(chatUserModel: widget.otherUser),
+              ),
+            ],
           ),
           body: Column(
             children: [
@@ -169,7 +256,35 @@ class _ConversationScreenState extends State<ConversationScreen> {
                   builder: (context, state) {
                     if (state is ConversationLoading) {
                       return Center(
-                        child: CircularProgressIndicator(color: kWhite),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(0.2),
+                                  width: 1,
+                                ),
+                              ),
+                              child: const CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                strokeWidth: 3,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Text(
+                              'Loading messages...',
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
                       );
                     }
                     if (state is ConversationLoaded) {
@@ -230,9 +345,94 @@ class _ConversationScreenState extends State<ConversationScreen> {
                       );
                     }
                     return Center(
-                      child: Text(
-                        "No messages yet.",
-                        style: TextStyle(color: kWhite),
+                      child: Container(
+                        margin: const EdgeInsets.all(32),
+                        padding: const EdgeInsets.all(32),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.2),
+                            width: 1,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 20,
+                              offset: const Offset(0, 10),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: const Icon(
+                                Icons.chat_bubble_outline,
+                                color: Colors.white,
+                                size: 48,
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            Text(
+                              'Start the conversation!',
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              'Send a message to ${widget.otherUser.name}\nto begin your chat',
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.poppins(
+                                color: Colors.white.withOpacity(0.8),
+                                fontSize: 16,
+                                height: 1.5,
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(0.2),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.keyboard_arrow_down,
+                                    color: Colors.white.withOpacity(0.7),
+                                    size: 20,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'Type below to get started',
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white.withOpacity(0.8),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },
@@ -252,10 +452,22 @@ class _ConversationScreenState extends State<ConversationScreen> {
   Widget _buildMessageInputField(ValueChanged<String> onChanged) {
     XFile? xFile;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       decoration: BoxDecoration(
-        color: kWhite.withOpacity(0.06),
-        border: Border(top: BorderSide(color: kWhite.withOpacity(0.08))),
+        color: Colors.white.withOpacity(0.08),
+        border: Border(
+          top: BorderSide(
+            color: Colors.white.withOpacity(0.15),
+            width: 1,
+          ),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, -2),
+          ),
+        ],
       ),
       child: BlocBuilder<ProfileSetupBloc, ProfileSetupState>(
         builder: (context, state) {
@@ -285,33 +497,69 @@ class _ConversationScreenState extends State<ConversationScreen> {
                   top: false,
                   child: Row(
                     children: [
-                      IconButton(
-                        icon: Icon(Icons.add, color: kWhite),
-                        onPressed: () => showImageSourceActionSheet(
-                          context,
-                          bloc: context.read<ProfileSetupBloc>(),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.2),
+                            width: 1,
+                          ),
+                        ),
+                        child: IconButton(
+                          icon: const Icon(Icons.add, color: Colors.white, size: 22),
+                          onPressed: () => showImageSourceActionSheet(
+                            context,
+                            bloc: context.read<ProfileSetupBloc>(),
+                          ),
                         ),
                       ),
                       if (xFile != null) Spacer(),
                       if (xFile == null)
                         Expanded(
-                          child: TextField(
-                            onChanged: onChanged,
-                            controller: _messageController,
-                            style: GoogleFonts.poppins(color: kWhite),
-                            decoration: InputDecoration(
-                              hintText: "Type a message...",
-                              hintStyle: GoogleFonts.poppins(color: kWhite70),
-                              filled: true,
-                              fillColor: kWhite.withOpacity(0.08),
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(28),
-                                borderSide: BorderSide(color: kWhite.withOpacity(0.12)),
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 8),
+                            child: TextField(
+                              onChanged: onChanged,
+                              controller: _messageController,
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(28),
-                                borderSide: const BorderSide(color: primary, width: 1.2),
+                              decoration: InputDecoration(
+                                hintText: "Type a message...",
+                                hintStyle: GoogleFonts.poppins(
+                                  color: Colors.white.withOpacity(0.6),
+                                  fontSize: 16,
+                                ),
+                                filled: true,
+                                fillColor: Colors.white.withOpacity(0.1),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 16,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(24),
+                                  borderSide: BorderSide(
+                                    color: Colors.white.withOpacity(0.2),
+                                    width: 1,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(24),
+                                  borderSide: BorderSide(
+                                    color: primary,
+                                    width: 2,
+                                  ),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(24),
+                                  borderSide: BorderSide(
+                                    color: Colors.white.withOpacity(0.2),
+                                    width: 1,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -319,19 +567,46 @@ class _ConversationScreenState extends State<ConversationScreen> {
                       const SizedBox(width: 12),
                       Container(
                         decoration: BoxDecoration(
-                          color: primary,
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              primary,
+                              primary.withOpacity(0.8),
+                            ],
+                          ),
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.25),
-                              blurRadius: 8,
+                              color: primary.withOpacity(0.4),
+                              blurRadius: 12,
                               offset: const Offset(0, 4),
+                            ),
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
                             ),
                           ],
                         ),
-                        child: IconButton(
-                          icon: const Icon(Icons.send, color: Colors.white),
-                          onPressed: () => sendMessage(xfile: xFile),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(24),
+                            onTap: () => sendMessage(xfile: xFile),
+                            child: Container(
+                              width: 48,
+                              height: 48,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.send_rounded,
+                                color: Colors.white,
+                                size: 22,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -366,18 +641,60 @@ class _DayDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(child: Container(height: 1, color: kWhite.withOpacity(0.1))),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: Text(
-            label,
-            style: GoogleFonts.poppins(color: kWhite70, fontSize: 12),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              height: 1,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.transparent,
+                    Colors.white.withOpacity(0.2),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            ),
           ),
-        ),
-        Expanded(child: Container(height: 1, color: kWhite.withOpacity(0.1))),
-      ],
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.2),
+                width: 1,
+              ),
+            ),
+            child: Text(
+              label,
+              style: GoogleFonts.poppins(
+                color: Colors.white.withOpacity(0.9),
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              height: 1,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.transparent,
+                    Colors.white.withOpacity(0.2),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -392,27 +709,55 @@ Widget _buildImagePreview({
     child: Stack(
       children: [
         Container(
-          height: 100,
-          width: 100,
+          height: 120,
+          width: 120,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            image: DecorationImage(
-              image: FileImage(File(xFile.path)),
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Image.file(
+              File(xFile.path),
               fit: BoxFit.cover,
             ),
           ),
         ),
         Positioned(
-          top: 0,
-          right: 0,
-          child: InkWell(
-            onTap: cancelOnTap,
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.black54,
-                shape: BoxShape.circle,
+          top: 8,
+          right: 8,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.7),
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: cancelOnTap,
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  child: const Icon(
+                    Icons.close_rounded,
+                    color: Colors.white,
+                    size: 16,
+                  ),
+                ),
               ),
-              child: Icon(Icons.close, color: kWhite, size: 18),
             ),
           ),
         ),
