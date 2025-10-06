@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:dating_app/services/user_actions_services.dart';
 import 'package:dating_app/state/favorite_bloc/favorite_bloc.dart';
 import 'package:dating_app/state/user_actions_bloc/user_actions_bloc.dart';
 import 'package:dating_app/state/user_bloc/user_bloc.dart';
@@ -154,6 +155,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                             UserDislikeActionEvent(dislikeUserId: user.id),
                           );
                         }
+                        UserActionsServices().removeFromFavorites(favoriteUserId: user.id);
                       },
 
                       background: Container(

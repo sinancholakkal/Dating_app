@@ -18,6 +18,7 @@ class HomeUserService {
       final disIds = await UserActionsServices().getDislikeusers(
         currentUserId: currentUser,
       );
+      log("disIds: $disIds");
       for (var d in disIds) {
         if (d is String) {
           dislikeIds.add(d);
