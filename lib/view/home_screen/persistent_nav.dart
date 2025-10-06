@@ -74,35 +74,35 @@ class _EasyTabbarState extends State<EasyTabbar> {
       children: const [
         BottomCupertinoTab(
           tab: BottomCupertinoTabItem(
-            icon: Icon(Icons.home, size: 30),
-            label: "Home",
+            icon: Icon(Icons.home_rounded, size: 28),
+            label: "Discover",
           ),
           page: HomeScreen(),
         ),
         BottomCupertinoTab(
           tab: BottomCupertinoTabItem(
-            icon: Icon(Icons.chat, size: 30),
-            label: "Chat",
+            icon: Icon(Icons.chat_bubble_rounded, size: 28),
+            label: "Messages",
           ),
           page: ChatListScreen(),
         ),
         BottomCupertinoTab(
           tab: BottomCupertinoTabItem(
-            icon: Icon(Icons.favorite, size: 30),
-            label: "Like",
+            icon: Icon(Icons.favorite_rounded, size: 28),
+            label: "Likes",
           ),
           page: FavoritesScreen(),
         ),
         BottomCupertinoTab(
           tab: BottomCupertinoTabItem(
-            icon: Icon(Icons.notifications, size: 30),
-            label: "Notification",
+            icon: Icon(Icons.notifications_rounded, size: 28),
+            label: "Requests",
           ),
           page: NotificationScreen(),
         ),
         BottomCupertinoTab(
           tab: BottomCupertinoTabItem(
-            icon: Icon(Icons.location_on, size: 30),
+            icon: Icon(Icons.location_on_rounded, size: 28),
             label: "Nearby",
           ),
           page: Scaffold(body: HotspotScreen()),
@@ -110,7 +110,7 @@ class _EasyTabbarState extends State<EasyTabbar> {
 
         BottomCupertinoTab(
           tab: BottomCupertinoTabItem(
-            icon: Icon(Icons.person, size: 30),
+            icon: Icon(Icons.person_rounded, size: 28),
             label: "Profile",
           ),
           page: Scaffold(body: ProfileScreen()),
