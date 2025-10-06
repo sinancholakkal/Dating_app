@@ -5,7 +5,6 @@ import 'package:dating_app/services/location_service.dart';
 import 'package:dating_app/state/favorite_bloc/favorite_bloc.dart';
 import 'package:dating_app/state/request_bloc/request_bloc.dart';
 import 'package:dating_app/state/user_actions_bloc/user_actions_bloc.dart';
-import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/view/chat_screen.dart/chat_screen.dart';
 import 'package:dating_app/view/favorite_screen/favorite_screen.dart';
 import 'package:dating_app/view/home_screen/home_screen.dart';
@@ -35,10 +34,9 @@ class _EasyTabbarState extends State<EasyTabbar> {
   @override
   Widget build(BuildContext context) {
     return BottomCupertinoTabbar(
-      activeColor: primary,
-      inactiveColor: kWhite70,
-
-      backgroundColor: bgcard.withOpacity(0.8),
+      activeColor: Colors.white,
+      inactiveColor: Colors.white.withOpacity(0.4),
+      backgroundColor: Colors.black.withOpacity(0.9),
 
       overrideIconsColor: true,
       onTabPressed: (index, model, nestedNavigator) {
@@ -74,35 +72,35 @@ class _EasyTabbarState extends State<EasyTabbar> {
       children: const [
         BottomCupertinoTab(
           tab: BottomCupertinoTabItem(
-            icon: Icon(Icons.home_rounded, size: 28),
+            icon: Icon(Icons.home_rounded, size: 28, color: Colors.white),
             label: "Discover",
           ),
           page: HomeScreen(),
         ),
         BottomCupertinoTab(
           tab: BottomCupertinoTabItem(
-            icon: Icon(Icons.chat_bubble_rounded, size: 28),
+            icon: Icon(Icons.chat_bubble_rounded, size: 28, color: Colors.white),
             label: "Messages",
           ),
           page: ChatListScreen(),
         ),
         BottomCupertinoTab(
           tab: BottomCupertinoTabItem(
-            icon: Icon(Icons.favorite_rounded, size: 28),
+            icon: Icon(Icons.favorite_rounded, size: 28, color: Colors.white),
             label: "Likes",
           ),
           page: FavoritesScreen(),
         ),
         BottomCupertinoTab(
           tab: BottomCupertinoTabItem(
-            icon: Icon(Icons.notifications_rounded, size: 28),
+            icon: Icon(Icons.notifications_rounded, size: 28, color: Colors.white),
             label: "Requests",
           ),
           page: NotificationScreen(),
         ),
         BottomCupertinoTab(
           tab: BottomCupertinoTabItem(
-            icon: Icon(Icons.location_on_rounded, size: 28),
+            icon: Icon(Icons.location_on_rounded, size: 28, color: Colors.white),
             label: "Nearby",
           ),
           page: Scaffold(body: HotspotScreen()),
@@ -110,7 +108,7 @@ class _EasyTabbarState extends State<EasyTabbar> {
 
         BottomCupertinoTab(
           tab: BottomCupertinoTabItem(
-            icon: Icon(Icons.person_rounded, size: 28),
+            icon: Icon(Icons.person_rounded, size: 28, color: Colors.white),
             label: "Profile",
           ),
           page: Scaffold(body: ProfileScreen()),

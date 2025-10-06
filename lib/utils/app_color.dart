@@ -16,13 +16,15 @@ Color Kgrey800 = Colors.grey.shade800;
 Color bgcard = Color(0xFF1A1A1A);
 Color cardColor = Color.fromARGB(255, 47, 41, 41);
 const LinearGradient appGradient = LinearGradient(
-  // Very Dark Subtle Gradient
+  // Beautiful Romantic Gradient
   colors: [
-    Color(0xFF0A0A0A), // Very dark charcoal at top
-    Color(0xFF000000), // Pure black at bottom
+    Color(0xFF1A1A2E), // Deep purple-blue
+    Color(0xFF16213E), // Rich dark blue
+    Color(0xFF0F3460), // Deep ocean blue
   ],
-  begin: Alignment.topCenter,
-  end: Alignment.bottomCenter,
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+  stops: [0.0, 0.5, 1.0],
 );
  const Color primary = Color(0xFFFF5F6D); 
  const Color secondary = Color(0xFFFFC371); 
