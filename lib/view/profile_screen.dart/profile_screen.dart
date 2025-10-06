@@ -86,8 +86,102 @@ class _ProfileScreenState extends State<ProfileScreen> {
             return Container(
               width: double.infinity,
               height: double.infinity,
-              decoration: BoxDecoration(gradient: appGradient),
-              child: Center(child: CircularProgressIndicator()),
+              decoration: const BoxDecoration(gradient: appGradient),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.2),
+                          width: 1,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            strokeWidth: 3,
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            state is GetProfileLoadingState 
+                                ? 'Loading your profile...' 
+                                : 'Updating profile...',
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            state is GetProfileLoadingState 
+                                ? 'Getting your information ready' 
+                                : 'Saving your changes',
+                            style: GoogleFonts.poppins(
+                              color: Colors.white.withOpacity(0.8),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.2),
+                          width: 1,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white.withOpacity(0.7),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Please wait...',
+                            style: GoogleFonts.poppins(
+                              color: Colors.white.withOpacity(0.8),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             );
           } else if (state is GetSuccessState) {
             UserCurrentModel getUserModel = UserCurrentModel(
@@ -155,10 +249,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         _buildSectionHeader("About Me"),
                         _buildSectionDivider(),
                         AppSizedBox.h16,
-                        BioEditorWidget(bioController: _bioController, onChanged: (value) {
-                          
-                          
-                        },),
+                        BioEditorWidget(
+                          bioController: _bioController,
+                          onChanged: (value) {},
+                        ),
                         AppSizedBox.h30,
                         _buildSectionHeader("My Interests"),
                         _buildSectionDivider(),
@@ -325,11 +419,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   color: Colors.white.withOpacity(0.12),
                                   shape: BoxShape.circle,
                                 ),
-                                child: Icon(
-                                  Icons.add,
-                                  color: kWhite,
-                                  size: 22,
-                                ),
+                                child: Icon(Icons.add, color: kWhite, size: 22),
                               ),
                               const SizedBox(height: 8),
                               Text(
@@ -339,7 +429,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -386,9 +476,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ? Image.network(
                               getImages[index],
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) => Center(
-                                child: Icon(Icons.broken_image, color: kWhite54, size: 32),
-                              ),
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Center(
+                                    child: Icon(
+                                      Icons.broken_image,
+                                      color: kWhite54,
+                                      size: 32,
+                                    ),
+                                  ),
                             )
                           : Image.file(
                               File(getImages[index].path),
@@ -437,8 +532,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
     );
   }
-
- 
 }
 
 class InterestSelectionWrap extends StatelessWidget {
@@ -473,16 +566,18 @@ class InterestSelectionWrap extends StatelessWidget {
           ),
           selected: isSelected,
           onSelected: (_) => onInterestSelected(interest),
-          backgroundColor: isSelected ? primary.withOpacity(0.9) : const Color(0xFF23262B),
+          backgroundColor: isSelected
+              ? primary.withOpacity(0.9)
+              : const Color(0xFF23262B),
           selectedColor: primary.withOpacity(0.9),
           pressElevation: 0,
           elevation: 0,
-           shape: RoundedRectangleBorder(
-             borderRadius: BorderRadius.circular(8),
-             side: BorderSide(
-               color: isSelected ? Colors.transparent : kWhite.withOpacity(0.30),
-             ),
-           ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+            side: BorderSide(
+              color: isSelected ? Colors.transparent : kWhite.withOpacity(0.30),
+            ),
+          ),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           visualDensity: const VisualDensity(horizontal: -2, vertical: -2),
