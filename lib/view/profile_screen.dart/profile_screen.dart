@@ -7,6 +7,7 @@ import 'package:dating_app/state/user_bloc/user_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/utils/app_sizedbox.dart';
 import 'package:dating_app/utils/app_string.dart';
+import 'package:dating_app/view/profile_screen.dart/widget/bio_editor_widget.dart';
 import 'package:dating_app/view/profile_screen.dart/widget/privacy_button.dart';
 import 'package:dating_app/view/profile_screen.dart/widget/wallet_card_pro.dart';
 import 'package:dating_app/view/widgets/show_diolog.dart';
@@ -154,7 +155,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         _buildSectionHeader("About Me"),
                         _buildSectionDivider(),
                         AppSizedBox.h16,
-                        _buildBioEditor(),
+                        BioEditorWidget(bioController: _bioController, onChanged: (value) {
+                          
+                          
+                        },),
                         AppSizedBox.h30,
                         _buildSectionHeader("My Interests"),
                         _buildSectionDivider(),
@@ -192,6 +196,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 floatingActionButton: FloatingActionButton(
                   onPressed: () async {
+                    log(_bioController.text.trim());
+                    log("==========");
+                    log(getUserModel.bio);
                     final newModel = UserCurrentModel(
                       bio: _bioController.text.trim(),
                       images: getImages,
@@ -431,55 +438,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildBioEditor() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextField(
-          controller: _bioController,
-          maxLines: 4,
-          maxLength: 200,
-          onChanged: (_) => setState(() {}),
-          style: GoogleFonts.poppins(color: kWhite, height: 1.5),
-          decoration: InputDecoration(
-            hintText: "Write something fun...",
-            hintStyle: GoogleFonts.poppins(color: kWhite54),
-            filled: true,
-            fillColor: kWhite.withOpacity(0.06),
-            contentPadding: const EdgeInsets.all(16),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: kWhite.withOpacity(0.12)),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: kWhite.withOpacity(0.12)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: const BorderSide(color: primary, width: 1.2),
-            ),
-            counterText: "",
-          ),
-        ),
-        const SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "Share hobbies, vibes, and what you're into",
-              style: GoogleFonts.poppins(color: kWhite54, fontSize: 12),
-            ),
-            Text(
-              "${_bioController.text.length}/200",
-              style: GoogleFonts.poppins(color: kWhite70, fontSize: 12, fontWeight: FontWeight.w600),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
+ 
 }
 
 class InterestSelectionWrap extends StatelessWidget {
