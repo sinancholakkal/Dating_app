@@ -2,12 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dating_app/utils/app_color.dart';
 
-class WalletCardPro extends StatelessWidget {
+class WalletCardPro extends StatefulWidget {
   final int coins;
   final VoidCallback onWatchAd;
   final VoidCallback? onManage;
 
   const WalletCardPro({super.key, required this.coins, required this.onWatchAd, this.onManage});
+
+  @override
+  State<WalletCardPro> createState() => _WalletCardProState();
+}
+
+class _WalletCardProState extends State<WalletCardPro> {
+  @override
+  void didUpdateWidget(WalletCardPro oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // No need to manage state here since parent handles it with ValueNotifier
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +66,8 @@ class WalletCardPro extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 6),
-              Text(
-                ' ${coins.toString()} Coins'.replaceFirst('\u0000', ''),
+                Text(
+                  ' ${widget.coins.toString()} Coins'.replaceFirst('\u0000', ''),
                 style: GoogleFonts.poppins(
                   color: Colors.white,
                   fontWeight: FontWeight.w700,
@@ -75,7 +86,9 @@ class WalletCardPro extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  _WatchAdSwitch(onPressed: onWatchAd),
+                  _WatchAdSwitch(
+                    onPressed: widget.onWatchAd,
+                  ),
                 ],
               ),
             ],

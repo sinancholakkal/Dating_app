@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'package:dating_app/models/user_current_model.dart';
@@ -16,7 +17,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -33,6 +36,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late ValueNotifier<Set<String>> userInterests;
   Set<String> updatedSet = {};
 
+  // Ad watching variables
+  InterstitialAd? _interstitialAd;
+  Timer? _timer;
+  late ValueNotifier<int> _timeLeft;
+  late ValueNotifier<int> _walletCoins;
+  static const int _walletAdType = 4;
+
   @override
   void initState() {
     super.initState();
@@ -42,6 +52,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       text:
           "Lover of sunsets, travel, and finding the best coffee shops. Looking for someone to share new adventures with!",
     );
+    
+    // Initialize ValueNotifiers
+    _timeLeft = ValueNotifier<int>(0);
+    _walletCoins = ValueNotifier<int>(0);
+    
+    _initAdTimer();
+    _loadInterstitialAd();
   }
 
   bool isLoading = false;
@@ -49,7 +66,128 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void dispose() {
     _bioController.dispose();
+    _interstitialAd?.dispose();
+    _timer?.cancel();
+    _timeLeft.dispose();
+    _walletCoins.dispose();
     super.dispose();
+  }
+
+  // Ad watching methods
+  Future<void> _initAdTimer() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int currentTime = DateTime.now().millisecondsSinceEpoch;
+    const int cooldownDuration = 60; // 60 seconds cooldown
+
+    int? timestamp = prefs.getInt('wallet_timestamp$_walletAdType');
+    if (timestamp != null) {
+      int elapsedSeconds = (currentTime - timestamp) ~/ 1000;
+      if (elapsedSeconds < cooldownDuration) {
+        _timeLeft.value = cooldownDuration - elapsedSeconds;
+        _startAdTimer(timestamp);
+      } else {
+        await prefs.remove('wallet_timestamp$_walletAdType');
+      }
+    }
+  }
+
+  void _startAdTimer(int startTime) {
+    _timer?.cancel();
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      int? storedTimestamp = prefs.getInt('wallet_timestamp$_walletAdType');
+      const int cooldownDuration = 60;
+
+      if (storedTimestamp == null || storedTimestamp != startTime) {
+        timer.cancel();
+        _timeLeft.value = 0;
+        return;
+      }
+
+      int currentTime = DateTime.now().millisecondsSinceEpoch;
+      int elapsedSeconds = (currentTime - storedTimestamp) ~/ 1000;
+      int remainingTime = cooldownDuration - elapsedSeconds;
+
+      if (remainingTime <= 0) {
+        timer.cancel();
+        await prefs.remove('wallet_timestamp$_walletAdType');
+        _timeLeft.value = 0;
+        _loadInterstitialAd();
+      } else {
+        _timeLeft.value = remainingTime;
+      }
+    });
+  }
+
+  void _loadInterstitialAd() {
+    String adUnitId = 'ca-app-pub-6236667985806581/7882906249'; // Your wallet ad unit ID
+
+    InterstitialAd.load(
+      adUnitId: adUnitId,
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          log('Wallet InterstitialAd loaded for adType $_walletAdType.');
+          _interstitialAd = ad;
+        },
+        onAdFailedToLoad: (error) {
+          log('Wallet InterstitialAd failed to load: $error');
+          _interstitialAd?.dispose();
+          _interstitialAd = null;
+        },
+      ),
+    );
+  }
+
+  Future<void> _onWatchAdButtonClicked() async {
+    if (_timeLeft.value > 0) {
+      flutterToast(msg: "Ad is on cooldown. Please wait ${_timeLeft.value} seconds.");
+      return;
+    }
+
+    if (_interstitialAd == null) {
+      log('Wallet InterstitialAd not loaded. Attempting to load...');
+      _loadInterstitialAd();
+      flutterToast(msg: "Ad not ready yet. Please try again in a moment.");
+      return;
+    }
+
+    // Show the ad
+    _interstitialAd?.show();
+    _interstitialAd?.fullScreenContentCallback = FullScreenContentCallback(
+      onAdDismissedFullScreenContent: (ad) async {
+        log('Wallet Ad dismissed for adType $_walletAdType.');
+        ad.dispose();
+        
+        // Start cooldown timer
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        int currentTime = DateTime.now().millisecondsSinceEpoch;
+        await prefs.setInt('wallet_timestamp$_walletAdType', currentTime);
+        
+        _timeLeft.value = 60;
+        _walletCoins.value += 5; // Add 5 coins
+        
+        _startAdTimer(currentTime);
+        
+        // Show success message
+        flutterToast(msg: "You earned 5 coins! 🎉");
+        
+        _interstitialAd = null;
+        _loadInterstitialAd();
+      },
+      onAdFailedToShowFullScreenContent: (ad, error) {
+        log('Wallet Ad failed to show: $error');
+        ad.dispose();
+        _interstitialAd = null;
+        _loadInterstitialAd();
+        
+        flutterToast(msg: "Failed to show ad. Please try again.");
+      },
+      onAdImpression: (ad) => log('Wallet Ad impression recorded.'),
+      onAdShowedFullScreenContent: (ad) => log('Wallet Ad showed full screen content.'),
+      onAdWillDismissFullScreenContent: (ad) => log('Wallet Ad will dismiss full screen content.'),
+    );
   }
 
   @override
@@ -233,12 +371,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         AppSizedBox.h20,
-                        WalletCardPro(
-                          coins: 0,
-                          onWatchAd: () {
-                            // TODO: trigger rewarded ad flow, then +5 coins
+                        ValueListenableBuilder<int>(
+                          valueListenable: _walletCoins,
+                          builder: (context, coins, child) {
+                            return WalletCardPro(
+                              coins: coins,
+                              onWatchAd: _onWatchAdButtonClicked,
+                              onManage: null,
+                            );
                           },
-                          onManage: null,
                         ),
                         AppSizedBox.h30,
                         _buildSectionHeader("My Photos"),
