@@ -57,14 +57,17 @@ class ChatListScreen extends StatelessWidget {
       return const Scaffold(body: Center(child: Text("Please log in.")));
     }
 
-    return Scaffold(
-      backgroundColor: bgcard,
+    return Container(
+      decoration: const BoxDecoration(gradient: appGradient),
+      child: Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(
           'Chats',
           style: GoogleFonts.poppins(
             color: kWhite,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.3,
           ),
         ),
         backgroundColor: Colors.transparent,
@@ -103,6 +106,7 @@ class ChatListScreen extends StatelessWidget {
             final chatList = snapshot.data!;
 
             return ListView.separated(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               itemCount: chatList.length,
               itemBuilder: (context, index) {
                 final chat = chatList[index];
@@ -112,122 +116,125 @@ class ChatListScreen extends StatelessWidget {
                           chat.blockedBy.isNotEmpty
                       ? 0.5
                       : 1.0,
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      radius: 30,
-                      backgroundImage: NetworkImage(chat.imageUrl),
-                      backgroundColor: primary.withOpacity(0.5),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: kWhite.withOpacity(0.06),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: kWhite.withOpacity(0.1)),
                     ),
-                    title: Text(
-                      chat.name,
-                      style: GoogleFonts.poppins(
-                        color: kWhite,
-                        fontWeight: FontWeight.bold,
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      leading: CircleAvatar(
+                        radius: 26,
+                        backgroundColor: primary.withOpacity(0.2),
+                        backgroundImage: NetworkImage(chat.imageUrl),
+                        onBackgroundImageError: (_, __) {},
                       ),
-                    ),
-                    subtitle:chat.lastMessage.startsWith("https://firebasestorage.googleapis.com")?Row(
-                      mainAxisSize: MainAxisSize.min,
-                      spacing: 10,
-                      children: [
-                        Icon(Icons.photo_camera,color: kWhite.withValues(alpha: 0.5),size: 20,),
-                        Text("Photo",style: TextStyle(color: kWhite.withValues(alpha: 0.5)),)
-                      ],
-                    ): Text(
-                      chat.lastMessage,
-                      style: GoogleFonts.poppins(color: kWhite70),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    trailing: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          _formatTimestamp(chat.lastMessageTimestamp),
-                          style: GoogleFonts.poppins(
-                            color: kWhite54,
-                            fontSize: 12,
-                          ),
+                      title: Text(
+                        chat.name,
+                        style: GoogleFonts.poppins(
+                          color: kWhite,
+                          fontWeight: FontWeight.w600,
                         ),
-                        if (chat.blockedBy == currentUserId &&
-                            chat.blockedBy.isNotEmpty)
+                      ),
+                      subtitle: chat.lastMessage.startsWith("https://firebasestorage.googleapis.com")
+                          ? Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.photo_camera,
+                                  color: kWhite.withOpacity(0.5),
+                                  size: 18,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  "Photo",
+                                  style: TextStyle(color: kWhite.withOpacity(0.5)),
+                                )
+                              ],
+                            )
+                          : Text(
+                              chat.lastMessage,
+                              style: GoogleFonts.poppins(color: kWhite70),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                      trailing: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
                           Text(
-                            "You blocked",
-                            style: TextStyle(
-                              color: Kred,
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
+                            _formatTimestamp(chat.lastMessageTimestamp),
+                            style: GoogleFonts.poppins(
+                              color: kWhite54,
+                              fontSize: 12,
                             ),
                           ),
-                        if (chat.unreadCount > 0) ...[
-                          const SizedBox(height: 4),
-                          CircleAvatar(
-                            radius: 10,
-                            backgroundColor: primary,
-                            child: Text(
-                              chat.unreadCount.toString(),
+                          if (chat.blockedBy == currentUserId &&
+                              chat.blockedBy.isNotEmpty)
+                            Text(
+                              "You blocked",
                               style: TextStyle(
-                                color: kWhite,
+                                color: Kred,
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ),
-                        ],
-                      ],
-                    ),
-                    // onTap: () {
-                    //   Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //       builder: (context) => ConversationScreen(
-                    //         chatRoomId: chat.chatRoomId,
-                    //         otherUser: chat,
-                    //       ),
-                    //     ),
-                    //   );
-                    // },
-                    onTap: () {
-                      if (chat.blockedBy.isEmpty) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => BlocProvider(
-                              create: (context) =>
-                                  ConversationBloc(context.read<ChatService>()),
-
-                              child: ConversationScreen(
-                                chatRoomId: chat.chatRoomId,
-                                otherUser: chat,
+                          if (chat.unreadCount > 0) ...[
+                            const SizedBox(height: 6),
+                            CircleAvatar(
+                              radius: 10,
+                              backgroundColor: primary,
+                              child: Text(
+                                chat.unreadCount.toString(),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      } else if (chat.blockedBy == currentUserId &&
-                          chat.blockedBy.isNotEmpty) {
-                        showActionSheetUnblock(
-                          context,
-                          chat: chat
-                        );
-                      } else if (chat.blockedBy != currentUserId &&
-                          chat.blockedBy.isNotEmpty) {
-                        log("hahhahadd");
-                        flutterToast(msg: "${chat.name} has blocked you");
-                      }
-                    },
+                          ],
+                        ],
+                      ),
+                      onTap: () {
+                        if (chat.blockedBy.isEmpty) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => BlocProvider(
+                                create: (context) =>
+                                    ConversationBloc(context.read<ChatService>()),
+
+                                child: ConversationScreen(
+                                  chatRoomId: chat.chatRoomId,
+                                  otherUser: chat,
+                                ),
+                              ),
+                            ),
+                          );
+                        } else if (chat.blockedBy == currentUserId &&
+                            chat.blockedBy.isNotEmpty) {
+                          showActionSheetUnblock(
+                            context,
+                            chat: chat
+                          );
+                        } else if (chat.blockedBy != currentUserId &&
+                            chat.blockedBy.isNotEmpty) {
+                          log("hahhahadd");
+                          flutterToast(msg: "${chat.name} has blocked you");
+                        }
+                      },
+                    ),
                   ),
                 );
               },
-              separatorBuilder: (context, index) => Divider(
-                color: kWhite.withOpacity(0.1),
-                indent: 80,
-                endIndent: 16,
-              ),
+              separatorBuilder: (context, index) => const SizedBox(height: 12),
             );
           },
         ),
       ),
-    );
+    ));
   }
 
   String _formatTimestamp(DateTime timestamp) {

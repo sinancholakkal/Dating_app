@@ -1,8 +1,6 @@
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/view/widgets/interest_builder.dart';
-import 'package:dating_app/view/widgets/privacy_blur_card.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OtherProfileDetailsScreen extends StatefulWidget {

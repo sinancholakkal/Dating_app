@@ -3,7 +3,6 @@ import 'package:dating_app/models/request_model.dart';
 import 'package:dating_app/state/request_bloc/request_bloc.dart';
 import 'package:dating_app/utils/app_color.dart'; // Your app's colors
 import 'package:dating_app/view/notification_screen.dart/widget/request_card_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

@@ -1,4 +1,3 @@
-import 'package:dating_app/firebase_options.dart';
 import 'package:dating_app/routes/app_router.dart';
 import 'package:dating_app/services/chat_service.dart';
 import 'package:dating_app/state/ad_bloc/ad_bloc.dart';
@@ -19,20 +18,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-void main() async {
- WidgetsFlutterBinding.ensureInitialized();
- MobileAds.instance.initialize();
-  await Firebase.initializeApp();
-  // --- ADD THIS CODE ---
-  RequestConfiguration configuration = RequestConfiguration(
-    testDeviceIds: ["DBB64DAF31C4A709D4F674EE7B51F2A0"], // Use the ID from your log
-  );
-  MobileAds.instance.updateRequestConfiguration(configuration);
-  // --- END ADDED CODE ---
-  await FirebaseAppCheck.instance.activate(
-    androidProvider: AndroidProvider.debug, 
-  );
+import 'package:flutter/foundation.dart'; // <-- Make sure to import this
 
+// ... your other imports
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  MobileAds.instance.initialize();
+
+  if (kDebugMode) {
+    RequestConfiguration configuration = RequestConfiguration(
+      testDeviceIds: ["DBB64DAF31C4A709D4F674EE7B51F2A0"],
+    );
+    MobileAds.instance.updateRequestConfiguration(configuration);
+  }
+
+
+  await FirebaseAppCheck.instance.activate(
+    androidProvider: kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
+  );
 
   runApp(const MyApp());
 }

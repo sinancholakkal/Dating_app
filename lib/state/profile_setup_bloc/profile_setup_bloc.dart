@@ -1,9 +1,7 @@
-import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:meta/meta.dart';
 
 part 'profile_setup_event.dart';
 part 'profile_setup_state.dart';

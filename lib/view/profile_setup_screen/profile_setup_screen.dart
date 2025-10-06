@@ -5,20 +5,16 @@ import 'package:dating_app/services/auth_services.dart';
 import 'package:dating_app/state/profile_setup_bloc/profile_setup_bloc.dart';
 import 'package:dating_app/state/user_bloc/user_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
-import 'package:dating_app/utils/app_color.dart' as AppColors;
 import 'package:dating_app/utils/app_string.dart';
 import 'package:dating_app/view/profile_setup_screen/widget/details_setup.dart';
 import 'package:dating_app/view/profile_setup_screen/widget/interested_setup.dart';
 import 'package:dating_app/view/profile_setup_screen/widget/photos_setp.dart';
 import 'package:dating_app/view/profile_setup_screen/widget/verification_step.dart';
-import 'package:dating_app/view/widgets/app_genderchip.dart';
-import 'package:dating_app/view/widgets/app_text_field.dart';
 import 'package:dating_app/view/widgets/loading.dart';
 import 'package:dating_app/view/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfileSetupScreen extends StatefulWidget {

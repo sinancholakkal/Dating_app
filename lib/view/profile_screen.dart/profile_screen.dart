@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:dating_app/models/user_current_model.dart';
-import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/state/auth_bloc/auth_bloc.dart';
 import 'package:dating_app/state/profile_setup_bloc/profile_setup_bloc.dart';
 import 'package:dating_app/state/user_bloc/user_bloc.dart';
@@ -9,9 +8,7 @@ import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/utils/app_sizedbox.dart';
 import 'package:dating_app/utils/app_string.dart';
 import 'package:dating_app/view/profile_screen.dart/widget/privacy_button.dart';
-import 'package:dating_app/view/profile_screen.dart/widget/profile_update_button.dart';
 import 'package:dating_app/view/profile_setup_screen/widget/interested_setup.dart';
-import 'package:dating_app/view/widgets/loading.dart';
 import 'package:dating_app/view/widgets/show_diolog.dart';
 import 'package:dating_app/view/widgets/toast.dart';
 import 'package:flutter/material.dart';
