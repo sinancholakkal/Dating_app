@@ -283,100 +283,186 @@ class _UpgradeBottomSheetState extends State<UpgradeBottomSheet> {
           gradient: appGradient,
           borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(32.0),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              // Handle bar
               Container(
-                width: 50,
-                height: 5,
+                width: 40,
+                height: 4,
                 decoration: BoxDecoration(
                   color: kWhite.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const Spacer(),
+              const SizedBox(height: 24),
+              
+              // Header section
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.white.withOpacity(0.12)),
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      "Go Unlimited!",
+                      style: GoogleFonts.poppins(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                        color: kWhite,
+                        letterSpacing: 0.3,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "You're out of swipes for today. Upgrade to unlock more features.",
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        color: kWhite70,
+                        height: 1.4,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+              
+              const SizedBox(height: 24),
+              
+              // Features section
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.06),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: Colors.white.withOpacity(0.08)),
+                ),
+                child: Column(
+                  children: [
+                    _buildFeatureRow(
+                      icon: CupertinoIcons.heart_fill,
+                      text: "Unlimited Likes",
+                    ),
+                    const SizedBox(height: 12),
+                    _buildFeatureRow(
+                      icon: Icons.replay,
+                      text: "Rewind Your Last Swipe",
+                    ),
+                    const SizedBox(height: 12),
+                    _buildFeatureRow(
+                      icon: CupertinoIcons.eye_fill,
+                      text: "See Who Likes You",
+                    ),
+                    const SizedBox(height: 12),
+                    _buildFeatureRow(
+                      icon: Icons.star_sharp,
+                      text: "5 Free Super Likes a Week",
+                    ),
+                  ],
+                ),
+              ),
+              
+              const SizedBox(height: 24),
+              // Watch Ad button
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF52A0FD), Color(0xFF00C6FF)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF52A0FD).withOpacity(0.3),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: ElevatedButton(
+                  onPressed: _isAdTimerActive()
+                      ? null
+                      : _onWatchAdButtonClicked,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.play_circle_fill,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        _isAdTimerActive()
+                            ? 'Ad Cooldown: $_timeLeft s'
+                            : 'Watch Ad to Get More Swipes',
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              
               const SizedBox(height: 16),
-              Text(
-                "Go Unlimited!",
-                style: GoogleFonts.poppins(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: kWhite,
+              
+              // Upgrade button
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                "You're out of swipes for today. Upgrade to unlock more features.",
-                style: GoogleFonts.poppins(fontSize: 16, color: kWhite70),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 48),
-              _buildFeatureRow(
-                icon: CupertinoIcons.heart_fill,
-                text: "Unlimited Likes",
-              ),
-              _buildFeatureRow(
-                icon: Icons.replay,
-                text: "Rewind Your Last Swipe",
-              ),
-              _buildFeatureRow(
-                icon: CupertinoIcons.eye_fill,
-                text: "See Who Likes You",
-              ),
-              _buildFeatureRow(
-                icon: Icons.star_sharp,
-                text: "5 Free Super Likes a Week",
-              ),
-              const SizedBox(
-                height: 20,
-              ), // Added spacing for the Watch Ad button
-              ElevatedButton(
-                onPressed: _isAdTimerActive()
-                    ? null
-                    : _onWatchAdButtonClicked, // Use the correct method
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 55),
-                  backgroundColor:
-                      Colors.blueAccent, // Use a distinct color for ad button
-                  foregroundColor: kWhite,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+                child: ElevatedButton(
+                  onPressed: () {
+                    flutterToast(msg: "Upgrade feature is coming soon!");
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                ),
-                child: Text(
-                  _isAdTimerActive()
-                      ? 'Ad Cooldown: $_timeLeft s'
-                      : 'Watch Ad to Get More Swipes',
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                  child: Text(
+                    "Upgrade Now",
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ),
-              const Spacer(),
-              ElevatedButton(
-                onPressed: () {
-                  flutterToast(msg: "Upgrade feature is coming soon!");
-                },
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 55),
-                  backgroundColor: kWhite,
-                  foregroundColor: primary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
-                child: Text(
-                  "Upgrade Now",
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+              
               const SizedBox(height: 16),
+              
+              // Not now button
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(
@@ -384,9 +470,11 @@ class _UpgradeBottomSheetState extends State<UpgradeBottomSheet> {
                   style: GoogleFonts.poppins(
                     color: kWhite70,
                     fontWeight: FontWeight.w600,
+                    fontSize: 14,
                   ),
                 ),
               ),
+              const SizedBox(height: 24), // Extra padding at bottom
             ],
           ),
         ),
@@ -395,23 +483,29 @@ class _UpgradeBottomSheetState extends State<UpgradeBottomSheet> {
   }
 
   Widget _buildFeatureRow({required IconData icon, required String text}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: kWhite, size: 20),
-          const SizedBox(width: 12),
-          Text(
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: primary.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, color: primary, size: 18),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
             text,
             style: GoogleFonts.poppins(
-              fontSize: 16,
+              fontSize: 14,
               color: kWhite,
               fontWeight: FontWeight.w600,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
+
