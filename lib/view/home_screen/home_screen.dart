@@ -71,9 +71,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 Image.asset("asset/app_icon.png", scale: 18),
                 Text(
                   'PairUp Meet',
-                  style: TextStyle(
+                  style: GoogleFonts.poppins(
                     color: kWhite,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.3,
                     fontSize: 22,
                   ),
                 ),
@@ -276,7 +277,15 @@ class _HomeScreenState extends State<HomeScreen> {
           width: isLarge ? 60 : 50,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(color: color),
+            color: color.withOpacity(0.08),
+            border: Border.all(color: color.withOpacity(0.6)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Center(
             child: Padding(
@@ -319,33 +328,37 @@ class _ProfileCardState extends State<ProfileCard> {
         child: Stack(
           children: [
             // Image Container
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.grey.shade800,
-                borderRadius: BorderRadius.circular(10),
-                image: hasImages
-                    ? DecorationImage(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(
-                          widget.profile.getImages![_currentPhoto],
-                        ),
-                      )
-                    : null,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Stack(
+                children: [
+                  Container(
+                    color: Colors.grey.shade800,
+                    child: hasImages
+                        ? Image.network(
+                            widget.profile.getImages![_currentPhoto],
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: double.infinity,
+                            errorBuilder: (context, error, stackTrace) => const Center(
+                              child: Icon(Icons.broken_image, color: Colors.white54, size: 56),
+                            ),
+                          )
+                        : const Center(
+                            child: Icon(Icons.person, color: Colors.white, size: 60),
+                          ),
+                  ),
+                ],
               ),
-              child: !hasImages
-                  ? const Center(
-                      child: Icon(Icons.person, color: Colors.white, size: 60),
-                    )
-                  : null,
             ),
             // Black Gradient Overlay
             Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(16),
                 gradient: const LinearGradient(
                   begin: Alignment.bottomCenter,
                   end: Alignment.center,
-                  colors: [Colors.black87, Colors.transparent],
+                  colors: [Color(0xCC000000), Colors.transparent],
                 ),
               ),
             ),
@@ -380,7 +393,7 @@ class _ProfileCardState extends State<ProfileCard> {
               Align(
                 alignment: Alignment.topCenter,
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Row(
                     children: List.generate(numberPhotos, (index) {
                       return Expanded(
@@ -418,18 +431,19 @@ class _ProfileCardState extends State<ProfileCard> {
                         children: [
                           Text(
                             widget.profile.name,
-                            style: const TextStyle(
+                            style: GoogleFonts.poppins(
                               color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 25,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.2,
+                              fontSize: 24,
                             ),
                           ),
                           const SizedBox(width: 8),
                           Text(
                             widget.profile.age.toString(),
-                            style: const TextStyle(
+                            style: GoogleFonts.poppins(
                               color: Colors.white,
-                              fontSize: 22,
+                              fontSize: 20,
                             ),
                           ),
                         ],

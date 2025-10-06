@@ -131,7 +131,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
                   widget.otherUser.name,
                   style: GoogleFonts.poppins(
                     color: kWhite,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.3,
                   ),
                 ),
                 StreamBuilder<DocumentSnapshot>(
@@ -182,16 +183,49 @@ class _ConversationScreenState extends State<ConversationScreen> {
                               messageDoc.data() as Map<String, dynamic>;
                           final bool isMe =
                               messageData['senderId'] == currentUserId;
-                          return MessageBubble(
-                          messageId: messageDoc.id,
-                          senderId:  messageData['senderId'],
-                          isMe: isMe,
-                          text: messageData['text'],
-                          reactions: messageData['reactions']??{},
-                          currentUserId: currentUserId,
-                          chatRoomId: widget.chatRoomId, // Pass the chatRoomId from your widget
-                          chatService: _chatService, // Pass the ChatService instance
-                        );
+                          final Timestamp? ts = messageData['timestamp'];
+                          final DateTime? messageTime = ts?.toDate();
+
+                          // Show a day divider when day changes (accounting for reverse list)
+                          Widget? divider;
+                          if (messageTime != null) {
+                            final prevIndex = index + 1;
+                            final bool showDivider;
+                            if (prevIndex >= state.messages.length) {
+                              showDivider = true; // top-most (latest) message
+                            } else {
+                              final prevData = state.messages[prevIndex].data()
+                                  as Map<String, dynamic>;
+                              final Timestamp? prevTs = prevData['timestamp'];
+                              final DateTime? prevTime = prevTs?.toDate();
+                              showDivider = prevTime == null
+                                  ? false
+                                  : !_isSameDay(messageTime, prevTime);
+                            }
+                            if (showDivider) {
+                              divider = _DayDivider(label: _formatDayLabel(messageTime));
+                            }
+                          }
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              if (divider != null) ...[
+                                divider,
+                                const SizedBox(height: 8),
+                              ],
+                              MessageBubble(
+                                messageId: messageDoc.id,
+                                senderId: messageData['senderId'],
+                                isMe: isMe,
+                                text: messageData['text'],
+                                reactions: messageData['reactions'] ?? {},
+                                currentUserId: currentUserId,
+                                chatRoomId: widget.chatRoomId,
+                                chatService: _chatService,
+                              ),
+                            ],
+                          );
                         },
                       );
                     }
@@ -218,8 +252,11 @@ class _ConversationScreenState extends State<ConversationScreen> {
   Widget _buildMessageInputField(ValueChanged<String> onChanged) {
     XFile? xFile;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-      decoration: BoxDecoration(color: bgcard.withOpacity(0.5)),
+      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
+      decoration: BoxDecoration(
+        color: kWhite.withOpacity(0.06),
+        border: Border(top: BorderSide(color: kWhite.withOpacity(0.08))),
+      ),
       child: BlocBuilder<ProfileSetupBloc, ProfileSetupState>(
         builder: (context, state) {
           if (state is ChatImageUploadState) {
@@ -241,8 +278,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 ),
               Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 12.0,
+                  horizontal: 8.0,
+                  vertical: 8.0,
                 ),
                 child: SafeArea(
                   top: false,
@@ -266,18 +303,36 @@ class _ConversationScreenState extends State<ConversationScreen> {
                               hintText: "Type a message...",
                               hintStyle: GoogleFonts.poppins(color: kWhite70),
                               filled: true,
-                              fillColor: kWhite.withOpacity(0.1),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30),
-                                borderSide: BorderSide.none,
+                              fillColor: kWhite.withOpacity(0.08),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(28),
+                                borderSide: BorderSide(color: kWhite.withOpacity(0.12)),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(28),
+                                borderSide: const BorderSide(color: primary, width: 1.2),
                               ),
                             ),
                           ),
                         ),
                       const SizedBox(width: 12),
-                      IconButton(
-                        icon: Icon(Icons.send, color: kWhite),
-                        onPressed: () => sendMessage(xfile: xFile),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: primary,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.25),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: IconButton(
+                          icon: const Icon(Icons.send, color: Colors.white),
+                          onPressed: () => sendMessage(xfile: xFile),
+                        ),
                       ),
                     ],
                   ),
@@ -287,6 +342,42 @@ class _ConversationScreenState extends State<ConversationScreen> {
           );
         },
       ),
+    );
+  }
+
+  bool _isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
+  String _formatDayLabel(DateTime time) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = DateTime(now.year, now.month, now.day - 1);
+    final dateOnly = DateTime(time.year, time.month, time.day);
+    if (dateOnly == today) return "Today";
+    if (dateOnly == yesterday) return "Yesterday";
+    return "${dateOnly.day.toString().padLeft(2, '0')}/${dateOnly.month.toString().padLeft(2, '0')}/${dateOnly.year.toString().substring(2)}";
+  }
+}
+
+class _DayDivider extends StatelessWidget {
+  final String label;
+  const _DayDivider({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(child: Container(height: 1, color: kWhite.withOpacity(0.1))),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          child: Text(
+            label,
+            style: GoogleFonts.poppins(color: kWhite70, fontSize: 12),
+          ),
+        ),
+        Expanded(child: Container(height: 1, color: kWhite.withOpacity(0.1))),
+      ],
     );
   }
 }
