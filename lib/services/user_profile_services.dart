@@ -74,6 +74,7 @@ class UserProfileServices {
           .update({
             'bio': userModel.bio,
             'images': images,
+            'interests':userModel.interests
           },);
       
     } catch (e) {

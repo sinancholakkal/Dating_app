@@ -22,7 +22,6 @@ void main() async {
    WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  // Activate App Check (choose the provider)
   await FirebaseAppCheck.instance.activate(
     androidProvider: AndroidProvider.debug, 
   );

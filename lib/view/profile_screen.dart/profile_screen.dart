@@ -9,6 +9,7 @@ import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/utils/app_sizedbox.dart';
 import 'package:dating_app/utils/app_string.dart';
 import 'package:dating_app/view/profile_screen.dart/widget/privacy_button.dart';
+import 'package:dating_app/view/profile_screen.dart/widget/profile_update_button.dart';
 import 'package:dating_app/view/profile_setup_screen/widget/interested_setup.dart';
 import 'package:dating_app/view/widgets/loading.dart';
 import 'package:dating_app/view/widgets/show_diolog.dart';
@@ -27,21 +28,18 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final Set<String> _userInterests = {
-    'Travel',
-    'Photography',
-    'Music',
-    'Fitness',
-  };
+  final Set<String> _userInterests = {};
   List<dynamic> getImages = [];
   List<String> deleteImage = [];
 
-   
   late final TextEditingController _bioController;
+  late ValueNotifier<Set<String>> userInterests;
+  Set<String> updatedSet = {};
 
   @override
   void initState() {
     super.initState();
+
     context.read<UserBloc>().add(GetUserProfileEvent());
     _bioController = TextEditingController(
       text:
@@ -71,9 +69,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         BlocListener<UserBloc, UserState>(
           listener: (context, state) {
-            if(state is GetSuccessState){
-              
-            }
+            if (state is GetSuccessState) {}
           },
         ),
       ],
@@ -97,7 +93,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Center(child: CircularProgressIndicator()),
             );
           } else if (state is GetSuccessState) {
-            UserCurrentModel getUserModel =UserCurrentModel(bio: _bioController.text, images: state.userProfile.getImages!,userId: state.userProfile.id,interests: state.userProfile.interests);
+            UserCurrentModel getUserModel = UserCurrentModel(
+              bio: _bioController.text,
+              images: state.userProfile.getImages!,
+              userId: state.userProfile.id,
+              interests: state.userProfile.interests,
+            );
+            userInterests = ValueNotifier(state.userProfile.interests);
             log("rebuilding");
             return Container(
               decoration: const BoxDecoration(gradient: appGradient),
@@ -152,19 +154,67 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         AppSizedBox.h30,
                         _buildSectionHeader("My Interests"),
                         AppSizedBox.h16,
-                        _buildInterestsWrap(userInterests: getUserModel.interests),
+
+                        ValueListenableBuilder<Set<String>>(
+                          valueListenable: userInterests,
+                          builder: (context, currentSelectedInterests, child) {
+                            return InterestSelectionWrap(
+                              selectedInterests: currentSelectedInterests,
+                              onInterestSelected: (toggledInterest) {
+                                final updatedSet = Set<String>.from(
+                                  currentSelectedInterests,
+                                );
+
+                                if (updatedSet.contains(toggledInterest)) {
+                                  updatedSet.remove(toggledInterest);
+                                } else {
+                                  updatedSet.add(toggledInterest);
+                                }
+
+                                userInterests.value = updatedSet;
+                                log(userInterests.value.toString());
+                              },
+                              allInterests: AppStrings.allInterests,
+                            );
+                          },
+                        ),
                         AppSizedBox.h70, // Space for the FAB
                         buildPrivacyPolicyLink(context),
-                        
                       ],
                     ),
                   ),
                 ),
-                floatingActionButton: ProfileUpdateButton(
-                  bioController: _bioController,
-                  getImages: getImages,
-                  getUserModel: getUserModel,
-                  deleteImages: deleteImage,
+                floatingActionButton: FloatingActionButton(
+                  onPressed: () async {
+                    final newModel = UserCurrentModel(
+                      bio: _bioController.text.trim(),
+                      images: getImages,
+                      userId: getUserModel.userId,
+                      interests: userInterests.value,
+                    );
+                    log(getUserModel.interests.toString());
+                    log(newModel.interests.toString());
+                    log("${getUserModel == newModel}");
+                    if (getUserModel == newModel) {
+                      flutterToast(msg: "No updates");
+                    } else if (getImages.length < 2) {
+                      flutterToast(msg: "Please select minimum two images");
+                    } else if (userInterests.value.length < 2) {
+                      flutterToast(
+                        msg: "Please select minimum two your interest",
+                      );
+                    } else {
+                      //Call update event
+                      context.read<UserBloc>().add(
+                        UpdateUserPrfileEvent(
+                          userCurrentModel: newModel,
+                          deleteImages: deleteImage,
+                        ),
+                      );
+                    }
+                  },
+                  backgroundColor: primary, // Use your theme color
+                  child: Icon(Icons.check, color: kWhite),
                 ),
               ),
             );
@@ -330,14 +380,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildInterestsWrap({required Set<String>userInterests}) {
+  Widget _buildInterestsWrap({required Set<String> userInterests}) {
     return Wrap(
       spacing: 12.0,
       runSpacing: 12.0,
-      children: userInterests.map((interest) {
+      children: AppStrings.allInterests.map((interest) {
         return InterestChip(
           label: interest,
-          isSelected: true,
+          isSelected: userInterests.contains(interest) ? true : false,
           onSelected: (selected) {},
         );
       }).toList(),
@@ -345,50 +395,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-class ProfileUpdateButton extends StatelessWidget {
-  const ProfileUpdateButton({
-    super.key,
-    required TextEditingController bioController,
-    required this.getImages,
-    required this.getUserModel,
-    required this.deleteImages,
-  }) : _bioController = bioController;
+class InterestSelectionWrap extends StatelessWidget {
+  final Set<String> selectedInterests;
+  final ValueChanged<String>
+  onInterestSelected; // Callback for when an interest is toggled
+  final List<String>
+  allInterests; // Pass all interests, or rely on AppStrings.allInterests
 
-  final TextEditingController _bioController;
-  final List getImages;
-  final UserCurrentModel getUserModel;
-  final List<String> deleteImages;
+  const InterestSelectionWrap({
+    Key? key,
+    required this.selectedInterests,
+    required this.onInterestSelected,
+    required this.allInterests,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: () async {
-        final newModel = UserCurrentModel(
-          bio: _bioController.text.trim(),
-          images: getImages,
-          userId: getUserModel.userId,
-          interests: getUserModel.interests
+    return Wrap(
+      spacing: 12.0,
+      runSpacing: 12.0,
+      children: allInterests.map((interest) {
+        final bool isSelected = selectedInterests.contains(interest);
+        return InterestChip(
+          label: interest,
+          isSelected: isSelected,
+          onSelected: (_) {
+            onInterestSelected(interest);
+          },
         );
-
-        log(getUserModel.images.length.toString());
-        log(newModel.images.length.toString());
-        log("${getUserModel == newModel}");
-        if (getUserModel == newModel) {
-          flutterToast(msg: "No updates");
-        } else {
-          //Call update event
-          context.read<UserBloc>().add(
-            UpdateUserPrfileEvent(
-              userCurrentModel: newModel,
-              deleteImages: deleteImages,
-            ),
-          );
-        }
-      },
-      backgroundColor: primary, // Use your theme color
-      child: Icon(Icons.check, color: kWhite),
+      }).toList(),
     );
   }
 }
-
-

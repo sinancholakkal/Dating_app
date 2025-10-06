@@ -6,7 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 Widget buildPrivacyPolicyLink(BuildContext context) {
     // Replace this with your actual privacy policy URL
-    final Uri privacyPolicyUrl = Uri.parse('https://www.termsfeed.com/live/694500f0-0b28-4740-aec4-8e38e87bf7ae');
+    final Uri privacyPolicyUrl = Uri.parse('https://www.termsfeed.com/live/364ad209-b439-4b36-8241-f750b34a410d');
 
     return ListTile(
       leading: Icon(Icons.privacy_tip_outlined, color: kWhite),
