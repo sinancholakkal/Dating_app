@@ -85,35 +85,38 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 log("favorite loaded state emited");
                 List<UserProfile> favoritesList = state.favorites;
                 if (favoritesList.isEmpty) {
-                  return Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(18),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.06),
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: Colors.white.withOpacity(0.1)),
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(18),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.06),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: Colors.white.withOpacity(0.1)),
+                            ),
+                            child: const Icon(Icons.favorite_border, color: Colors.white, size: 36),
                           ),
-                          child: const Icon(Icons.favorite_border, color: Colors.white, size: 36),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          "No favorites yet",
-                          style: GoogleFonts.poppins(
-                            color: kWhite,
-                            fontWeight: FontWeight.w600,
+                          const SizedBox(height: 16),
+                          Text(
+                            "No favorites yet",
+                            style: GoogleFonts.poppins(
+                              color: kWhite,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          "Tap the heart on profiles to save them here",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.poppins(color: kWhite70, fontSize: 12),
-                        ),
-                      ],
+                          const SizedBox(height: 6),
+                          Text(
+                            "Tap the heart on profiles to save them here",
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(color: kWhite70, fontSize: 12),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 }

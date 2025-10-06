@@ -102,8 +102,8 @@ class _EasyTabbarState extends State<EasyTabbar> {
         ),
         BottomCupertinoTab(
           tab: BottomCupertinoTabItem(
-            icon: Icon(Icons.content_paste_search_rounded, size: 30),
-            label: "Hotspot screen",
+            icon: Icon(Icons.location_on, size: 30),
+            label: "Nearby",
           ),
           page: Scaffold(body: HotspotScreen()),
         ),

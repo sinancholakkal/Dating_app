@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 // For DocumentSnapshot if needed elsewhere
 import 'dart:async';
 
@@ -186,39 +187,115 @@ class _HotspotScreenState extends State<HotspotScreen>
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            title: Text('Nearby', style: TextStyle(color: kWhite)),
+            title: Text(
+              'Nearby',
+              style: GoogleFonts.poppins(
+                color: kWhite,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.3,
+                fontSize: 20,
+              ),
+            ),
             backgroundColor: Colors.transparent,
             elevation: 0,
           ),
           body: _isLoadingLocation
-              ? const Center(
-                  child: CircularProgressIndicator(color: Colors.white),
+              ? Center(
+                  child: CircularProgressIndicator(
+                    color: kWhite,
+                    strokeWidth: 3,
+                  ),
                 )
               : _locationError.isNotEmpty
               ? Center(
                   child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      _locationError,
-                      style: const TextStyle(color: Colors.red, fontSize: 16),
-                      textAlign: TextAlign.center,
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Colors.red.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: Colors.red.withOpacity(0.3)),
+                          ),
+                          child: Icon(
+                            Icons.location_off,
+                            color: Colors.red.shade300,
+                            size: 48,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          "Location Error",
+                          style: GoogleFonts.poppins(
+                            color: kWhite,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          _locationError,
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.poppins(
+                            color: kWhite70,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 )
               : nearbyUserProfiles.isEmpty
-              ? const Center(
-                  child: Text(
-                    'No one nearby yet. Keep exploring!',
-                    style: TextStyle(color: Colors.white, fontSize: 18),
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.06),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: Colors.white.withOpacity(0.1)),
+                          ),
+                          child: Icon(
+                            Icons.location_searching,
+                            color: Colors.white.withOpacity(0.6),
+                            size: 48,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          "No one nearby yet",
+                          style: GoogleFonts.poppins(
+                            color: kWhite,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "Keep exploring to find people within 50 meters",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.poppins(
+                            color: kWhite70,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 )
               : ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   itemCount: nearbyUserProfiles.length,
                   itemBuilder: (context, index) {
                     final UserProfile userProfile = nearbyUserProfiles[index];
-                    final String otherUserId = userProfile.id;
                     final String userName = userProfile.name;
-                    final String userBio = userProfile.bio;
                     final List<String>? userProfileImageUrls =
                         userProfile.getImages;
                     final double? distance = userProfile.distanceInMeters;
@@ -226,52 +303,34 @@ class _HotspotScreenState extends State<HotspotScreen>
                     String distanceText = 'Unknown distance';
                     if (distance != null) {
                       distanceText =
-                          '${distance.toStringAsFixed(0)} meters away';
+                          '${distance.toStringAsFixed(0)}m away';
                     }
 
-                    return Card(
-                      margin: EdgeInsets.all(8.0),
-                      color: cardColor,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ListTile(
-                          titleTextStyle: TextStyle(
-                            color: kWhite,
-                            fontSize: 19,
+                    return Container(
+                      margin: const EdgeInsets.symmetric(vertical: 6),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Colors.white.withOpacity(0.08),
+                            Colors.white.withOpacity(0.04),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.white.withOpacity(0.15)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 20,
+                            offset: const Offset(0, 8),
                           ),
-                          subtitleTextStyle: TextStyle(
-                            color: kWhite70,
-                            fontSize: 16,
-                          ),
-                          leading: CircleAvatar(
-                            radius: 30,
-                            backgroundImage: NetworkImage(
-                              userProfileImageUrls![0],
-                            ),
-                          ),
-                          title: Text(userName),
-                          subtitle: Text(distanceText),
-                          trailing: IconButton(
-                            icon: const Icon(
-                              CupertinoIcons.check_mark_circled,
-                              color: Colors.greenAccent,
-                              size: 30,
-                            ),
-                            onPressed: () {
-                              context.read<UserActionsBloc>().add(
-                                UserLikeActionEvent(
-                                  likeUserId: userProfile.id,
-                                  likeUserName: userProfile.name,
-                                  currentUserId: accUserProfile.id,
-                                  currentUserName: accUserProfile.name,
-                                  image: accUserProfile.getImages![0],
-                                ),
-                              );
-                              setState(() {
-                                nearbyUserProfiles.removeAt(index);
-                              });
-                            },
-                          ),
+                        ],
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(20),
                           onTap: () {
                             pushNewScreen(
                               context,
@@ -284,6 +343,126 @@ class _HotspotScreenState extends State<HotspotScreen>
                               ),
                             );
                           },
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Row(
+                              children: [
+                                // Avatar
+                                Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: CircleAvatar(
+                                    radius: 28,
+                                    backgroundColor: primary.withOpacity(0.15),
+                                    backgroundImage: userProfileImageUrls != null && userProfileImageUrls.isNotEmpty
+                                        ? NetworkImage(userProfileImageUrls[0])
+                                        : null,
+                                    child: userProfileImageUrls == null || userProfileImageUrls.isEmpty
+                                        ? Icon(Icons.person, color: kWhite, size: 24)
+                                        : null,
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                // Content
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        userName,
+                                        style: GoogleFonts.poppins(
+                                          color: kWhite,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16,
+                                          letterSpacing: 0.2,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.location_on,
+                                            color: primary,
+                                            size: 16,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            distanceText,
+                                            style: GoogleFonts.poppins(
+                                              color: kWhite70,
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                // Like button
+                                Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Colors.green.withOpacity(0.2),
+                                        Colors.green.withOpacity(0.1),
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(25),
+                                    border: Border.all(color: Colors.green.withOpacity(0.3)),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.green.withOpacity(0.2),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(25),
+                                      onTap: () {
+                                        context.read<UserActionsBloc>().add(
+                                          UserLikeActionEvent(
+                                            likeUserId: userProfile.id,
+                                            likeUserName: userProfile.name,
+                                            currentUserId: accUserProfile.id,
+                                            currentUserName: accUserProfile.name,
+                                            image: accUserProfile.getImages![0],
+                                          ),
+                                        );
+                                        setState(() {
+                                          nearbyUserProfiles.removeAt(index);
+                                        });
+                                      },
+                                      child: Container(
+                                        height: 50,
+                                        width: 50,
+                                        child: Center(
+                                          child: Icon(
+                                            Icons.favorite,
+                                            color: Colors.green.shade300,
+                                            size: 24,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     );
