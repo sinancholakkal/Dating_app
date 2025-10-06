@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'package:dating_app/models/user_current_model.dart';
+import 'package:dating_app/services/auth_services.dart';
 import 'package:dating_app/state/auth_bloc/auth_bloc.dart';
+import 'package:dating_app/state/coins_bloc/coins_bloc.dart';
 import 'package:dating_app/state/profile_setup_bloc/profile_setup_bloc.dart';
 import 'package:dating_app/state/user_bloc/user_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
@@ -59,6 +61,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     
     _initAdTimer();
     _loadInterstitialAd();
+    
+    // Load user's coins from Firestore
+    context.read<CoinsBloc>().add( GetCurrentUserCoinsEvent());
   }
 
   bool isLoading = false;
@@ -166,9 +171,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         await prefs.setInt('wallet_timestamp$_walletAdType', currentTime);
         
         _timeLeft.value = 60;
-        _walletCoins.value += 5; // Add 5 coins
         
         _startAdTimer(currentTime);
+        
+        // Add coins using the coins service
+        context.read<CoinsBloc>().add( AddCoinsEvent(coins: 5,userId: AuthService().getCurrentUser()!.uid));
         
         // Show success message
         flutterToast(msg: "You earned 5 coins! 🎉");
@@ -205,6 +212,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
         BlocListener<UserBloc, UserState>(
           listener: (context, state) {
             if (state is GetSuccessState) {}
+          },
+        ),
+        BlocListener<CoinsBloc, CoinsState>(
+          listener: (context, state) {
+            if (state is AddCoinsSuccessState) {
+              // Refresh coins after successful addition
+              context.read<CoinsBloc>().add(GetCurrentUserCoinsEvent());
+              flutterToast(msg: "Coins added successfully! 🎉");
+            } else if (state is AddCoinsErrorState) {
+              flutterToast(msg: "Failed to add coins: ${state.message}");
+            } else if (state is GetCurrentUserCoinsSuccessState) {
+              // Update wallet coins when successfully loaded
+              _walletCoins.value = state.coins;
+            } else if (state is GetCurrentUserCoinsErrorState) {
+              flutterToast(msg: "Failed to load coins: ${state.message}");
+            }
           },
         ),
       ],
@@ -371,13 +394,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         AppSizedBox.h20,
-                        ValueListenableBuilder<int>(
-                          valueListenable: _walletCoins,
-                          builder: (context, coins, child) {
-                            return WalletCardPro(
-                              coins: coins,
-                              onWatchAd: _onWatchAdButtonClicked,
-                              onManage: null,
+                        BlocBuilder<CoinsBloc, CoinsState>(
+                          builder: (context, coinsState) {
+                            return ValueListenableBuilder<int>(
+                              valueListenable: _walletCoins,
+                              builder: (context, coins, child) {
+                                return WalletCardPro(
+                                  coins: coins,
+                                  onWatchAd: _onWatchAdButtonClicked,
+                                  onManage: null,
+                                  isLoading: coinsState is AddCoinsLoadingState || 
+                                           coinsState is GetCurrentUserCoinsLoadingState,
+                                  isAdLoading: coinsState is AddCoinsLoadingState,
+                                );
+                              },
                             );
                           },
                         ),
