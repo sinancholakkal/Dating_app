@@ -228,6 +228,7 @@ class ChatListScreen extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      // Simple icon
                       Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
@@ -240,16 +241,22 @@ class ChatListScreen extends StatelessWidget {
                           size: 48,
                         ),
                       ),
+                      
                       const SizedBox(height: 24),
+                      
+                      // Title
                       Text(
-                        'No conversations yet',
+                        'No Messages Yet',
                         style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontSize: 24,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
+                      
                       const SizedBox(height: 12),
+                      
+                      // Subtitle
                       Text(
                         'Start swiping to find amazing people\nand begin meaningful conversations',
                         textAlign: TextAlign.center,
@@ -259,45 +266,58 @@ class ChatListScreen extends StatelessWidget {
                           height: 1.5,
                         ),
                       ),
+                      
                       const SizedBox(height: 24),
+                      
+                      // Single action button
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 12,
-                        ),
+                        width: double.infinity,
+                        height: 48,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: [
-                              primary.withOpacity(0.2),
-                              primary.withOpacity(0.1),
-                            ],
+                            colors: [primary, primary.withOpacity(0.8)],
                           ),
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: primary.withOpacity(0.3),
-                            width: 1,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.swipe_right_alt,
-                              color: primary,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              'Go to Discover to start swiping',
-                              style: GoogleFonts.poppins(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: primary.withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
                             ),
                           ],
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(16),
+                            onTap: () {
+                              // Navigate to home/discover screen
+                              // You can implement navigation here
+                            },
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.explore_rounded,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'Start Discovering',
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -502,4 +522,5 @@ class ChatListScreen extends StatelessWidget {
       return DateFormat('dd/MM/yy').format(timestamp);
     }
   }
+
 }

@@ -471,7 +471,7 @@ class _ItemShowScreenState extends State<ItemShowScreen> {
                               );
                               Navigator.pop(context);
                             },
-                            child: Container(
+                            child: SizedBox(
                               height: 60,
                               width: 60,
                               child: Center(
@@ -524,7 +524,7 @@ class _ItemShowScreenState extends State<ItemShowScreen> {
                               );
                               Navigator.pop(context);
                             },
-                            child: Container(
+                            child: SizedBox(
                               height: 50,
                               width: 50,
                               child: Center(
@@ -576,7 +576,7 @@ class _ItemShowScreenState extends State<ItemShowScreen> {
                               );
                               Navigator.pop(context);
                             },
-                            child: Container(
+                            child: SizedBox(
                               height: 60,
                               width: 60,
                               child: Center(

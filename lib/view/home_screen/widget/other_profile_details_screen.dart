@@ -439,7 +439,7 @@ class _OtherProfileDetailsScreenState extends State<OtherProfileDetailsScreen> {
                           onTap: () {
                             // _matchEngine.currentItem!.nope();
                           },
-                          child: Container(
+                          child: SizedBox(
                             height: 60,
                             width: 60,
                             child: Center(
@@ -482,7 +482,7 @@ class _OtherProfileDetailsScreenState extends State<OtherProfileDetailsScreen> {
                           onTap: () {
                             // _matchEngine.currentItem!.superLike();
                           },
-                          child: Container(
+                          child: SizedBox(
                             height: 50,
                             width: 50,
                             child: Center(
@@ -525,7 +525,7 @@ class _OtherProfileDetailsScreenState extends State<OtherProfileDetailsScreen> {
                           onTap: () {
                             // _matchEngine.currentItem!.like();
                           },
-                          child: Container(
+                          child: SizedBox(
                             height: 60,
                             width: 60,
                             child: Center(

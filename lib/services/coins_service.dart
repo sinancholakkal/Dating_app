@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dating_app/services/auth_services.dart';
 
 class CoinsService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;

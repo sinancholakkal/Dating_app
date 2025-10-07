@@ -446,7 +446,7 @@ class _HotspotScreenState extends State<HotspotScreen>
                                           nearbyUserProfiles.removeAt(index);
                                         });
                                       },
-                                      child: Container(
+                                      child: SizedBox(
                                         height: 50,
                                         width: 50,
                                         child: Center(

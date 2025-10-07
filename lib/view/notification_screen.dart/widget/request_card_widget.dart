@@ -120,7 +120,7 @@ class _RequestCardState extends State<RequestCard> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(20),
                       onTap: widget.onDecline,
-                      child: Container(
+                      child: SizedBox(
                         height: 40,
                         width: 40,
                         child: Center(
@@ -147,7 +147,7 @@ class _RequestCardState extends State<RequestCard> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(20),
                       onTap: widget.onAccept,
-                      child: Container(
+                      child: SizedBox(
                         height: 40,
                         width: 40,
                         child: Center(
