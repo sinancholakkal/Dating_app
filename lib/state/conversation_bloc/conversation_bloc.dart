@@ -3,14 +3,17 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:dating_app/services/chat_service.dart';
+import 'package:dating_app/services/moderation_services.dart';
 import 'package:dating_app/services/user_profile_services.dart';
 import 'package:dating_app/state/conversation_bloc/conversation_event.dart';
 import 'package:dating_app/state/conversation_bloc/conversation_state.dart';
+import 'package:dating_app/view/widgets/toast.dart';
 // Import your service, events, and states
 
 class ConversationBloc extends Bloc<ConversationEvent, ConversationState> {
   final ChatService _chatService;
   StreamSubscription? _messagesSubscription;
+ final UserProfileServices _userProfileServices = UserProfileServices();
 
   ConversationBloc(this._chatService) : super(ConversationLoading()) {
     on<LoadMessagesEvent>((event, emit) {
@@ -35,20 +38,35 @@ class ConversationBloc extends Bloc<ConversationEvent, ConversationState> {
       );
     });
 
-    on<SendImageEvent>((event, emit)async {
+    on<SendImageEvent>((event, emit) async {
       log("Image upload service called");
-     final message =  await UserProfileServices().uploadImageToFirebase(File(event.image.path), event.chatRoomId, false,collection: "chat_images");
-    
-    log("Image url upload in chat");
-     _chatService.sendMessage(
-        recipientId: event.recipientId,
-        chatRoomId: event.chatRoomId,
-        messageText: message,
-        senderId: event.senderId,
+      final message = await _userProfileServices.uploadImageToFirebase(
+        File(event.image.path),
+        event.chatRoomId,
+        false,
+        collection: "chat_images",
       );
+      log("Image url: $message");
+      if (await ModerationServices().checkContentModeration(
+            imageUrl: message,
+          ) ==
+          "YES") {
+            log("Image is moderated");
+        flutterToast(msg: "Image is moderated");
+        await _userProfileServices.deleteImageFromFirebase(message);
+        log("moderated image deleted from firebase storage");
+        return;
+      } else {
+        log("Image is not moderated");
+        log("Image url upload in chat");
+        _chatService.sendMessage(
+          recipientId: event.recipientId,
+          chatRoomId: event.chatRoomId,
+          messageText: message,
+          senderId: event.senderId,
+        );
+      }
     });
-
-    
   }
 
   @override

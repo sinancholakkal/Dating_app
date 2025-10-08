@@ -211,7 +211,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         BlocListener<UserBloc, UserState>(
           listener: (context, state) {
-            if (state is GetSuccessState) {}
+            if (state is FoundInappropriateState) {
+              flutterToast(msg: state.msg);
+            }
           },
         ),
         BlocListener<CoinsBloc, CoinsState>(
@@ -481,6 +483,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       flutterToast(
                         msg: "Please select minimum two your interest",
                       );
+                    }else if(_bioController.text.trim().isEmpty){
+                      flutterToast(msg: "Please fill the bio");
+
                     } else {
                       //Call update event
                       context.read<UserBloc>().add(

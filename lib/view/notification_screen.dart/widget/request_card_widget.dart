@@ -1,6 +1,5 @@
 import 'package:dating_app/models/request_model.dart';
 import 'package:dating_app/utils/app_color.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 

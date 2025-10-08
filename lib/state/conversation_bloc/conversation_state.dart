@@ -12,3 +12,4 @@ class ConversationLoaded extends ConversationState {
 
 class ConversationError extends ConversationState {}
 
+class ImageUploadingState extends ConversationState {}

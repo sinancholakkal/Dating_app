@@ -45,14 +45,17 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
         BlocListener<UserActionsBloc, UserActionsState>(
-          listener: (context, state)async {
+          listener: (context, state) async {
             if (state is SwipeLimitReachedState) {
-                   log('SUCCESS: SwipeLimitReachedState was detected!');
-             await showUpgradeSheet(context);
-              context.read<UserActionsBloc>().add(SwipeLimitWarningShownEvent());
-             context.read<UserActionsBloc>().add(SwipeLimitWarningAcknowledgedEvent());
-      log('Reset event dispatched.');
-      
+              log('SUCCESS: SwipeLimitReachedState was detected!');
+              await showUpgradeSheet(context);
+              context.read<UserActionsBloc>().add(
+                SwipeLimitWarningShownEvent(),
+              );
+              context.read<UserActionsBloc>().add(
+                SwipeLimitWarningAcknowledgedEvent(),
+              );
+              log('Reset event dispatched.');
             }
           },
         ),
@@ -118,7 +121,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         child: const CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
                           strokeWidth: 3,
                         ),
                       ),
@@ -234,7 +239,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           const SizedBox(height: 24),
                           ElevatedButton(
                             onPressed: () {
-                              context.read<HomeUserBloc>().add(FetchHomeAllUsers());
+                              context.read<HomeUserBloc>().add(
+                                FetchHomeAllUsers(),
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white.withOpacity(0.2),
@@ -324,7 +331,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           _buildActionButton(
                             onTap: () {
-                              context.read<HomeUserBloc>().add(FetchHomeAllUsers());
+                              context.read<HomeUserBloc>().add(
+                                FetchHomeAllUsers(),
+                              );
                             },
                             asset: 'assets/icons/back.png',
                             color: const Color(0xFFFFA726),
@@ -400,7 +409,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  
 
   Widget _buildActionButton({
     required VoidCallback onTap,
@@ -426,15 +434,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [
-                    color.withOpacity(0.2),
-                    color.withOpacity(0.1),
-                  ],
+                  colors: [color.withOpacity(0.2), color.withOpacity(0.1)],
                 ),
-                border: Border.all(
-                  color: color.withOpacity(0.4),
-                  width: 2,
-                ),
+                border: Border.all(color: color.withOpacity(0.4), width: 2),
                 boxShadow: [
                   BoxShadow(
                     color: color.withOpacity(0.3),
@@ -451,11 +453,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Center(
                 child: Padding(
                   padding: EdgeInsets.all(isLarge ? 14.0 : 10.0),
-                  child: Image.asset(
-                    asset,
-                    color: color,
-                    fit: BoxFit.contain,
-                  ),
+                  child: Image.asset(asset, color: color, fit: BoxFit.contain),
                 ),
               ),
             ),
@@ -532,25 +530,26 @@ class _ProfileCardState extends State<ProfileCard> {
                           fit: BoxFit.cover,
                           width: double.infinity,
                           height: double.infinity,
-                          errorBuilder: (context, error, stackTrace) => Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  Colors.grey.shade700,
-                                  Colors.grey.shade800,
-                                ],
+                          errorBuilder: (context, error, stackTrace) =>
+                              Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Colors.grey.shade700,
+                                      Colors.grey.shade800,
+                                    ],
+                                  ),
+                                ),
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.broken_image,
+                                    color: Colors.white54,
+                                    size: 64,
+                                  ),
+                                ),
                               ),
-                            ),
-                            child: const Center(
-                              child: Icon(
-                                Icons.broken_image,
-                                color: Colors.white54,
-                                size: 64,
-                              ),
-                            ),
-                          ),
                         )
                       : Container(
                           decoration: BoxDecoration(
@@ -589,32 +588,32 @@ class _ProfileCardState extends State<ProfileCard> {
                     ),
                   ),
                 ),
-            // Photo Navigation Taps
-            if (hasImages && numberPhotos > 1)
-              Row(
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        if (_currentPhoto > 0) {
-                          setState(() => _currentPhoto--);
-                        }
-                      },
-                      child: Container(color: Colors.transparent),
-                    ),
+                // Photo Navigation Taps
+                if (hasImages && numberPhotos > 1)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            if (_currentPhoto > 0) {
+                              setState(() => _currentPhoto--);
+                            }
+                          },
+                          child: Container(color: Colors.transparent),
+                        ),
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            if (_currentPhoto < (numberPhotos - 1)) {
+                              setState(() => _currentPhoto++);
+                            }
+                          },
+                          child: Container(color: Colors.transparent),
+                        ),
+                      ),
+                    ],
                   ),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        if (_currentPhoto < (numberPhotos - 1)) {
-                          setState(() => _currentPhoto++);
-                        }
-                      },
-                      child: Container(color: Colors.transparent),
-                    ),
-                  ),
-                ],
-              ),
                 // Enhanced Photo Indicators
                 if (hasImages && numberPhotos > 1)
                   Align(
@@ -625,7 +624,9 @@ class _ProfileCardState extends State<ProfileCard> {
                         children: List.generate(numberPhotos, (index) {
                           return Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 3.0,
+                              ),
                               child: Container(
                                 height: 6,
                                 decoration: BoxDecoration(
@@ -636,7 +637,9 @@ class _ProfileCardState extends State<ProfileCard> {
                                   boxShadow: _currentPhoto == index
                                       ? [
                                           BoxShadow(
-                                            color: Colors.white.withOpacity(0.5),
+                                            color: Colors.white.withOpacity(
+                                              0.5,
+                                            ),
                                             blurRadius: 8,
                                             offset: const Offset(0, 2),
                                           ),

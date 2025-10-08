@@ -43,7 +43,8 @@ class _MessageInputFieldState extends State<MessageInputField> {
   }
 
   // Wrapper for sendMessage, clearing text field if text was sent
-  void _sendCurrentMessage() {
+  Future<void> _sendCurrentMessage()async {
+    
     if (_messageController.text.trim().isNotEmpty || _xFile != null) {
       widget.onSendMessage(messageText: _messageController.text.trim(), xFile: _xFile);
       _messageController.clear();
@@ -123,10 +124,13 @@ class _MessageInputFieldState extends State<MessageInputField> {
                         ),
                       ),
                     const SizedBox(width: 12),
-                    IconButton(
-                      icon: Icon(Icons.send, color: kWhite),
-                      onPressed: _sendCurrentMessage,
-                    ),
+                    // IconButton(
+                    //   icon: Icon(Icons.send, color: kWhite),
+                    //   onPressed: ()async {
+                    //     log("send message button pressed");
+                    //     await _sendCurrentMessage();
+                    //   },
+                    // ),
                   ],
                 ),
               ),

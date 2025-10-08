@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:dating_app/models/user_current_model.dart';
 import 'package:dating_app/models/user_profile_model.dart';
+import 'package:dating_app/services/moderation_services.dart';
 import 'package:dating_app/services/user_profile_services.dart';
 import 'package:meta/meta.dart';
 
@@ -11,6 +12,7 @@ part 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   final userService = UserProfileServices();
+  final moderationServices = ModerationServices();
   UserBloc() : super(UserInitial()) {
     on<AddUserProfileSetupEvent>((event, emit)async {
       try{
@@ -44,9 +46,15 @@ class UserBloc extends Bloc<UserEvent, UserState> {
      on<UpdateUserPrfileEvent>((event, emit)async {
       try{
         emit(UpdateProfileLoadingState());
-         await userService.updateUserProfile(deleteImages: event.deleteImages,userModel: event.userCurrentModel);
+         if(await moderationServices.checkContentModeration(text: event.userCurrentModel.bio) == "YES"){
+          emit(FoundInappropriateState(msg: "Your bio contains inappropriate content"));
+          log("Your bio contains inappropriate content");
+         }else{
+          await userService.updateUserProfile(deleteImages: event.deleteImages,userModel: event.userCurrentModel);
         
-        emit(UpdatedProfileState());
+         }
+          emit(UpdatedProfileState());
+       
         
       }catch(e){
         log("something issue while update data $e");

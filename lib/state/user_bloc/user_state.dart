@@ -21,3 +21,7 @@ class GetSuccessState extends UserState{
 
   GetSuccessState({required this.userProfile});
 }
+class FoundInappropriateState extends UserState{
+  final String msg;
+  FoundInappropriateState({required this.msg});
+}

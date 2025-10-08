@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/models/chat_user_model.dart';
 import 'package:dating_app/services/auth_services.dart';
 import 'package:dating_app/services/chat_service.dart';
+import 'package:dating_app/services/moderation_services.dart';
 import 'package:dating_app/state/conversation_bloc/conversation_bloc.dart';
 import 'package:dating_app/state/conversation_bloc/conversation_event.dart';
 import 'package:dating_app/state/conversation_bloc/conversation_state.dart';
@@ -14,6 +15,7 @@ import 'package:dating_app/state/user_bloc_and_report_bloc/user_bloc_and_report_
 import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/view/conversation_screen.dart/widget/drop_down_widget.dart';
 import 'package:dating_app/view/conversation_screen.dart/widget/message_bubble.dart';
+import 'package:dating_app/view/widgets/toast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +40,7 @@ class ConversationScreen extends StatefulWidget {
 class _ConversationScreenState extends State<ConversationScreen> {
   late final TextEditingController _messageController;
   Timer? _typingTimer;
+  String lastMessageId = '';
   final _chatService = ChatService();
   void _onTextChanged({required String value, required String currentUserId}) {
     if (_typingTimer?.isActive ?? false) _typingTimer?.cancel();
@@ -80,7 +83,24 @@ class _ConversationScreenState extends State<ConversationScreen> {
     super.dispose();
   }
 
-  void sendMessage({required XFile? xfile}) {
+  Future<void> deleteMessage({required String chatRoomId}) async {
+    if (await ModerationServices().checkContentModeration(
+          text: _messageController.text.trim(),
+        ) ==
+        "YES") {
+          flutterToast(msg: "Message is moderated");
+      ChatService().deleteMessageById(
+        chatRoomId: chatRoomId,
+        messageId: lastMessageId,
+      );
+    }
+  }
+
+
+
+  void sendMessage({required XFile? xfile}) async {
+    log("sendMessage onTap called");
+    deleteMessage(chatRoomId: widget.chatRoomId);
     if (_messageController.text.trim().isNotEmpty) {
       context.read<ConversationBloc>().add(
         SendMessageEvent(
@@ -98,8 +118,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
         SendImageEvent(
           chatRoomId: widget.chatRoomId,
           image: xfile,
-           senderId: FirebaseAuth.instance.currentUser!.uid,
-         recipientId: widget.otherUser.otherUserId,
+          senderId: FirebaseAuth.instance.currentUser!.uid,
+          recipientId: widget.otherUser.otherUserId,
         ),
       );
     }
@@ -147,14 +167,15 @@ class _ConversationScreenState extends State<ConversationScreen> {
                         ? Image.network(
                             widget.otherUser.imageUrl,
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) => Container(
-                              color: Colors.grey.shade700,
-                              child: const Icon(
-                                Icons.person,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                            ),
+                            errorBuilder: (context, error, stackTrace) =>
+                                Container(
+                                  color: Colors.grey.shade700,
+                                  child: const Icon(
+                                    Icons.person,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ),
                           )
                         : Container(
                             color: Colors.grey.shade700,
@@ -200,7 +221,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
                             final typingUsers = List<String>.from(
                               data['typingUsers'] ?? [],
                             );
-                            if (typingUsers.contains(widget.otherUser.otherUserId)) {
+                            if (typingUsers.contains(
+                              widget.otherUser.otherUserId,
+                            )) {
                               return Row(
                                 children: [
                                   SizedBox(
@@ -270,7 +293,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                 ),
                               ),
                               child: const CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
                                 strokeWidth: 3,
                               ),
                             ),
@@ -304,13 +329,25 @@ class _ConversationScreenState extends State<ConversationScreen> {
                           // Show a day divider when day changes (accounting for reverse list)
                           Widget? divider;
                           if (messageTime != null) {
+                            final DateTime now = DateTime.now();
+                            final int difference = now
+                                .difference(messageTime)
+                                .inMilliseconds;
+                            if (difference.abs() <= 1500) {
+                              log(
+                                "Message is very recent (within 1.5 seconds)",
+                              );
+                              lastMessageId = messageDoc.id;
+                              log(lastMessageId);
+                            }
                             final prevIndex = index + 1;
                             final bool showDivider;
                             if (prevIndex >= state.messages.length) {
                               showDivider = true; // top-most (latest) message
                             } else {
-                              final prevData = state.messages[prevIndex].data()
-                                  as Map<String, dynamic>;
+                              final prevData =
+                                  state.messages[prevIndex].data()
+                                      as Map<String, dynamic>;
                               final Timestamp? prevTs = prevData['timestamp'];
                               final DateTime? prevTime = prevTs?.toDate();
                               showDivider = prevTime == null
@@ -318,7 +355,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                   : !_isSameDay(messageTime, prevTime);
                             }
                             if (showDivider) {
-                              divider = _DayDivider(label: _formatDayLabel(messageTime));
+                              divider = _DayDivider(
+                                label: _formatDayLabel(messageTime),
+                              );
                             }
                           }
 
@@ -456,10 +495,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.08),
         border: Border(
-          top: BorderSide(
-            color: Colors.white.withOpacity(0.15),
-            width: 1,
-          ),
+          top: BorderSide(color: Colors.white.withOpacity(0.15), width: 1),
         ),
         boxShadow: [
           BoxShadow(
@@ -507,7 +543,11 @@ class _ConversationScreenState extends State<ConversationScreen> {
                           ),
                         ),
                         child: IconButton(
-                          icon: const Icon(Icons.add, color: Colors.white, size: 22),
+                          icon: const Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 22,
+                          ),
                           onPressed: () => showImageSourceActionSheet(
                             context,
                             bloc: context.read<ProfileSetupBloc>(),
@@ -570,10 +610,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                           gradient: LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: [
-                              primary,
-                              primary.withOpacity(0.8),
-                            ],
+                            colors: [primary, primary.withOpacity(0.8)],
                           ),
                           shape: BoxShape.circle,
                           boxShadow: [
@@ -723,10 +760,7 @@ Widget _buildImagePreview({
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16),
-            child: Image.file(
-              File(xFile.path),
-              fit: BoxFit.cover,
-            ),
+            child: Image.file(File(xFile.path), fit: BoxFit.cover),
           ),
         ),
         Positioned(

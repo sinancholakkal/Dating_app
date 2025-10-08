@@ -9,10 +9,12 @@ import 'package:dating_app/view/phone_otp_screen/phone_otp_screen.dart';
 import 'package:dating_app/view/profile_setup_screen/profile_setup_screen.dart';
 import 'package:dating_app/view/screen_onboarding/screen_onboarding.dart';
 import 'package:dating_app/view/screen_spash.dart';
+import 'package:dating_app/view/test_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/splash',
+  
   routes: [
     GoRoute(path: '/onboarding', builder: (context, state) =>  ScreenOnboarding()),
     GoRoute(path: '/authlanding', builder: (context, state) =>  AuthLandingScreen()),
@@ -22,6 +24,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(path: '/home', builder: (context, state) =>  HomeScreen()),
     GoRoute(path: '/easytab', builder: (context, state) =>  EasyTabbar()),
     GoRoute(path: '/splash', builder: (context, state) =>  ScreenSplash()),
+    GoRoute(path: '/MyHomePage', builder: (context, state) =>  MyHomePage()),
     // GoRoute(
     //   path: '/profile/:userId', // The ':userId' is the parameter
     //   builder: (context, state) {

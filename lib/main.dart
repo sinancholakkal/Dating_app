@@ -1,3 +1,4 @@
+import 'package:dating_app/firebase_options.dart';
 import 'package:dating_app/routes/app_router.dart';
 import 'package:dating_app/services/chat_service.dart';
 import 'package:dating_app/state/ad_bloc/ad_bloc.dart';
@@ -25,7 +26,9 @@ import 'package:flutter/foundation.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+   await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   MobileAds.instance.initialize();
 
   if (kDebugMode) {
