@@ -25,7 +25,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   UserProfile? accUserProfile;
-  
+
   @override
   void initState() {
     super.initState();
@@ -191,6 +191,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 screen: OtherProfileDetailsScreen(
                                   index: i,
                                   userProfile: profile,
+                                  matchEngine: matchEngine,
+                                  accUserProfile: accUserProfile!,
                                 ),
                               );
                             },

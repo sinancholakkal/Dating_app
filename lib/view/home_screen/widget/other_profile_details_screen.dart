@@ -1,13 +1,26 @@
+import 'dart:developer';
 import 'package:dating_app/models/user_profile_model.dart';
+import 'package:dating_app/state/user_actions_bloc/user_actions_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/view/widgets/interest_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:swipe_cards/swipe_cards.dart';
 
 class OtherProfileDetailsScreen extends StatefulWidget {
 	final UserProfile userProfile;
   final int index;
-  const OtherProfileDetailsScreen({super.key,required this.userProfile,required this.index});
+  final MatchEngine matchEngine;
+  final UserProfile accUserProfile;
+  
+  const OtherProfileDetailsScreen({
+    super.key,
+    required this.userProfile,
+    required this.index,
+    required this.matchEngine,
+    required this.accUserProfile,
+  });
 
   @override
   State<OtherProfileDetailsScreen> createState() => _OtherProfileDetailsScreenState();
@@ -437,7 +450,14 @@ class _OtherProfileDetailsScreenState extends State<OtherProfileDetailsScreen> {
                         child: InkWell(
                           borderRadius: BorderRadius.circular(30),
                           onTap: () {
-                            // _matchEngine.currentItem!.nope();
+                            log("Noped ${widget.userProfile.name}");
+                            widget.matchEngine.currentItem?.nope();
+                            context.read<UserActionsBloc>().add(
+                              UserDislikeActionEvent(
+                                dislikeUserId: widget.userProfile.id,
+                              ),
+                            );
+                            Navigator.pop(context);
                           },
                           child: SizedBox(
                             height: 60,
@@ -480,7 +500,18 @@ class _OtherProfileDetailsScreenState extends State<OtherProfileDetailsScreen> {
                         child: InkWell(
                           borderRadius: BorderRadius.circular(25),
                           onTap: () {
-                            // _matchEngine.currentItem!.superLike();
+                            log("Superliked ${widget.userProfile.name}");
+                            widget.matchEngine.currentItem?.superLike();
+                            context.read<UserActionsBloc>().add(
+                              SuperLikeEvent(
+                                likeUserId: widget.userProfile.id,
+                                likeUserName: widget.userProfile.name,
+                                currentUserId: widget.accUserProfile.id,
+                                currentUserName: widget.accUserProfile.name,
+                                image: widget.accUserProfile.getImages![0],
+                              ),
+                            );
+                            Navigator.pop(context);
                           },
                           child: SizedBox(
                             height: 50,
@@ -523,7 +554,18 @@ class _OtherProfileDetailsScreenState extends State<OtherProfileDetailsScreen> {
                         child: InkWell(
                           borderRadius: BorderRadius.circular(30),
                           onTap: () {
-                            // _matchEngine.currentItem!.like();
+                            log("Liked ${widget.userProfile.name}");
+                            widget.matchEngine.currentItem?.like();
+                            context.read<UserActionsBloc>().add(
+                              UserLikeActionEvent(
+                                likeUserId: widget.userProfile.id,
+                                likeUserName: widget.userProfile.name,
+                                currentUserId: widget.accUserProfile.id,
+                                currentUserName: widget.accUserProfile.name,
+                                image: widget.accUserProfile.getImages![0],
+                              ),
+                            );
+                            Navigator.pop(context);
                           },
                           child: SizedBox(
                             height: 60,
