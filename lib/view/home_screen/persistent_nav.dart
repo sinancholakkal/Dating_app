@@ -27,7 +27,10 @@ class EasyTabbar extends StatefulWidget {
 class _EasyTabbarState extends State<EasyTabbar> {
   @override
   void dispose() {
-    setOffline(AuthService().getCurrentUser()!.uid);
+    final currentUser = AuthService().getCurrentUser();
+    if (currentUser != null) {
+      setOffline(currentUser.uid);
+    }
     super.dispose();
   }
 

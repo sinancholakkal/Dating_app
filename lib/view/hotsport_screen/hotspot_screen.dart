@@ -31,7 +31,7 @@ class _HotspotScreenState extends State<HotspotScreen>
   bool _isLoadingLocation = true;
   String _locationError = '';
   final double searchRadiusMeters = 50.0;
-  late UserProfile accUserProfile;
+  UserProfile? accUserProfile;
 
   @override
   void initState() {
@@ -71,6 +71,7 @@ class _HotspotScreenState extends State<HotspotScreen>
   Future<void> _initializeUserAndLocation() async {
     currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) {
+      if (!mounted) return;
       setState(() {
         _isLoadingLocation = false;
         _locationError = 'User not logged in.';
@@ -84,6 +85,7 @@ class _HotspotScreenState extends State<HotspotScreen>
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied ||
             permission == LocationPermission.deniedForever) {
+          if (!mounted) return;
           setState(() {
             _isLoadingLocation = false;
             _locationError = 'Location permissions denied.';
@@ -95,6 +97,7 @@ class _HotspotScreenState extends State<HotspotScreen>
       Position initialPosition = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
+      if (!mounted) return;
       setState(() {
         currentPosition = initialPosition;
         _isLoadingLocation = false;
@@ -105,6 +108,7 @@ class _HotspotScreenState extends State<HotspotScreen>
       _startLocationUpdates();
     } catch (e) {
       print('Error initializing location: $e');
+      if (!mounted) return;
       setState(() {
         _isLoadingLocation = false;
         _locationError = 'Failed to get location: ${e.toString()}';
@@ -127,6 +131,7 @@ class _HotspotScreenState extends State<HotspotScreen>
         ).listen(
           (profiles) {
             // Listens to UserProfile list
+            if (!mounted) return;
             setState(() {
               nearbyUserProfiles = profiles; // Update nearbyUserProfiles
             });
@@ -134,6 +139,7 @@ class _HotspotScreenState extends State<HotspotScreen>
           },
           onError: (error) {
             print('Error listening for nearby users: $error');
+            if (!mounted) return;
             setState(() {
               _locationError =
                   'Error fetching nearby users: ${error.toString()}';
@@ -154,6 +160,7 @@ class _HotspotScreenState extends State<HotspotScreen>
         Geolocator.getPositionStream(locationSettings: locationSettings).listen(
           (position) async {
             if (currentUser != null && position != currentPosition) {
+              if (!mounted) return;
               setState(() {
                 currentPosition = position;
               });
@@ -166,6 +173,7 @@ class _HotspotScreenState extends State<HotspotScreen>
           },
           onError: (error) {
             print('Error in location stream: $error');
+            if (!mounted) return;
             setState(() {
               _locationError = 'Error updating location: ${error.toString()}';
             });
@@ -432,13 +440,14 @@ class _HotspotScreenState extends State<HotspotScreen>
                                     child: InkWell(
                                       borderRadius: BorderRadius.circular(25),
                                       onTap: () {
+                                        if (accUserProfile == null) return;
                                         context.read<UserActionsBloc>().add(
                                           UserLikeActionEvent(
                                             likeUserId: userProfile.id,
                                             likeUserName: userProfile.name,
-                                            currentUserId: accUserProfile.id,
-                                            currentUserName: accUserProfile.name,
-                                            image: accUserProfile.getImages![0],
+                                            currentUserId: accUserProfile!.id,
+                                            currentUserName: accUserProfile!.name,
+                                            image: accUserProfile!.getImages![0],
                                           ),
                                         );
                                         setState(() {
