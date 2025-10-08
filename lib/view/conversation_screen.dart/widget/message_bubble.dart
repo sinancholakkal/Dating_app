@@ -1,6 +1,10 @@
 // lib/widgets/message_bubble.dart
+import 'dart:developer';
+
 import 'package:dating_app/utils/app_color.dart';
+import 'package:dating_app/view/conversation_screen.dart/widget/unsend_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:insta_image_viewer/insta_image_viewer.dart';
 // No need to import ChatMessage model here if we're not using it directly
@@ -53,14 +57,18 @@ class MessageBubble extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
-                    color: hasReactedWithThisEmoji ? primary.withOpacity(0.3) : Colors.transparent,
+                    color: hasReactedWithThisEmoji
+                        ? primary.withOpacity(0.3)
+                        : Colors.transparent,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: hasReactedWithThisEmoji ? primary : Colors.transparent, width: 1.0),
+                    border: Border.all(
+                      color: hasReactedWithThisEmoji
+                          ? primary
+                          : Colors.transparent,
+                      width: 1.0,
+                    ),
                   ),
-                  child: Text(
-                    emoji,
-                    style: const TextStyle(fontSize: 28),
-                  ),
+                  child: Text(emoji, style: const TextStyle(fontSize: 28)),
                 ),
               );
             }).toList(),
@@ -88,12 +96,15 @@ class MessageBubble extends StatelessWidget {
       padding: const EdgeInsets.only(top: 4.0),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment: isMe
+            ? MainAxisAlignment.end
+            : MainAxisAlignment.start,
         children: emojiCounts.entries.map((entry) {
           final emoji = entry.key;
           final count = entry.value;
 
-          final bool isCurrentUserReaction = currentUserHasReacted && currentUserEmoji == emoji;
+          final bool isCurrentUserReaction =
+              currentUserHasReacted && currentUserEmoji == emoji;
 
           return GestureDetector(
             onTap: () {
@@ -101,18 +112,23 @@ class MessageBubble extends StatelessWidget {
             },
             child: Container(
               margin: const EdgeInsets.only(right: 4.0),
-              padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 6.0,
+                vertical: 2.0,
+              ),
               decoration: BoxDecoration(
-                color: isCurrentUserReaction ? primary.withOpacity(0.3) : kWhite.withOpacity(0.2),
+                color: isCurrentUserReaction
+                    ? primary.withOpacity(0.3)
+                    : kWhite.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(10.0),
-                border: Border.all(color: isCurrentUserReaction ? primary : Colors.transparent, width: 0.5),
+                border: Border.all(
+                  color: isCurrentUserReaction ? primary : Colors.transparent,
+                  width: 0.5,
+                ),
               ),
               child: Text(
                 '$emoji $count',
-                style: GoogleFonts.poppins(
-                  fontSize: 12,
-                  color: kWhite,
-                ),
+                style: GoogleFonts.poppins(fontSize: 12, color: kWhite),
               ),
             ),
           );
@@ -123,13 +139,26 @@ class MessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isImageMessage = text.startsWith("https://firebasestorage.googleapis.com");
+    final bool isImageMessage = text.startsWith(
+      "https://firebasestorage.googleapis.com",
+    );
 
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: isImageMessage
           ? GestureDetector(
-              onLongPress: () => _showReactionPicker(context),
+              onLongPress: () {
+                log("Double tap=======================================");
+               
+                showUnsendDialog(context, () {
+                   context.pop();
+                  ChatService().deleteMessageById(
+                    chatRoomId: chatRoomId,
+                    messageId: messageId,
+                  );
+                });
+              },
+              onDoubleTap: () => _showReactionPicker(context),
               child: Container(
                 width: 180,
                 height: 230,
@@ -145,10 +174,24 @@ class MessageBubble extends StatelessWidget {
               ),
             )
           : GestureDetector(
-              onLongPress: () => _showReactionPicker(context),
+              onLongPress: () {
+                log("Onlong tap=======================================");
+                
+                showUnsendDialog(context, () {
+                  context.pop();
+                  ChatService().deleteMessageById(
+                    chatRoomId: chatRoomId,
+                    messageId: messageId,
+                  );
+                });
+              },
+              onDoubleTap: () => _showReactionPicker(context),
               child: Container(
                 margin: const EdgeInsets.symmetric(vertical: 4.0),
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 10.0,
+                ),
                 decoration: BoxDecoration(
                   color: isMe ? primary : kWhite.withOpacity(0.2),
                   borderRadius: BorderRadius.only(

@@ -137,6 +137,12 @@ class UserProfileServices {
       if (docSnapshot.exists && docSnapshot.data() != null) {
         final data = docSnapshot.data()!;
 
+        log("data: $data");
+        log("============");
+        if(data['name']==null){ 
+          log("User not fount");
+          return null;
+        }
         final userProfile = UserProfile(
           id: data["id"] as String,
           name: data["name"] as String,

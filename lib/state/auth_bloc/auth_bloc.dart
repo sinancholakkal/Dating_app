@@ -49,28 +49,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-    // Handler for sending OTP
-    // on<SendOtpEvent>((event, emit) async {
-    //   emit(AuthLoadingState());
 
-    //   log(event.phoneNumber.length.toString());
-    //   if (event.phoneNumber.length == 10) {
-    //     // emit(AuthCodeSentSuccessState(phoneNumber: event.phoneNumber));
-    //     authServices.sendOtp(
-    //       phoneNumber: "91${event.phoneNumber}",
-    //       onCodeSent: (verificationId, resendToken) {
-    //         //add(_OtpSentEvent(verificationId: verificationId));
-    //       },
-    //       onVerificationFailed: (e) {
-    //         log(e.toString());
-    //       },
-    //     );
-    //   } else if (event.phoneNumber.isEmpty) {
-    //     emit(InvalidNumberState(msg: AppStrings.enterNo));
-    //   } else {
-    //     emit(InvalidNumberState(msg: AppStrings.enterValidNo));
-    //   }
-    // });
 
     on<SendOtpEvent>((event, emit) async {
       emit(AuthLoadingState());
@@ -165,18 +144,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
       }
     });
-    // on<VerifyOtpEvent>((event, emit) async {
-    //   emit(AuthLoadingState());
-    //   await Future.delayed(const Duration(seconds: 2));
-
-    //   if (event.otp == "123456") {
-    //     // Mock success
-    //     emit(AuthVerifiedState());
-    //   } else {
-    //     // Mock failure
-    //     emit(AuthErrorState(message: "Invalid OTP. Please try again."));
-    //   }
-    // });
 
     // Handler for resetting the flow
     on<ResetAuthEvent>((event, emit) {
@@ -216,7 +183,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             // emit(AuthSuccessNavigateToHome());
           }
         } else {
-          emit(AuthErrorState(message: "Login Failed"));
+          emit(GoogleAuthError(message: "Login Failed"));
         }
       } catch (e) {
         emit(AuthErrorState(message: e.toString()));

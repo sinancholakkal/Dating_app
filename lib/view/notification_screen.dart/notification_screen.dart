@@ -6,9 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-// --- Data Model (Stays the same) ---
 
-// --- The Main Notification Screen Widget ---
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
 
@@ -21,47 +19,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
   void initState() {
     super.initState();
   }
-
-  // --- Data Fetching Logic ---
-  // Future<void> _fetchRequests() async {
-  //   try {
-  //     // Simulate a network call to get data
-  //     await Future.delayed(const Duration(seconds: 1));
-  //     final List<RequestModel> dummyRequests = [
-  //       RequestModel(senderId: '1', senderName: 'Jessica', senderImageUrl: 'https://images.unsplash.com/photo-1520466809213-7b9a56adcd45?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1287&q=80', timestamp: DateTime.now().subtract(const Duration(minutes: 5))),
-  //       RequestModel(senderId: '2', senderName: 'David', senderImageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1287&q=80', timestamp: DateTime.now().subtract(const Duration(hours: 2))),
-  //     ];
-
-  //     // Update the state with the fetched data
-  //     setState(() {
-  //       _requests = dummyRequests;
-  //       _isLoading = false;
-  //     });
-  //   } catch (e) {
-  //     // Update the state with an error message
-  //     setState(() {
-  //       _error = "Failed to load requests.";
-  //       _isLoading = false;
-  //     });
-  //   }
-  // }
-
-  // // --- Action Handlers ---
-  // void _acceptRequest(String senderId) {
-  //   log("Accepted request from $senderId");
-  //   // In a real app, you would call your service here.
-  //   // Then, remove the request from the list and update the UI.
-  //   setState(() {
-  //     _requests.removeWhere((req) => req.senderId == senderId);
-  //   });
-  // }
-
-  // void _declineRequest(String senderId) {
-  //   log("Declined request from $senderId");
-  //   setState(() {
-  //     _requests.removeWhere((req) => req.senderId == senderId);
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -166,40 +123,5 @@ class _NotificationScreenState extends State<NotificationScreen> {
     );
   }
 
-  //   Widget _buildBody() {
-  //     if (_isLoading) {
-  //       return  Center(child: CircularProgressIndicator(color: kWhite));
-  //     }
 
-  //     if (_error != null) {
-  //       return Center(
-  //         child: Text(
-  //           _error!,
-  //           style: const TextStyle(color: Colors.redAccent, fontSize: 16),
-  //         ),
-  //       );
-  //     }
-
-  //     if (_requests.isEmpty) {
-  //       return  Center(
-  //         child: Text(
-  //           'No new requests yet.',
-  //           style: TextStyle(color: kWhite70, fontSize: 16),
-  //         ),
-  //       );
-  //     }
-
-  //     return ListView.builder(
-  //       itemCount: _requests.length,
-  //       itemBuilder: (context, index) {
-  //         final request = _requests[index];
-  //         return RequestCard(
-  //           request: request,
-  //           onAccept: () => _acceptRequest(request.senderId),
-  //           onDecline: () => _declineRequest(request.senderId),
-  //         );
-  //       },
-  //     );
-  //   }
-  // }
 }

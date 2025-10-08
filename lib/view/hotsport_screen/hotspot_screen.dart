@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/services/location_service.dart';
 import 'package:dating_app/state/user_actions_bloc/user_actions_bloc.dart';
@@ -30,7 +32,7 @@ class _HotspotScreenState extends State<HotspotScreen>
   List<UserProfile> nearbyUserProfiles = []; // Changed to List<UserProfile>
   bool _isLoadingLocation = true;
   String _locationError = '';
-  final double searchRadiusMeters = 50.0;
+  final double searchRadiusMeters = 100.0;
   UserProfile? accUserProfile;
 
   @override
@@ -58,12 +60,12 @@ class _HotspotScreenState extends State<HotspotScreen>
 
     if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.detached) {
-      print('App is paused or detached. Setting user offline.');
+      log('App is paused or detached. Setting user offline.');
       setOffline(currentUser!.uid);
       _nearbyUsersSubscription?.cancel();
       _positionSubscription?.cancel();
     } else if (state == AppLifecycleState.resumed) {
-      print('App is resumed. Re-initializing location and nearby users.');
+      log('App is resumed. Re-initializing location and nearby users.');
       _initializeUserAndLocation();
     }
   }
@@ -107,7 +109,7 @@ class _HotspotScreenState extends State<HotspotScreen>
       _startListeningForNearbyUsers();
       _startLocationUpdates();
     } catch (e) {
-      print('Error initializing location: $e');
+      log('Error initializing location: $e');
       if (!mounted) return;
       setState(() {
         _isLoadingLocation = false;
@@ -135,10 +137,10 @@ class _HotspotScreenState extends State<HotspotScreen>
             setState(() {
               nearbyUserProfiles = profiles; // Update nearbyUserProfiles
             });
-            print('Found ${profiles.length} nearby user profiles.');
+            log('Found ${profiles.length} nearby user profiles.');
           },
           onError: (error) {
-            print('Error listening for nearby users: $error');
+            log('Error listening for nearby users: $error');
             if (!mounted) return;
             setState(() {
               _locationError =
@@ -164,7 +166,7 @@ class _HotspotScreenState extends State<HotspotScreen>
               setState(() {
                 currentPosition = position;
               });
-              print(
+              log(
                 'Location updated: ${position.latitude}, ${position.longitude}',
               );
               await updateUserLocation(currentUser!.uid, position);
@@ -172,7 +174,7 @@ class _HotspotScreenState extends State<HotspotScreen>
             }
           },
           onError: (error) {
-            print('Error in location stream: $error');
+            log('Error in location stream: $error');
             if (!mounted) return;
             setState(() {
               _locationError = 'Error updating location: ${error.toString()}';

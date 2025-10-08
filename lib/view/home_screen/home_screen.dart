@@ -2,12 +2,13 @@ import 'dart:developer';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/state/home_user_bloc/home_user_bloc.dart';
 import 'package:dating_app/state/user_actions_bloc/user_actions_bloc.dart';
-import 'package:dating_app/state/user_bloc/user_bloc.dart';
+import 'package:dating_app/state/user_bloc/user_bloc.dart' hide ErrorState;
 import 'package:dating_app/utils/app_color.dart' as AppColors;
 import 'package:dating_app/view/home_screen/widget/empty_profiles_widget.dart';
 import 'package:dating_app/view/home_screen/widget/loading_widget.dart';
 import 'package:dating_app/view/home_screen/widget/other_profile_details_screen.dart';
 import 'package:dating_app/view/home_screen/widget/profile_card.dart';
+import 'package:dating_app/view/home_screen/widget/refresh_button_widget.dart';
 import 'package:dating_app/view/home_screen/widget/swipe_action_buttons.dart';
 import 'package:dating_app/view/home_screen/widget/upgrade_widget.dart';
 import 'package:flutter/material.dart';
@@ -112,7 +113,10 @@ class _HomeScreenState extends State<HomeScreen> {
               if (state is FetchAllUsersLoadingState) {
                 return const LoadingWidget();
               }
-
+              if(state is ErrorState){
+                //Refresh button widget-----------------------
+                return RefreshButtonWidget(msg: state.msg,);
+              }
               if (state is FetchAllUsersLoadedState) {
                 // If user profile is not loaded yet, show loading
                 if (accUserProfile == null) {
@@ -216,3 +220,4 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+

@@ -713,9 +713,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 class InterestSelectionWrap extends StatelessWidget {
   final Set<String> selectedInterests;
   final ValueChanged<String>
-  onInterestSelected; // Callback for when an interest is toggled
+  onInterestSelected; 
   final List<String>
-  allInterests; // Pass all interests, or rely on AppStrings.allInterests
+  allInterests; 
 
   const InterestSelectionWrap({
     super.key,
@@ -763,7 +763,6 @@ class InterestSelectionWrap extends StatelessWidget {
   }
 }
 
-// Thin divider used below section headers for a professional look
 Widget _buildSectionDivider() {
   return Container(
     margin: const EdgeInsets.only(top: 8),

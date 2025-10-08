@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:dating_app/services/location_service.dart';
 import 'package:dating_app/services/swip_service.dart';
 import 'package:dating_app/services/user_actions_services.dart';
 import 'package:equatable/equatable.dart';
@@ -25,9 +26,17 @@ class UserActionsBloc extends Bloc<UserActionsEvent, UserActionsState> {
     });
 
     on<UserLikeActionEvent>((event, emit) async {
-      final bool canSwipe = await SwipeService().canSwipe();
-      log("can swap $canSwipe");
-      if (canSwipe) {
+      
+    
+      final isUserMatch =await isUserMatched(currentUserId: event.currentUserId, otherUserId: event.likeUserId);
+      final isUserLike = await isUserLiked(currentUserId: event.currentUserId, otherUserId: event.likeUserId);
+      if(isUserMatch==true || isUserLike==true){
+        log("User already matched or liked");
+        emit(UserActionSuccessState());
+      }else{
+        final bool canSwipe = await SwipeService().canSwipe();
+          log("can swap $canSwipe");
+         if (canSwipe) {
         await service.likeAction(
           image: event.image,
           currentUserId: event.currentUserId,
@@ -41,12 +50,19 @@ class UserActionsBloc extends Bloc<UserActionsEvent, UserActionsState> {
         log("BLoC: Swipe limit reached.");
         emit(SwipeLimitReachedState());
       }
+      }
+     
     });
     on<SuperLikeEvent>((event, emit) async {
       // await service.likeAction(image: event.image, currentUserId: event.currentUserId,currentUserName: event.currentUserName,likeUserId: event.likeUserId,likeUserName: event.likeUserName);
       // emit(UserActionSuccessState());
       try {
-        final bool canSwipe = await SwipeService().canSwipe();
+         final isUserMatch =await isUserMatched(currentUserId: event.currentUserId, otherUserId: event.likeUserId);
+      final isUserLike = await isUserLiked(currentUserId: event.currentUserId, otherUserId: event.likeUserId);
+      if(isUserMatch==true || isUserLike==true){
+        log("User already matched or liked");
+      }else{
+         final bool canSwipe = await SwipeService().canSwipe();
         if (canSwipe) {
           await service.addToFavorites(favoriteUserId: event.likeUserId);
           log("Added into favorite");
@@ -56,6 +72,8 @@ class UserActionsBloc extends Bloc<UserActionsEvent, UserActionsState> {
           log("BLoC: Swipe limit reached.");
           emit(SwipeLimitReachedState());
         }
+      }
+       
 
         // await service.likeAction(
         //   image: event.image,

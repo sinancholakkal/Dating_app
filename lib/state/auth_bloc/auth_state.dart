@@ -37,9 +37,15 @@ class AuthCodeSentSuccess extends AuthState {
 // Final success state after verification
 class AuthVerified extends AuthState {}
 
-// Shows an error message
+
 class AuthError extends AuthState {
   final String message;
   AuthError({required this.message});
 }
 class OtpVerifiedState extends AuthState{}
+
+
+class GoogleAuthError extends AuthState {
+  final String message;
+  GoogleAuthError({required this.message});
+}

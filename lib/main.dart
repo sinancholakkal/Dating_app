@@ -17,6 +17,7 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -25,7 +26,9 @@ import 'package:flutter/foundation.dart';
 
 
 void main() async {
+  
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
    await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

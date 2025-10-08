@@ -176,63 +176,59 @@ Stream<List<UserProfile>> getNearbyUsersWithProfiles(
   Position centerPosition,
   double radiusInMeters,
 ) {
-  final GeoPoint centerGeoPoint = GeoPoint(
-    centerPosition.latitude,
-    centerPosition.longitude,
-  );
+  final GeoPoint centerGeoPoint =
+      GeoPoint(centerPosition.latitude, centerPosition.longitude);
   final GeoFirePoint center = GeoFirePoint(centerGeoPoint);
 
   final double radiusInKm = radiusInMeters / 1000;
   const String geoDataField = 'geo';
 
-  final CollectionReference<Map<String, dynamic>> collectionReference =
-      firestore.collection('user_locations');
+  final collectionReference = firestore.collection('user_locations');
 
+  // This helper function is correct, no changes needed.
   GeoPoint geopointFrom(Map<String, dynamic> data) {
-    final Map<String, dynamic> geoMap =
-        data[geoDataField] as Map<String, dynamic>;
+    final geoMap = data[geoDataField] as Map<String, dynamic>;
     return geoMap['geopoint'] as GeoPoint;
   }
 
+  // This query builder is correct, no changes needed.
   Query<Map<String, dynamic>> customQueryBuilder(
     Query<Map<String, dynamic>> query,
-  ) => query
-      .where('isOnline', isEqualTo: true)
-      .where('userId', isNotEqualTo: currentUserId); // Exclude self
+  ) =>
+      query
+          .where('isOnline', isEqualTo: true)
+          .where('userId', isNotEqualTo: currentUserId);
 
-  final Stream<List<DocumentSnapshot<Map<String, dynamic>>>> stream =
-      GeoCollectionReference<Map<String, dynamic>>(
-        collectionReference,
-      ).subscribeWithin(
-        center: center,
-        radiusInKm: radiusInKm,
-        field: geoDataField,
-        geopointFrom: geopointFrom,
-        queryBuilder: customQueryBuilder,
-      );
+  final stream = GeoCollectionReference<Map<String, dynamic>>(
+    collectionReference,
+  ).subscribeWithin(
+    center: center,
+    radiusInKm: radiusInKm,
+    field: geoDataField,
+    geopointFrom: geopointFrom,
+    queryBuilder: customQueryBuilder,
+  );
+  log("started");
+  // --- REFACTORED AND OPTIMIZED PART ---
+  return stream.asyncMap((List<DocumentSnapshot<Map<String, dynamic>>> documents) async {
+    if (documents.isEmpty) {
+      return []; // Return early if no locations are found
+    }
 
-  return stream.asyncMap((
-    List<DocumentSnapshot<Map<String, dynamic>>> documents,
-  ) async {
-    final List<UserProfile> userProfiles = [];
-    for (final doc in documents) {
-      if (!doc.exists || doc.data() == null) continue;
+    // Create a list of futures to run all checks in parallel, not one by one.
+    final futures = documents.map((doc) async {
+      final data = doc.data();
+      if (data == null) return null;
+     final otherUserId = data['userId']; 
+      if (otherUserId == null || otherUserId is! String) {
+    // If it's invalid, log it and safely skip this document.
+    log('Skipping location document with invalid/missing userId: ${doc.id}');
+    return null; 
+  }
+      final geoMap = data[geoDataField] as Map<String, dynamic>;
+      final docGeoPoint = geoMap['geopoint'] as GeoPoint;
 
-      final data = doc.data()!;
-      final String otherUserId = data['userId'] as String;
-
-      if (!data.containsKey(geoDataField) ||
-          data[geoDataField] is! Map<String, dynamic>) {
-        continue;
-      }
-      final Map<String, dynamic> geoMap =
-          data[geoDataField] as Map<String, dynamic>;
-      if (!geoMap.containsKey('geopoint') || geoMap['geopoint'] is! GeoPoint) {
-        continue;
-      }
-
-      final GeoPoint docGeoPoint = geoMap['geopoint'] as GeoPoint;
-
+      // Final precise distance check
       final double distance = Geolocator.distanceBetween(
         centerPosition.latitude,
         centerPosition.longitude,
@@ -240,45 +236,53 @@ Stream<List<UserProfile>> getNearbyUsersWithProfiles(
         docGeoPoint.longitude,
       );
 
-      if (distance <= radiusInMeters) {
-        try {
-          bool isMatch = await isUserMatched(
-            otherUserId: otherUserId,
-            currentUserId: currentUserId,
-          );
-          bool isUserLike = await isUserLiked(currentUserId: currentUserId,otherUserId: otherUserId);
-          log(isMatch.toString());
-          log(isUserLike.toString());
-          log("==================");
-          if (!isMatch ) {
-            if(!isUserLike){
-            final UserProfile? profile = await UserProfileServices()
-                .fetchUserProfile(userId: otherUserId);
-
-            // Manually create a new UserProfile object with the added location and distance data
-            userProfiles.add(
-              UserProfile(
-                id: profile!.id,
-                name: profile.name,
-                bio: profile.bio,
-                getImages: profile.getImages,
-                currentGeoPoint: docGeoPoint,
-                distanceInMeters: distance,
-                age: profile.age,
-                gender: profile.gender,
-                interests: profile.interests,
-              ),
-            );
-            }
-          }
-          // Fetch full user profile
-        } catch (e) {
-          print('Error fetching profile for $otherUserId: $e');
-          // Optionally, add a partial profile or skip this user
-        }
+      if (distance > radiusInMeters) {
+        return null; // Skip user if they are outside the precise radius
       }
-    }
-    return userProfiles;
+
+      // Check match and like status concurrently
+      final results = await Future.wait([
+        isUserMatched(currentUserId: currentUserId, otherUserId: otherUserId),
+        isUserLiked(currentUserId: currentUserId, otherUserId: otherUserId),
+      ]);
+      final bool isMatch = results[0];
+      final bool isUserLike = results[1];
+      
+      // The main filtering logic: only proceed if not matched AND not liked
+      if (!isMatch && !isUserLike) {
+        try {
+          log("Fetching profile for $otherUserId");
+          final UserProfile? profile = await UserProfileServices().fetchUserProfile(userId: otherUserId);
+          if (profile == null) return null;
+
+          // Return the complete UserProfile with location data
+          return UserProfile(
+            id: profile.id,
+            name: profile.name,
+            bio: profile.bio,
+            getImages: profile.getImages,
+            currentGeoPoint: docGeoPoint,
+            distanceInMeters: distance,
+            age: profile.age,
+            gender: profile.gender,
+            interests: profile.interests,
+          );
+        } catch (e) {
+          log('Error fetching profile for $otherUserId: $e');
+          return null; // Return null if there's an error fetching the profile
+        }
+      } else {
+        // User was filtered out (already matched or liked)
+        return null;
+      }
+    }).toList();
+
+    // Wait for all the parallel checks to complete
+    final List<UserProfile?> potentialProfiles = await Future.wait(futures);
+
+    // Filter out any null values (users who were too far, already matched, or had errors)
+    // and return the final, clean list.
+    return potentialProfiles.whereType<UserProfile>().toList();
   });
 }
 
