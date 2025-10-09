@@ -150,13 +150,15 @@ class MessageBubble extends StatelessWidget {
               onLongPress: () {
                 log("Double tap=======================================");
                
-                showUnsendDialog(context, () {
+              if(isMe){
+                  showUnsendDialog(context, () {
                    context.pop();
                   ChatService().deleteMessageById(
                     chatRoomId: chatRoomId,
                     messageId: messageId,
                   );
                 });
+              }
               },
               onDoubleTap: () => _showReactionPicker(context),
               child: Container(
@@ -177,6 +179,8 @@ class MessageBubble extends StatelessWidget {
               onLongPress: () {
                 log("Onlong tap=======================================");
                 
+               if(isMe){
+                
                 showUnsendDialog(context, () {
                   context.pop();
                   ChatService().deleteMessageById(
@@ -184,6 +188,7 @@ class MessageBubble extends StatelessWidget {
                     messageId: messageId,
                   );
                 });
+               }
               },
               onDoubleTap: () => _showReactionPicker(context),
               child: Container(
