@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:dating_app/models/chat_user_model.dart';
+import 'package:dating_app/services/auth_services.dart';
 import 'package:dating_app/state/user_bloc_and_report_bloc/user_bloc_and_report_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
 import 'package:flutter/cupertino.dart';
@@ -47,7 +48,7 @@ void showReportDialog(
                   chatId: otherUser.chatRoomId,
                 ),
               );
-
+              bloc.add(UserBlocEvent(chatRoomId: otherUser.chatRoomId, currentUserId: AuthService().getCurrentUser()!.uid));
               log("Report submitted with reason: $reason");
             }
           },
