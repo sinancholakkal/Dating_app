@@ -6,6 +6,7 @@ import 'package:dating_app/state/user_bloc/user_bloc.dart' hide ErrorState;
 import 'package:dating_app/utils/app_color.dart' as AppColors;
 import 'package:dating_app/view/home_screen/widget/empty_profiles_widget.dart';
 import 'package:dating_app/view/home_screen/widget/loading_widget.dart';
+import 'package:dating_app/view/home_screen/widget/nomore_profile_widget.dart';
 import 'package:dating_app/view/home_screen/widget/other_profile_details_screen.dart';
 import 'package:dating_app/view/home_screen/widget/profile_card.dart';
 import 'package:dating_app/view/home_screen/widget/refresh_button_widget.dart';
@@ -184,6 +185,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                         itemBuilder: (context, i) {
                           final profile = swipeItems[i].content as UserProfile;
+                          if(i==swipeItems.length-1){
+                            return NomoreProfileWidget();
+                          }
                           return ProfileCard(
                             profile: profile,
                             onInfoTap: () {
@@ -219,5 +223,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  
+
 }
 
