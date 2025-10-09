@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ProfileAdManager {
   // Constants
   static const int _walletAdType = 4;
-  static const int _cooldownDuration = 2; // seconds
+  static const int _cooldownDuration = 2; 
   static const int _coinsReward = 5;
   static const String _adUnitId = 'ca-app-pub-6236667985806581/7882906249';
 
