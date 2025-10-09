@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/services/auth_services.dart';
-import 'package:dating_app/services/location_service.dart';
 
 class UserActionsServices {
   Future<void> dislikeAction({required String dislikeUserId}) async {

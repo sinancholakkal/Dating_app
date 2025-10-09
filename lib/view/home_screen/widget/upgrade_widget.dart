@@ -76,18 +76,16 @@ class _UpgradeBottomSheetState extends State<UpgradeBottomSheet> {
     const int cooldownDuration = 60; // 60 seconds (1 minute)
 
     int? timestamp = prefs.getInt('timestamp$_bottomSheetAdType');
-    if (timestamp != null) {
-      int elapsedSeconds = (currentTime - timestamp) ~/ 1000;
-      if (elapsedSeconds < cooldownDuration) {
-        setState(() {
-          _timeLeft = cooldownDuration - elapsedSeconds;
-        });
-        _startAdTimer(timestamp);
-      } else {
-        await prefs.remove('timestamp$_bottomSheetAdType'); // Timer expired
-      }
+    int elapsedSeconds = (currentTime - timestamp!) ~/ 1000;
+    if (elapsedSeconds < cooldownDuration) {
+      setState(() {
+        _timeLeft = cooldownDuration - elapsedSeconds;
+      });
+      _startAdTimer(timestamp);
+    } else {
+      await prefs.remove('timestamp$_bottomSheetAdType'); // Timer expired
     }
-    _checkAnimationVisibility(); // Update animation visibility
+      _checkAnimationVisibility(); // Update animation visibility
   }
 
   /// Starts a countdown timer for the "Watch Ad" slot.
@@ -100,7 +98,7 @@ class _UpgradeBottomSheetState extends State<UpgradeBottomSheet> {
       const int cooldownDuration = 60;
 
       // If the stored timestamp has changed or been removed, this timer is stale
-      if (storedTimestamp == null || storedTimestamp != startTime) {
+      if (storedTimestamp != startTime) {
         timer.cancel();
         setState(() {
           _timeLeft = 0;
@@ -110,7 +108,7 @@ class _UpgradeBottomSheetState extends State<UpgradeBottomSheet> {
       }
 
       int currentTime = DateTime.now().millisecondsSinceEpoch;
-      int elapsedSeconds = (currentTime - storedTimestamp) ~/ 1000;
+      int elapsedSeconds = (currentTime - storedTimestamp!) ~/ 1000;
       int remainingTime = cooldownDuration - elapsedSeconds;
 
       if (remainingTime <= 0) {
