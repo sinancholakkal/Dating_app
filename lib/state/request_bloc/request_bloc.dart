@@ -27,46 +27,47 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
     });
 
     on<DeclineRequestEvent>((event, emit)async {
-      if (state is FetchLoadedState) {
+      // if (state is FetchLoadedState) {
         log("state is FetchLoadedState");
-        final currentState = state as FetchLoadedState;
+        // final currentState = state as FetchLoadedState;
 
-        final List<RequestModel> updatedRequests = List.from(
-          currentState.requests,
-        )..removeWhere((req) => req.senderId == event.request.senderId);
-         if (updatedRequests.isEmpty) {
-          emit(EmptyRequestState(message: "No new requests yet."));
-        } else {
-          emit(FetchLoadedState(requests: updatedRequests));
-        }
+        // final List<RequestModel> updatedRequests = List.from(
+        //   currentState.requests,
+        // )..removeWhere((req) => req.senderId == event.request.senderId);
+        //  if (updatedRequests.isEmpty) {
+        //   emit(EmptyRequestState(message: "No new requests yet."));
+        // } else {
+        //   emit(FetchLoadedState(requests: updatedRequests));
+        // }
           await service.declineRequest(requestModel: event.request);
           log("decline from user");
           await service.removeFromLikeCollection(documentId: event.request.senderId, likedUserIdToRemove: AuthService().getCurrentUser()!.uid);
           log("Decline from like");
+           emit(RequestSuccessState());
        
-      }
+    //  }
     });
 
     on<AcceptRequestEvent>((event, emit)async {
-      if (state is FetchLoadedState) {
-        log("state is FetchLoadedState");
-        final currentState = state as FetchLoadedState;
+     // if (state is FetchLoadedState) {
+        //log("state is FetchLoadedState");
+        //final currentState = state as FetchLoadedState;
 
-        final List<RequestModel> updatedRequests = List.from(
-          currentState.requests,
-        )..removeWhere((req) => req.senderId == event.request.senderId);
-         if (updatedRequests.isEmpty) {
-          emit(EmptyRequestState(message: "No new requests yet."));
-        } else {
-          emit(FetchLoadedState(requests: updatedRequests));
-        }
+        // final List<RequestModel> updatedRequests = List.from(
+        //   currentState.requests,
+        // )..removeWhere((req) => req.senderId == event.request.senderId);
+        //  if (updatedRequests.isEmpty) {
+        //   emit(EmptyRequestState(message: "No new requests yet."));
+        // } else {
+        //   emit(FetchLoadedState(requests: updatedRequests));
+        // }
         log("Chat room created fuction called");
            await service.acceptChatRequest(event.request.senderId);
            log("chat room created");
           // await service.removeFromLikeCollection(documentId: event.request.senderId, likedUserIdToRemove: AuthService().getCurrentUser()!.uid);
           // log("Decline from like");
-       
-      }
+          emit(RequestSuccessState());
+     // }
     });
   }
 }

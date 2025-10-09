@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
 
@@ -20,6 +19,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     super.initState();
   }
 
+  //context.read<RequestBloc>().add(FetchRequestsEvent());
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -32,96 +32,106 @@ class _NotificationScreenState extends State<NotificationScreen> {
           title: Text(
             'Requests',
             style: GoogleFonts.poppins(
-              color: kWhite, 
+              color: kWhite,
               fontWeight: FontWeight.w700,
               letterSpacing: 0.3,
               fontSize: 20,
             ),
           ),
         ),
-        body: BlocBuilder<RequestBloc, RequestState>(
-          builder: (context, state) {
-            if (state is FetchLoadingState) {
-              return Center(
-                child: CircularProgressIndicator(
-                  color: kWhite,
-                  strokeWidth: 3,
-                ),
-              );
-            } else if (state is EmptyRequestState) {
-              return Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.06),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.white.withOpacity(0.1)),
-                      ),
-                      child: Icon(
-                        Icons.notifications_none,
-                        color: Colors.white.withOpacity(0.6),
-                        size: 48,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      "No requests yet",
-                      style: GoogleFonts.poppins(
-                        color: kWhite,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      "When someone wants to connect with you, you'll see it here",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.poppins(
-                        color: kWhite70,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            } else if (state is FetchLoadedState) {
-              return ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                itemCount: state.requests.length,
-                itemBuilder: (context, index) {
-                  final request = state.requests[index];
-                  return RequestCard(
-                    request: request,
-                    onAccept: () {
-                      context.read<RequestBloc>().add(AcceptRequestEvent(request: request));
-                    },
-                    onDecline: () {
-                      log("Decline event called");
-                      context.read<RequestBloc>().add(DeclineRequestEvent(request: request));
-                    },
-                  );
-                },
-              );
+        body: BlocListener<RequestBloc, RequestState>(
+          listener: (context, state) {
+            if(state is RequestSuccessState){
+              context.read<RequestBloc>().add(FetchRequestsEvent());
             }
-            return Center(
-              child: Text(
-                "Please try again later!",
-                style: GoogleFonts.poppins(
-                  color: kWhite70,
-                  fontSize: 16,
-                ),
-              ),
-            );
-            
           },
+          child: BlocBuilder<RequestBloc, RequestState>(
+            builder: (context, state) {
+              if (state is FetchLoadingState) {
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: kWhite,
+                    strokeWidth: 3,
+                  ),
+                );
+              } else if (state is EmptyRequestState) {
+                return Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.06),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.1),
+                          ),
+                        ),
+                        child: Icon(
+                          Icons.notifications_none,
+                          color: Colors.white.withOpacity(0.6),
+                          size: 48,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        "No requests yet",
+                        style: GoogleFonts.poppins(
+                          color: kWhite,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        "When someone wants to connect with you, you'll see it here",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.poppins(
+                          color: kWhite70,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              } else if (state is FetchLoadedState) {
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  itemCount: state.requests.length,
+                  itemBuilder: (context, index) {
+                    final request = state.requests[index];
+                    return RequestCard(
+                      request: request,
+                      onAccept: () {
+                        context.read<RequestBloc>().add(
+                          AcceptRequestEvent(request: request),
+                        );
+                      },
+                      onDecline: () {
+                        log("Decline event called");
+                        context.read<RequestBloc>().add(
+                          DeclineRequestEvent(request: request),
+                        );
+                      },
+                    );
+                  },
+                );
+              }
+              return Center(
+                child: Text(
+                  "Please try again later!",
+                  style: GoogleFonts.poppins(color: kWhite70, fontSize: 16),
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
   }
-
-
 }

@@ -20,3 +20,4 @@ class EmptyRequestState extends RequestState{
   const EmptyRequestState({required this.message});
   
 }
+class RequestSuccessState extends RequestState{}
