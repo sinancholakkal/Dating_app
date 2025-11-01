@@ -7,6 +7,8 @@ class CustomButton extends StatelessWidget {
   final double width;
   final double height;
   final String text;
+  final Widget? icon;
+  final FontWeight fontWeight;
   void Function()? onTap;
    CustomButton({
     super.key,
@@ -14,7 +16,9 @@ class CustomButton extends StatelessWidget {
      this.width = 80,
      this.height = 40,
      required this.text,
-     this.onTap
+     this.onTap,
+     this.icon,
+     this.fontWeight = FontWeight.w600
   });
 
   @override
@@ -30,7 +34,13 @@ class CustomButton extends StatelessWidget {
           color: color,
         ),
       
-        child: Center(child: TextWidget(text: text, size: 14)),
+        child: Center(child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextWidget(text: text, size: 14,fontWeight: fontWeight,),
+            if(icon != null) icon!,
+          ],
+        )),
       ),
     );
   }

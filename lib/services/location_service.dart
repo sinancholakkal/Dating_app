@@ -241,12 +241,12 @@ Stream<List<UserProfile>> getNearbyUsersWithProfiles(
       }
 
       // Check match and like status concurrently
-      final results = await Future.wait([
-        isUserMatched(currentUserId: currentUserId, otherUserId: otherUserId),
-        isUserLiked(currentUserId: currentUserId, otherUserId: otherUserId),
-      ]);
-      final bool isMatch = results[0];
-      final bool isUserLike = results[1];
+      // final results = await Future.wait([
+      //   isUserMatched(currentUserId: currentUserId, otherUserId: otherUserId),
+      //   isUserLiked(currentUserId: currentUserId, otherUserId: otherUserId),
+      // ]);
+      // final bool isMatch = results[0];
+      // final bool isUserLike = results[1];
       
       // The main filtering logic: only proceed if not matched AND not liked
       //if (!isMatch && !isUserLike) {

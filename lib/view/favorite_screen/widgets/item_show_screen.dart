@@ -29,6 +29,7 @@ class _ItemShowScreenState extends State<ItemShowScreen> {
   late UserProfile accUserProfile;
   @override
   void initState() {
+    context.read<UserBloc>().add(GetUserProfileEvent());
     numberPhotos = widget.userProfile.getImages!.length;
     super.initState();
   }
@@ -39,6 +40,7 @@ class _ItemShowScreenState extends State<ItemShowScreen> {
       listener: (context, state) {
         if (state is GetSuccessState) {
           accUserProfile = state.userProfile;
+          log("accUserProfile: ${accUserProfile.name}");
         }
       },
       child: Container(

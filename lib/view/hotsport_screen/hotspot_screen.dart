@@ -138,7 +138,7 @@ class _HotspotScreenState extends State<HotspotScreen>
             // Listens to UserProfile list
             if (!mounted) return;
             setState(() {
-              nearbyUserProfiles = profiles; // Update nearbyUserProfiles
+              nearbyUserProfiles = profiles; 
             });
             log('Found ${profiles.length} nearby user profiles.');
           },
@@ -212,13 +212,16 @@ class _HotspotScreenState extends State<HotspotScreen>
             elevation: 0,
             actions: [
               CustomButton(
-                text: "View Location",
+                width: 100,
+                text: "Nearby",
+                fontWeight: FontWeight.w700,
+                icon: Icon(Icons.location_on, color: kWhite,size: 17,),
                 onTap: () {
                   pushNewScreen(
                     context,
                     pageTransitionAnimation: PageTransitionAnimation.slideUp,
                     withNavBar: false,
-                    screen: MapViewScreen(currentPosition: currentPosition!),
+                    screen: MapViewScreen(currentPosition: currentPosition!, otherUsersData: nearbyUserProfiles),
                   );
                 },
               ),
