@@ -94,7 +94,7 @@ class ProfileAdManager {
   void _loadInterstitialAd() {
     InterstitialAd.load(
       adUnitId: _adUnitId,
-      request: const AdRequest(),
+      request: const AdRequest(), 
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
           log('Wallet InterstitialAd loaded for adType $_walletAdType.');

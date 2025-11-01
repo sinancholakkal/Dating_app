@@ -207,6 +207,7 @@ class _HotspotScreenState extends State<HotspotScreen>
             ),
             backgroundColor: Colors.transparent,
             elevation: 0,
+            actions: [],
           ),
           body: _isLoadingLocation
               ? Center(
