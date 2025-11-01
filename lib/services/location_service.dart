@@ -180,7 +180,7 @@ Stream<List<UserProfile>> getNearbyUsersWithProfiles(
       GeoPoint(centerPosition.latitude, centerPosition.longitude);
   final GeoFirePoint center = GeoFirePoint(centerGeoPoint);
 
-  final double radiusInKm = radiusInMeters / 1000;
+  final double radiusInKm = radiusInMeters / 100;
   const String geoDataField = 'geo';
 
   final collectionReference = firestore.collection('user_locations');
@@ -249,7 +249,7 @@ Stream<List<UserProfile>> getNearbyUsersWithProfiles(
       final bool isUserLike = results[1];
       
       // The main filtering logic: only proceed if not matched AND not liked
-      if (!isMatch && !isUserLike) {
+      //if (!isMatch && !isUserLike) {
         try {
           log("Fetching profile for $otherUserId");
           final UserProfile? profile = await UserProfileServices().fetchUserProfile(userId: otherUserId);
@@ -271,10 +271,10 @@ Stream<List<UserProfile>> getNearbyUsersWithProfiles(
           log('Error fetching profile for $otherUserId: $e');
           return null; // Return null if there's an error fetching the profile
         }
-      } else {
+     // } else {
         // User was filtered out (already matched or liked)
-        return null;
-      }
+    //    return null;
+    //  }
     }).toList();
 
     // Wait for all the parallel checks to complete

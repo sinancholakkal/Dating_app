@@ -6,6 +6,8 @@ import 'package:dating_app/state/user_actions_bloc/user_actions_bloc.dart';
 import 'package:dating_app/state/user_bloc/user_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/view/favorite_screen/widgets/item_show_screen.dart';
+import 'package:dating_app/view/map_view_screen/map_view_screen.dart';
+import 'package:dating_app/view/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
@@ -32,11 +34,12 @@ class _HotspotScreenState extends State<HotspotScreen>
   List<UserProfile> nearbyUserProfiles = []; // Changed to List<UserProfile>
   bool _isLoadingLocation = true;
   String _locationError = '';
-  final double searchRadiusMeters = 100.0;
+  final double searchRadiusMeters = 1000.0;
   UserProfile? accUserProfile;
 
   @override
   void initState() {
+
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _initializeUserAndLocation();
@@ -207,7 +210,19 @@ class _HotspotScreenState extends State<HotspotScreen>
             ),
             backgroundColor: Colors.transparent,
             elevation: 0,
-            actions: [],
+            actions: [
+              CustomButton(
+                text: "View Location",
+                onTap: () {
+                  pushNewScreen(
+                    context,
+                    pageTransitionAnimation: PageTransitionAnimation.slideUp,
+                    withNavBar: false,
+                    screen: MapViewScreen(currentPosition: currentPosition!),
+                  );
+                },
+              ),
+            ],
           ),
           body: _isLoadingLocation
               ? Center(
