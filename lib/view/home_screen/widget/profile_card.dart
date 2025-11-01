@@ -202,20 +202,27 @@ class _ProfileCardState extends State<ProfileCard> {
                                   textBaseline: TextBaseline.alphabetic,
                                   children: [
                                     //Name display--------
-                                    Text(
-                                      widget.profile.name,
-                                      style: GoogleFonts.poppins(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w800,
-                                        letterSpacing: 0.3,
-                                        fontSize: 20,
-                                        shadows: [
-                                          Shadow(
-                                            color: Colors.black.withOpacity(0.5),
-                                            offset: const Offset(0, 2),
-                                            blurRadius: 4,
-                                          ),
-                                        ],
+                                    SizedBox(
+                                      width: 160,
+                                      child: Text(
+                                       widget.profile.name,
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w800,
+                                          letterSpacing: 0.3,
+                                          fontSize: 20,
+
+                                          
+                                          shadows: [
+                                            Shadow(
+                                              color: Colors.black.withOpacity(0.5),
+                                              offset: const Offset(0, 2),
+                                              blurRadius: 4,
+                                            ),
+                                          ],
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                     const SizedBox(width: 12),

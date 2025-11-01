@@ -1,4 +1,3 @@
-
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/utils/app_color.dart'; // Using kWhite and primary
 import 'package:dating_app/view/map_view_screen/widgets/show_user_profile_mapview.dart';
@@ -11,7 +10,7 @@ import 'package:latlong2/latlong.dart';
 class MapViewScreen extends StatefulWidget {
   final Position currentPosition;
   final List<UserProfile> otherUsersData;
-  final double searchRadiusMeters; 
+  final double searchRadiusMeters;
 
   const MapViewScreen({
     super.key,
@@ -79,9 +78,15 @@ class _MapViewScreenState extends State<MapViewScreen> {
               // Other User Markers
               MarkerLayer(
                 markers: widget.otherUsersData
-                    .map((user) => userMarkerWidget(user, () {
-                      showUserProfileSheetMapView(context, user, user.getImages![0]);
-                    }))
+                    .map(
+                      (user) => userMarkerWidget(user, () {
+                        showUserProfileSheetMapView(
+                          context,
+                          user,
+                          user.getImages![0],
+                        );
+                      }),
+                    )
                     .whereType<Marker>()
                     .toList(),
               ),
@@ -156,6 +161,4 @@ class _MapViewScreenState extends State<MapViewScreen> {
       ),
     );
   }
-
-  
 }
