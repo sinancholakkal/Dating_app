@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dating_app/models/chat_user_model.dart';
 import 'package:dating_app/services/chat_service.dart';
 import 'package:dating_app/state/conversation_bloc/conversation_bloc.dart';
@@ -57,7 +58,7 @@ class ChatListItem extends StatelessWidget {
             child: CircleAvatar(
               radius: 28,
               backgroundColor: primary.withOpacity(0.15),
-              backgroundImage: NetworkImage(chat.imageUrl),
+              backgroundImage: CachedNetworkImageProvider(chat.imageUrl,),
               onBackgroundImageError: (_, __) {},
               child: chat.imageUrl.isEmpty
                   ? Icon(Icons.person, color: kWhite)

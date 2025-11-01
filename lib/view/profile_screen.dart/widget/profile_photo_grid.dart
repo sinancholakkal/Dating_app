@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dating_app/state/profile_setup_bloc/profile_setup_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/view/widgets/show_diolog.dart';
@@ -188,10 +189,10 @@ class _PhotoCard extends StatelessWidget {
 
   Widget _buildImage() {
     if (image is String) {
-      return Image.network(
-        image,
+      return CachedNetworkImage(
+        imageUrl: image,
         fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => Center(
+        errorWidget: (context, error, stackTrace) => Center(
           child: Icon(
             Icons.broken_image,
             color: kWhite54,

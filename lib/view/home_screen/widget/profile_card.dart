@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -53,12 +54,12 @@ class _ProfileCardState extends State<ProfileCard> {
                 Container(
                   color: Colors.grey.shade800,
                   child: hasImages
-                      ? Image.network(
-                          widget.profile.getImages![_currentPhoto],
+                      ? CachedNetworkImage(
+                          imageUrl: widget.profile.getImages![_currentPhoto],
                           fit: BoxFit.cover,
                           width: double.infinity,
                           height: double.infinity,
-                          errorBuilder: (context, error, stackTrace) =>
+                          errorWidget: (context, error, stackTrace) =>
                               Container(
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
@@ -196,26 +197,27 @@ class _ProfileCardState extends State<ProfileCard> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               SizedBox(
-                                width: 220,
                                 child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.baseline,
                                   textBaseline: TextBaseline.alphabetic,
                                   children: [
                                     //Name display--------
                                     SizedBox(
                                       width: 160,
                                       child: Text(
-                                       widget.profile.name,
+                                        widget.profile.name,
                                         style: GoogleFonts.poppins(
                                           color: Colors.white,
                                           fontWeight: FontWeight.w800,
                                           letterSpacing: 0.3,
                                           fontSize: 20,
 
-                                          
                                           shadows: [
                                             Shadow(
-                                              color: Colors.black.withOpacity(0.5),
+                                              color: Colors.black.withOpacity(
+                                                0.5,
+                                              ),
                                               offset: const Offset(0, 2),
                                               blurRadius: 4,
                                             ),
@@ -310,4 +312,3 @@ class _ProfileCardState extends State<ProfileCard> {
     );
   }
 }
-

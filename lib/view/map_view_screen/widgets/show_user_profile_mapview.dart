@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/view/favorite_screen/widgets/item_show_screen.dart';
@@ -30,7 +31,7 @@ void showUserProfileSheetMapView(
               CircleAvatar(
                 radius: 40,
                 backgroundImage: imageUrl != null
-                    ? NetworkImage(imageUrl)
+                    ? CachedNetworkImageProvider(imageUrl)
                     : null,
                 child: imageUrl == null
                     ? Icon(Icons.person, color: Colors.grey[400], size: 40)

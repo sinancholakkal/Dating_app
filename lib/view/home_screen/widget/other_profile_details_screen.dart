@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/state/user_actions_bloc/user_actions_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
@@ -66,7 +67,7 @@ class _OtherProfileDetailsScreenState extends State<OtherProfileDetailsScreen> {
                                   borderRadius: BorderRadius.circular(0),
                                   image: DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: NetworkImage(
+                                    image: CachedNetworkImageProvider(
                                       widget
                                           .userProfile
                                           .getImages![currentPhoto],

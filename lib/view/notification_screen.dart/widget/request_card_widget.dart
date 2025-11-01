@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dating_app/models/request_model.dart';
 import 'package:dating_app/utils/app_color.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +68,7 @@ class _RequestCardState extends State<RequestCard> {
                 radius: 24,
                 backgroundColor: primary.withOpacity(0.15),
                 backgroundImage: widget.request.senderImageUrl.isNotEmpty 
-                    ? NetworkImage(widget.request.senderImageUrl)
+                    ? CachedNetworkImageProvider(widget.request.senderImageUrl)
                     : null,
                 child: widget.request.senderImageUrl.isEmpty 
                     ? Icon(Icons.person, color: kWhite, size: 20)

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/models/chat_user_model.dart';
 import 'package:dating_app/view/conversation_screen.dart/widget/drop_down_widget.dart';
@@ -73,10 +74,10 @@ class ConversationAppBar extends StatelessWidget implements PreferredSizeWidget 
       ),
       child: ClipOval(
         child: otherUser.imageUrl.isNotEmpty
-            ? Image.network(
-                otherUser.imageUrl,
+            ? CachedNetworkImage(
+                imageUrl:  otherUser.imageUrl,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
+                errorWidget: (context, error, stackTrace) => Container(
                   color: Colors.grey.shade700,
                   child: const Icon(
                     Icons.person,

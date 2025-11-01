@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/services/location_service.dart';
 import 'package:dating_app/state/user_actions_bloc/user_actions_bloc.dart';
@@ -391,7 +392,7 @@ class _HotspotScreenState extends State<HotspotScreen>
                                     radius: 28,
                                     backgroundColor: primary.withOpacity(0.15),
                                     backgroundImage: userProfileImageUrls != null && userProfileImageUrls.isNotEmpty
-                                        ? NetworkImage(userProfileImageUrls[0])
+                                        ? CachedNetworkImageProvider(userProfileImageUrls[0])
                                         : null,
                                     child: userProfileImageUrls == null || userProfileImageUrls.isEmpty
                                         ? Icon(Icons.person, color: kWhite, size: 24)

@@ -1,6 +1,7 @@
 // lib/widgets/message_bubble.dart
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/view/conversation_screen.dart/widget/unsend_dialog.dart';
 import 'package:flutter/material.dart';
@@ -170,7 +171,7 @@ class MessageBubble extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: const BorderRadius.all(Radius.circular(20)),
                   child: InstaImageViewer(
-                    child: Image.network(text, fit: BoxFit.cover),
+                    child: CachedNetworkImage(imageUrl: text, fit: BoxFit.cover),
                   ),
                 ),
               ),

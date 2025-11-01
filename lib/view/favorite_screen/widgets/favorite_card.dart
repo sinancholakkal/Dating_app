@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/view/favorite_screen/widgets/item_show_screen.dart';
@@ -38,10 +39,10 @@ class FavoriteCard extends StatelessWidget {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Image.network(
-                    user.getImages!.first,
+                  CachedNetworkImage(
+                    imageUrl: user.getImages!.first,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
+                    errorWidget: (_, __, ___) => Container(
                       color: Colors.grey.shade800,
                       child: const Icon(Icons.broken_image, color: Colors.white54),
                     ),
