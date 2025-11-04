@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:dating_app/di/di.dart';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/services/auth_services.dart';
 import 'package:dating_app/state/profile_setup_bloc/profile_setup_bloc.dart';
@@ -30,6 +31,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   final TextEditingController _ageController = TextEditingController();
   //Gender _selectedGender = Gender.none;
   ValueNotifier<Gender> selectedGender = ValueNotifier(Gender.none);
+    final authService = di.get<AuthServices>();
   int _currentPage = 0;
   Set<String> interest = {};
   List<XFile> images = [];
@@ -198,7 +200,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       log(selfie.toString());
                       log(interest.toString());
                       final UserProfile model = UserProfile(
-                        id: AuthService().getCurrentUser()!.uid,
+                        id: authService.getCurrentUser()!.uid,
                         name: _nameController.text.trim(),
                         age: _ageController.text.trim().toString(),
                         gender: selectedGender.value.toString().split(".")[1],

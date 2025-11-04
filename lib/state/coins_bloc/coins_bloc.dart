@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:dating_app/di/di.dart';
 import 'package:dating_app/services/auth_services.dart';
 import 'package:dating_app/services/coins_service.dart';
 import 'package:equatable/equatable.dart';
@@ -19,10 +20,10 @@ class CoinsBloc extends Bloc<CoinsEvent, CoinsState> {
     });
 
     on<GetCurrentUserCoinsEvent>((event, emit)async {
-
+        final authService = di.get<AuthServices>();
       try{
         emit(GetCurrentUserCoinsLoadingState());
-        final coins = await CoinsService().getUserCoins(userId: AuthService().getCurrentUser()!.uid);
+        final coins = await CoinsService().getUserCoins(userId: authService.getCurrentUser()!.uid);
         emit(GetCurrentUserCoinsSuccessState(coins: coins));
       }
       catch(e){

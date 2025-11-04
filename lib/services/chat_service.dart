@@ -55,6 +55,7 @@
 // }
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dating_app/di/di.dart';
 import 'dart:developer';
 
 import 'package:dating_app/models/chat_user_model.dart';
@@ -62,6 +63,7 @@ import 'package:dating_app/services/auth_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class ChatService {
+    final authService = di.get<AuthServices>();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   /// [userId] is the ID of the user whose chats you want to listen to.
@@ -133,7 +135,7 @@ class ChatService {
     String emoji,
     String chatRoomId,
   ) async {
-    final currentUserId = AuthService().getCurrentUser()!.uid;
+    final currentUserId = authService.getCurrentUser()!.uid;
 
     // Reference to the specific message document
     final messageRef = _firestore

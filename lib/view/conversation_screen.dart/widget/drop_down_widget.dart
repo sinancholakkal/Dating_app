@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:dating_app/di/di.dart';
 import 'package:dating_app/models/chat_user_model.dart';
 import 'package:dating_app/services/auth_services.dart';
 import 'package:dating_app/state/user_bloc_and_report_bloc/user_bloc_and_report_bloc.dart';
@@ -11,7 +12,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 class DropDownWidget extends StatelessWidget {
   final ChatUserModel chatUserModel;
-  const DropDownWidget({super.key, required this.chatUserModel});
+
+  DropDownWidget({super.key, required this.chatUserModel});
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,7 @@ class DropDownWidget extends StatelessWidget {
 }
 
 void showActionSheet(BuildContext context, ChatUserModel chatUserModel) {
+    final authService = di.get<AuthServices>();
   showCupertinoModalPopup<void>(
     context: context,
     builder: (BuildContext context) => CupertinoActionSheet(
@@ -40,9 +43,14 @@ void showActionSheet(BuildContext context, ChatUserModel chatUserModel) {
         CupertinoActionSheetAction(
           isDestructiveAction: true,
           onPressed: () {
-            context.read<UserBlocAndReportBloc>().add(UserBlocEvent(chatRoomId: chatUserModel.chatRoomId, currentUserId: AuthService().getCurrentUser()!.uid));
+            context.read<UserBlocAndReportBloc>().add(
+              UserBlocEvent(
+                chatRoomId: chatUserModel.chatRoomId,
+                currentUserId: authService.getCurrentUser()!.uid,
+              ),
+            );
             Navigator.pop(context);
-            
+
             log('Block user tapped');
           },
           child: const Text('Block'),
@@ -50,7 +58,11 @@ void showActionSheet(BuildContext context, ChatUserModel chatUserModel) {
         CupertinoActionSheetAction(
           onPressed: () {
             Navigator.pop(context);
-            showReportDialog(context, otherUser: chatUserModel,bloc: context.read<UserBlocAndReportBloc>());
+            showReportDialog(
+              context,
+              otherUser: chatUserModel,
+              bloc: context.read<UserBlocAndReportBloc>(),
+            );
           },
           child: const Text('Report'),
         ),
@@ -66,5 +78,3 @@ void showActionSheet(BuildContext context, ChatUserModel chatUserModel) {
     ),
   );
 }
-
-

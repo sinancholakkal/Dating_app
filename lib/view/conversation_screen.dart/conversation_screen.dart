@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dating_app/di/di.dart';
 import 'package:dating_app/models/chat_user_model.dart';
 import 'package:dating_app/services/auth_services.dart';
 import 'package:dating_app/services/chat_service.dart';
@@ -43,6 +44,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
   Timer? _typingTimer;
   String lastMessageId = '';
   final _chatService = ChatService();
+    final authService = di.get<AuthServices>();
   void _onTextChanged({required String value, required String currentUserId}) {
     if (_typingTimer?.isActive ?? false) _typingTimer?.cancel();
 
@@ -67,7 +69,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
     _messageController = TextEditingController();
     _chatService.markChatAsRead(
       chatRoomId: widget.chatRoomId,
-      currentUserId: AuthService().getCurrentUser()!.uid,
+      currentUserId: authService.getCurrentUser()!.uid,
     );
     context.read<ConversationBloc>().add(
       LoadMessagesEvent(chatRoomId: widget.chatRoomId),
@@ -78,7 +80,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
   void dispose() {
     _chatService.markChatAsRead(
       chatRoomId: widget.chatRoomId,
-      currentUserId: AuthService().getCurrentUser()!.uid,
+      currentUserId: authService.getCurrentUser()!.uid,
     );
     _messageController.dispose();
     super.dispose();

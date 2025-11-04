@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:dating_app/di/di.dart';
 import 'package:dating_app/models/chat_user_model.dart';
 import 'package:dating_app/services/auth_services.dart';
 import 'package:dating_app/state/user_bloc_and_report_bloc/user_bloc_and_report_bloc.dart';
@@ -12,7 +13,7 @@ void showReportDialog(
   required UserBlocAndReportBloc bloc,
 }) {
   final reportController = TextEditingController();
-
+    final authService = di.get<AuthServices>();
   showCupertinoDialog(
     context: context,
     builder: (dialogContext) => CupertinoAlertDialog(
@@ -48,7 +49,7 @@ void showReportDialog(
                   chatId: otherUser.chatRoomId,
                 ),
               );
-              bloc.add(UserBlocEvent(chatRoomId: otherUser.chatRoomId, currentUserId: AuthService().getCurrentUser()!.uid));
+              bloc.add(UserBlocEvent(chatRoomId: otherUser.chatRoomId, currentUserId: authService.getCurrentUser()!.uid));
               log("Report submitted with reason: $reason");
             }
           },

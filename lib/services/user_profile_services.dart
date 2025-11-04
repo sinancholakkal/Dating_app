@@ -2,12 +2,14 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dating_app/di/di.dart';
 import 'package:dating_app/models/user_current_model.dart';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/services/auth_services.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class UserProfileServices {
+    final authService = di.get<AuthServices>();
   Future<void> userProfileStoring({required UserProfile userProfile}) async {
     List<String> images = [];
     log(userProfile.interests.toString());
@@ -126,7 +128,7 @@ class UserProfileServices {
 
   Future<UserProfile?> fetchUserProfile({String? userId}) async {
     try {
-      userId ??= AuthService().getCurrentUser()!.uid;
+      userId ??= authService.getCurrentUser()!.uid;
       log("Fetching profile for user: $userId");
 
       final docSnapshot = await FirebaseFirestore.instance

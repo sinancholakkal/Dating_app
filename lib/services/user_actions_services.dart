@@ -1,12 +1,14 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dating_app/di/di.dart';
 import 'package:dating_app/services/auth_services.dart';
 
 class UserActionsServices {
+    final authService = di.get<AuthServices>();
   Future<void> dislikeAction({required String dislikeUserId}) async {
     try {
-      final String currentUserId = AuthService().getCurrentUser()!.uid;
+      final String currentUserId = authService.getCurrentUser()!.uid;
 
       final docRef = FirebaseFirestore.instance
           .collection("dislike")
@@ -70,7 +72,7 @@ class UserActionsServices {
   }
 
   Future<void> addToFavorites({required String favoriteUserId}) async {
-    final currentUserId = AuthService().getCurrentUser()!.uid;
+    final currentUserId = authService.getCurrentUser()!.uid;
     final docRef = FirebaseFirestore.instance
         .collection("favorites")
         .doc(currentUserId);
@@ -81,7 +83,7 @@ class UserActionsServices {
   }
 
   Future<void> removeFromFavorites({required String favoriteUserId}) async {
-    final currentUserId = AuthService().getCurrentUser()!.uid;
+    final currentUserId = authService.getCurrentUser()!.uid;
     final docRef = FirebaseFirestore.instance
         .collection("favorites")
         .doc(currentUserId);

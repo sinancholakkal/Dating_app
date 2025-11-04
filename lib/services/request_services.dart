@@ -1,14 +1,16 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dating_app/di/di.dart';
 import 'package:dating_app/models/request_model.dart';
 import 'package:dating_app/services/auth_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class RequestServices {
+    final authService = di.get<AuthServices>();
   Future<List<RequestModel>> fetchRequests() async {
     List<RequestModel> requestModels = [];
-    final currentUserId = AuthService().getCurrentUser()!.uid;
+    final currentUserId = authService.getCurrentUser()!.uid;
     try {
       final docRef = await FirebaseFirestore.instance
           .collection('user')
@@ -36,7 +38,7 @@ class RequestServices {
   }
 
   Future<void> declineRequest({required RequestModel requestModel}) async {
-    final currentUserId = AuthService().getCurrentUser()!.uid;
+    final currentUserId = authService.getCurrentUser()!.uid;
 
     final instance = FirebaseFirestore.instance;
     final docRef = instance.collection('user').doc(currentUserId);

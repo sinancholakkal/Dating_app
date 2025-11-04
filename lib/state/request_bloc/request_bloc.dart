@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:dating_app/di/di.dart';
 import 'package:dating_app/models/request_model.dart';
 import 'package:dating_app/services/auth_services.dart';
 import 'package:dating_app/services/request_services.dart';
@@ -39,9 +40,10 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
         // } else {
         //   emit(FetchLoadedState(requests: updatedRequests));
         // }
+          final authService = di.get<AuthServices>();
           await service.declineRequest(requestModel: event.request);
           log("decline from user");
-          await service.removeFromLikeCollection(documentId: event.request.senderId, likedUserIdToRemove: AuthService().getCurrentUser()!.uid);
+          await service.removeFromLikeCollection(documentId: event.request.senderId, likedUserIdToRemove: authService.getCurrentUser()!.uid);
           log("Decline from like");
            emit(RequestSuccessState());
        

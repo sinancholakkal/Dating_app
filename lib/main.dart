@@ -1,3 +1,4 @@
+import 'package:dating_app/di/di.dart';
 import 'package:dating_app/firebase_options.dart';
 import 'package:dating_app/routes/app_router.dart';
 import 'package:dating_app/services/chat_service.dart';
@@ -45,7 +46,7 @@ void main() async {
   await FirebaseAppCheck.instance.activate(
     androidProvider: kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
   );
-
+  setUpDi();
   runApp(const MyApp());
 }
 

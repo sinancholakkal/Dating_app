@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:dating_app/di/di.dart';
 import 'package:dating_app/models/user_current_model.dart';
 import 'package:dating_app/services/auth_services.dart';
 import 'package:dating_app/state/auth_bloc/auth_bloc.dart';
@@ -35,7 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late final TextEditingController _bioController;
   late ValueNotifier<Set<String>> userInterests;
   late ProfileAdManager _adManager;
-
+  final authService = di.get<AuthServices>();
   @override
   void initState() {
     super.initState();
@@ -70,7 +71,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     context.read<CoinsBloc>().add(
       AddCoinsEvent(
         coins: _adManager.coinsReward,
-        userId: AuthService().getCurrentUser()!.uid,
+        userId: authService.getCurrentUser()!.uid,
       ),
     );
     // Show success message

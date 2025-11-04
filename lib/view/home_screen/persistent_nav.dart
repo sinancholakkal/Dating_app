@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:dating_app/di/di.dart';
 import 'package:dating_app/services/auth_services.dart';
 import 'package:dating_app/services/location_service.dart';
 import 'package:dating_app/state/favorite_bloc/favorite_bloc.dart';
@@ -25,9 +26,10 @@ class EasyTabbar extends StatefulWidget {
 }
 
 class _EasyTabbarState extends State<EasyTabbar> {
+    final authService = di.get<AuthServices>();
   @override
   void dispose() {
-    final currentUser = AuthService().getCurrentUser();
+    final currentUser = authService.getCurrentUser();
     if (currentUser != null) {
       setOffline(currentUser.uid);
     }

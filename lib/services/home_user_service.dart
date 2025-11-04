@@ -1,19 +1,21 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dating_app/di/di.dart';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/services/auth_services.dart';
 import 'package:dating_app/services/user_actions_services.dart';
 import 'package:dating_app/services/user_profile_services.dart';
 
 class HomeUserService {
+  final authService = di.get<AuthServices>();
   Future<List<UserProfile>> fetchAllUsers() async {
     List<UserProfile> userModels = [];
     List<String> dislikeIds = [];
     String? id;
     try {
       final doc = await FirebaseFirestore.instance.collection("user").get();
-      final currentUser = AuthService().getCurrentUser()!.uid;
+      final currentUser = authService.getCurrentUser()!.uid;
       log("going to fetch dislike id's");
       final disIds = await UserActionsServices().getDislikeusers(
         currentUserId: currentUser,
