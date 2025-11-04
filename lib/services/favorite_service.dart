@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class FavoriteService {
+class FavoriteServices {
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 

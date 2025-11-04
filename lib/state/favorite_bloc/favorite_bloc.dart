@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:dating_app/di/di.dart';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/services/favorite_service.dart';
 import 'package:equatable/equatable.dart';
@@ -9,7 +10,7 @@ part 'favorite_event.dart';
 part 'favorite_state.dart';
 
 class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
-  final service = FavoriteService();
+  final service = di.get<FavoriteServices>();
   List<UserProfile> _favorites = [];
   FavoriteBloc() : super(FavoriteInitial()) {
     on<FavoriteActionEvent>((event, emit) {
