@@ -43,19 +43,19 @@ class _ConversationScreenState extends State<ConversationScreen> {
   late final TextEditingController _messageController;
   Timer? _typingTimer;
   String lastMessageId = '';
-  final _chatService = ChatService();
+  final chatService = di.get<ChatServices>();
     final authService = di.get<AuthServices>();
   void _onTextChanged({required String value, required String currentUserId}) {
     if (_typingTimer?.isActive ?? false) _typingTimer?.cancel();
 
-    _chatService.updateUserTypingStatus(
+    chatService.updateUserTypingStatus(
       chatRoomId: widget.chatRoomId,
       userId: currentUserId,
       isTyping: true,
     );
 
     _typingTimer = Timer(const Duration(seconds: 2), () {
-      _chatService.updateUserTypingStatus(
+      chatService.updateUserTypingStatus(
         chatRoomId: widget.chatRoomId,
         userId: currentUserId,
         isTyping: false,
@@ -67,7 +67,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
   void initState() {
     super.initState();
     _messageController = TextEditingController();
-    _chatService.markChatAsRead(
+    chatService.markChatAsRead(
       chatRoomId: widget.chatRoomId,
       currentUserId: authService.getCurrentUser()!.uid,
     );
@@ -78,7 +78,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   @override
   void dispose() {
-    _chatService.markChatAsRead(
+    chatService.markChatAsRead(
       chatRoomId: widget.chatRoomId,
       currentUserId: authService.getCurrentUser()!.uid,
     );
@@ -92,7 +92,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
         ) ==
         "YES") {
           flutterToast(msg: "Message is moderated");
-      ChatService().deleteMessageById(
+      chatService.deleteMessageById(
         chatRoomId: chatRoomId,
         messageId: lastMessageId,
       );
@@ -218,7 +218,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                 reactions: messageData['reactions'] ?? {},
                                 currentUserId: currentUserId,
                                 chatRoomId: widget.chatRoomId,
-                                chatService: _chatService,
+                                chatService: chatService,
                               ),
                             ],
                           );

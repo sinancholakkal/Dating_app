@@ -21,7 +21,7 @@ class MessageBubble extends StatelessWidget {
   final Map<String, dynamic> reactions; // Reactions map: {userId: emoji}
   final String currentUserId; // Current logged-in user's ID
   final String chatRoomId; // The ID of the current chat room
-  final ChatService chatService; // Instance of ChatService
+  final ChatServices chatService; // Instance of ChatService
 
   const MessageBubble({
     super.key,
@@ -154,7 +154,7 @@ class MessageBubble extends StatelessWidget {
               if(isMe){
                   showUnsendDialog(context, () {
                    context.pop();
-                  ChatService().deleteMessageById(
+                  chatService.deleteMessageById(
                     chatRoomId: chatRoomId,
                     messageId: messageId,
                   );
@@ -184,7 +184,7 @@ class MessageBubble extends StatelessWidget {
                 
                 showUnsendDialog(context, () {
                   context.pop();
-                  ChatService().deleteMessageById(
+                  chatService.deleteMessageById(
                     chatRoomId: chatRoomId,
                     messageId: messageId,
                   );

@@ -164,7 +164,7 @@ class ChatListItem extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (_) => BlocProvider(
                     create: (context) =>
-                        ConversationBloc(context.read<ChatService>()),
+                        ConversationBloc(context.read<ChatServices>()),
                     child: ConversationScreen(
                       chatRoomId: chat.chatRoomId,
                       otherUser: chat,

@@ -1,3 +1,4 @@
+import 'package:dating_app/di/di.dart';
 import 'package:dating_app/models/chat_user_model.dart';
 import 'package:dating_app/services/chat_service.dart';
 import 'package:dating_app/state/user_bloc_and_report_bloc/user_bloc_and_report_bloc.dart';
@@ -16,7 +17,7 @@ class ChatListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final chatService = ChatService();
+    final chatService = di.get<ChatServices>();
     final currentUserId = FirebaseAuth.instance.currentUser?.uid;
 
     if (currentUserId == null) {

@@ -62,7 +62,7 @@ import 'package:dating_app/models/chat_user_model.dart';
 import 'package:dating_app/services/auth_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class ChatService {
+class ChatServices {
     final authService = di.get<AuthServices>();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 

@@ -10,7 +10,7 @@ part 'chat_event.dart';
 part 'chat_state.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
-  final ChatService _chatService;
+  final ChatServices _chatService;
   StreamSubscription? _chatsSubscription;
   ChatBloc(this._chatService) : super(ChatInitial()) {
     on<LoadChatsEvent>((event, emit) {

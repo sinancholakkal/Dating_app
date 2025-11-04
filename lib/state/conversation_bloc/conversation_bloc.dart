@@ -11,7 +11,7 @@ import 'package:dating_app/view/widgets/toast.dart';
 // Import your service, events, and states
 
 class ConversationBloc extends Bloc<ConversationEvent, ConversationState> {
-  final ChatService _chatService;
+  final ChatServices _chatService;
   StreamSubscription? _messagesSubscription;
  final UserProfileServices _userProfileServices = UserProfileServices();
 

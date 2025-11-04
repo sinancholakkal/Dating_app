@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
-      providers: [RepositoryProvider(create: (context) => ChatService())],
+      providers: [RepositoryProvider(create: (context) => di.get<ChatServices>())],
       child: MultiBlocProvider(
         providers: [
           BlocProvider(create: (context) => AuthBloc()),
@@ -65,10 +65,10 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (context) => UserActionsBloc()),
           BlocProvider(create: (context) => RequestBloc()),
           BlocProvider(
-            create: (context) => ChatBloc(context.read<ChatService>()),
+            create: (context) => ChatBloc(context.read<ChatServices>()),
           ),
-          BlocProvider(create: (context) => ConversationBloc(context.read<ChatService>()),),
-            BlocProvider(create: (context) => UserBlocAndReportBloc(context.read<ChatService>())),
+          BlocProvider(create: (context) => ConversationBloc(context.read<ChatServices>()),),
+            BlocProvider(create: (context) => UserBlocAndReportBloc(context.read<ChatServices>())),
             BlocProvider(
             create: (context) => FavoriteBloc(),
           ),

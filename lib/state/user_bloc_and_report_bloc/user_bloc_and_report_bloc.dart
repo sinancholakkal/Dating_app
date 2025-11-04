@@ -9,7 +9,7 @@ part 'user_bloc_and_report_state.dart';
 
 class UserBlocAndReportBloc
     extends Bloc<UserBlocAndReportEvent, UserBlocAndReportState> {
-  final ChatService _chatService;
+  final ChatServices _chatService;
   UserBlocAndReportBloc(this._chatService) : super(UserBlocAndReportInitial()) {
     on<UserBlocEvent>((event, emit) async {
       final res = await _chatService.blockChat(
