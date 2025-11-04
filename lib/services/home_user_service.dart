@@ -9,6 +9,8 @@ import 'package:dating_app/services/user_profile_services.dart';
 
 class HomeUserService {
   final authService = di.get<AuthServices>();
+  final userProfileService = di.get<UserProfileService>();
+  final userActionsService = di.get<UserActionsService>();
   Future<List<UserProfile>> fetchAllUsers() async {
     List<UserProfile> userModels = [];
     List<String> dislikeIds = [];
@@ -17,7 +19,7 @@ class HomeUserService {
       final doc = await FirebaseFirestore.instance.collection("user").get();
       final currentUser = authService.getCurrentUser()!.uid;
       log("going to fetch dislike id's");
-      final disIds = await UserActionsServices().getDislikeusers(
+      final disIds = await userActionsService.getDislikeusers(
         currentUserId: currentUser,
       );
       log("disIds: $disIds");
@@ -26,7 +28,7 @@ class HomeUserService {
           dislikeIds.add(d);
         }
       }
-      final currentUserModel = await UserProfileServices().fetchUserProfile();
+      final currentUserModel = await userProfileService.fetchUserProfile();
       final currentInteres = currentUserModel!.interests;
       //dislikeIds.addAll(await UserActionsServices().getDislikeusers(currentUserId: currentUser));
       // log("success");

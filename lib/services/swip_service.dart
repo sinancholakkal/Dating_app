@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 
-class SwipeService {
+class SwipeServices {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final int _dailySwipeLimit = 5; // Your limit
 

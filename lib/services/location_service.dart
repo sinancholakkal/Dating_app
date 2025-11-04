@@ -99,6 +99,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dating_app/di/di.dart';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/services/user_profile_services.dart';
 import 'package:geolocator/geolocator.dart';
@@ -252,7 +253,7 @@ Stream<List<UserProfile>> getNearbyUsersWithProfiles(
       //if (!isMatch && !isUserLike) {
         try {
           log("Fetching profile for $otherUserId");
-          final UserProfile? profile = await UserProfileServices().fetchUserProfile(userId: otherUserId);
+          final UserProfile? profile = await di.get<UserProfileService>().fetchUserProfile(userId: otherUserId);
           if (profile == null) return null;
 
           // Return the complete UserProfile with location data

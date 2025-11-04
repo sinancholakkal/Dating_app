@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/di/di.dart';
 import 'package:dating_app/services/auth_services.dart';
 
-class UserActionsServices {
+class UserActionsService {
     final authService = di.get<AuthServices>();
   Future<void> dislikeAction({required String dislikeUserId}) async {
     try {

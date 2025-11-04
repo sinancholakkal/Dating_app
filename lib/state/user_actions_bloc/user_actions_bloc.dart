@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:dating_app/di/di.dart';
 import 'package:dating_app/services/location_service.dart';
 import 'package:dating_app/services/swip_service.dart';
 import 'package:dating_app/services/user_actions_services.dart';
@@ -10,10 +11,11 @@ part 'user_actions_event.dart';
 part 'user_actions_state.dart';
 
 class UserActionsBloc extends Bloc<UserActionsEvent, UserActionsState> {
-  final service = UserActionsServices();
+  final service = di.get<UserActionsService>();
+  final swipService = di.get<SwipeServices>();
   UserActionsBloc() : super(UserActionsInitial()) {
     on<UserDislikeActionEvent>((event, emit) async {
-      final bool canSwipe = await SwipeService().canSwipe();
+      final bool canSwipe = await swipService.canSwipe();
       log("can swip $canSwipe");
       if (canSwipe) {
         await service.dislikeAction(dislikeUserId: event.dislikeUserId);
@@ -34,7 +36,7 @@ class UserActionsBloc extends Bloc<UserActionsEvent, UserActionsState> {
         log("User already matched or liked");
         emit(UserActionSuccessState());
       }else{
-        final bool canSwipe = await SwipeService().canSwipe();
+        final bool canSwipe = await swipService.canSwipe();
           log("can swap $canSwipe");
          if (canSwipe) {
         await service.likeAction(
@@ -62,7 +64,7 @@ class UserActionsBloc extends Bloc<UserActionsEvent, UserActionsState> {
       if(isUserMatch==true || isUserLike==true){
         log("User already matched or liked");
       }else{
-         final bool canSwipe = await SwipeService().canSwipe();
+         final bool canSwipe = await swipService.canSwipe();
         if (canSwipe) {
           await service.addToFavorites(favoriteUserId: event.likeUserId);
           log("Added into favorite");

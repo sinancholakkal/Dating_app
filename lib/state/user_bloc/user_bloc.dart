@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:dating_app/di/di.dart';
 import 'package:dating_app/models/user_current_model.dart';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/services/moderation_services.dart';
@@ -11,7 +12,7 @@ part 'user_event.dart';
 part 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
-  final userService = UserProfileServices();
+  final userService = di.get<UserProfileService>();
   final moderationServices = ModerationServices();
   UserBloc() : super(UserInitial()) {
     on<AddUserProfileSetupEvent>((event, emit)async {

@@ -8,7 +8,7 @@ import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/services/auth_services.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-class UserProfileServices {
+class UserProfileService {
     final authService = di.get<AuthServices>();
   Future<void> userProfileStoring({required UserProfile userProfile}) async {
     List<String> images = [];

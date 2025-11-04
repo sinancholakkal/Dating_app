@@ -6,7 +6,7 @@ import 'package:dating_app/models/request_model.dart';
 import 'package:dating_app/services/auth_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class RequestServices {
+class RequestService {
     final authService = di.get<AuthServices>();
   Future<List<RequestModel>> fetchRequests() async {
     List<RequestModel> requestModels = [];

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:dating_app/di/di.dart';
 import 'package:dating_app/services/user_actions_services.dart';
 import 'package:dating_app/state/favorite_bloc/favorite_bloc.dart';
 import 'package:dating_app/state/user_actions_bloc/user_actions_bloc.dart';
@@ -22,6 +23,7 @@ class FavoritesScreen extends StatefulWidget {
 
 class _FavoritesScreenState extends State<FavoritesScreen> {
   late UserProfile accUserProfile;
+  final userActionsService = di.get<UserActionsService>();
 
   @override
   Widget build(BuildContext context) {
@@ -157,7 +159,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                             UserDislikeActionEvent(dislikeUserId: user.id),
                           );
                         }
-                        UserActionsServices().removeFromFavorites(favoriteUserId: user.id);
+                        userActionsService.removeFromFavorites(favoriteUserId: user.id);
                       },
 
                       background: Container(

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'package:bloc/bloc.dart';
+import 'package:dating_app/di/di.dart';
 import 'package:dating_app/services/chat_service.dart';
 import 'package:dating_app/services/moderation_services.dart';
 import 'package:dating_app/services/user_profile_services.dart';
@@ -13,7 +14,7 @@ import 'package:dating_app/view/widgets/toast.dart';
 class ConversationBloc extends Bloc<ConversationEvent, ConversationState> {
   final ChatServices _chatService;
   StreamSubscription? _messagesSubscription;
- final UserProfileServices _userProfileServices = UserProfileServices();
+ final UserProfileService _userProfileServices = di.get<UserProfileService>();
 
   ConversationBloc(this._chatService) : super(ConversationLoading()) {
     on<LoadMessagesEvent>((event, emit) {

@@ -11,7 +11,7 @@ part 'request_event.dart';
 part 'request_state.dart';
 
 class RequestBloc extends Bloc<RequestEvent, RequestState> {
-  final service = RequestServices();
+  final service = di.get<RequestService>();
   RequestBloc() : super(RequestInitial()) {
     on<FetchRequestsEvent>((event, emit) async {
       emit(FetchLoadingState());
