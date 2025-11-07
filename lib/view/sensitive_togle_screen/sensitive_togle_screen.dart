@@ -1,5 +1,6 @@
 import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/utils/app_sizedbox.dart';
+import 'package:dating_app/view/sensitive_togle_screen/widgets/widgets.dart';
 import 'package:dating_app/view/widgets/text_feild.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -31,15 +32,28 @@ class SensitiveTogleScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextWidget(text: "I want to see", fontWeight: FontWeight.w700, size: 18, color: kWhite.withValues(alpha: 0.8),),
+              TextWidget(
+                text: "I want to see",
+                fontWeight: FontWeight.w500,
+                size: 16,
+                color: kWhite.withValues(alpha: 0.6),
+              ),
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                title: TextWidget(text: "By switching it on, you will see more explicit photo content: such as swimwear, cleavage or revealing clothing. Such content will appear blurred by default when off.",maxLine: 4,textAlign: TextAlign.start,),
+                title: TextWidget(
+                  text:
+                      "By switching it on, you will see more explicit photo content: such as swimwear, cleavage or revealing clothing. Such content will appear blurred by default when off.",
+                  maxLine: 4,
+                  textAlign: TextAlign.start,
+                  fontWeight: FontWeight.w400,
+                  size: 14,
+                  color: kWhite.withValues(alpha: 0.7),
+                ),
                 trailing: Switch(value: true, onChanged: (value) {}),
               ),
               AppSizedBox.h16,
-              
-const SensitivePolicyContainer(),
+
+              const SensitivePolicyContainer(),
             ],
           ),
         ),
@@ -47,5 +61,3 @@ const SensitivePolicyContainer(),
     );
   }
 }
-
-

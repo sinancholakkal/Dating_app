@@ -12,16 +12,14 @@ class SensitivePolicyContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.4), // Dark translucent background for contrast against the appGradient
+        color: Colors.black.withOpacity(0.4),
         borderRadius: BorderRadius.circular(16),
-        // Subtle outer border to define the shape clearly
         border: Border.all(color: kWhite.withOpacity(0.1), width: 1.5), 
       ),
       padding: const EdgeInsets.all(20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Row: Title and Icon
           Row(
             children: [
               Text(
@@ -42,9 +40,8 @@ class SensitivePolicyContainer extends StatelessWidget {
             ],
           ),
           
-          const Divider(height: 30, color: kGrey), // Separator
+          const Divider(height: 30, color: kGrey), 
 
-          // Section 1: Photos Policy
           Text(
             'In profile photos and chats',
             style: GoogleFonts.poppins(
@@ -57,15 +54,14 @@ class SensitivePolicyContainer extends StatelessWidget {
           Text(
             'We strictly prohibit content that violates our policies, including: full or partial nudity, graphic violence, illegal content, or hate symbols. We may blur or remove images deemed excessively revealing or inappropriate.',
             style: GoogleFonts.poppins(
-              color: kWhite70, // Use a softer white for body text
+              color: kWhite70,
               fontSize: 14,
               height: 1.4,
             ),
           ),
           
-          const SizedBox(height: 24), // Vertical spacing
+          const SizedBox(height: 24), 
 
-          // Section 2: Text/Chat Policy
           Text(
             'In user biographies and messages',
             style: GoogleFonts.poppins(
