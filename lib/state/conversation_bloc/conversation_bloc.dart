@@ -47,26 +47,27 @@ class ConversationBloc extends Bloc<ConversationEvent, ConversationState> {
         false,
         collection: "chat_images",
       );
-      log("Image url: $message");
-      if (await ModerationServices().checkContentModeration(
-            imageUrl: message,
-          ) ==
-          "YES") {
-            log("Image is moderated");
-        flutterToast(msg: "Image is moderated");
-        await _userProfileServices.deleteImageFromFirebase(message);
-        log("moderated image deleted from firebase storage");
-        return;
-      } else {
-        log("Image is not moderated");
-        log("Image url upload in chat");
-        _chatService.sendMessage(
+       _chatService.sendMessage(
           recipientId: event.recipientId,
           chatRoomId: event.chatRoomId,
           messageText: message,
           senderId: event.senderId,
         );
-      }
+      log("Image uploased: $message");
+      // if (await ModerationServices().checkContentModeration(
+      //       imageUrl: message,
+      //     ) ==
+      //     "YES") {
+      //       log("Image is moderated");
+      //   flutterToast(msg: "Image is moderated");
+      //   await _userProfileServices.deleteImageFromFirebase(message);
+      //   log("moderated image deleted from firebase storage");
+      //   return;
+      // } else {
+      //   log("Image is not moderated");
+      //   log("Image url upload in chat");
+       
+      // }
     });
   }
 

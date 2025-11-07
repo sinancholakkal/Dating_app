@@ -9,6 +9,8 @@ import 'package:dating_app/view/phone_otp_screen/phone_otp_screen.dart';
 import 'package:dating_app/view/profile_setup_screen/profile_setup_screen.dart';
 import 'package:dating_app/view/screen_onboarding/screen_onboarding.dart';
 import 'package:dating_app/view/screen_spash.dart';
+import 'package:dating_app/view/sensitive_togle_screen/sensitive_togle_screen.dart';
+import 'package:dating_app/view/settings_screen/settings_screen.dart';
 import 'package:dating_app/view/test_screen.dart';
 import 'package:go_router/go_router.dart';
 
@@ -25,6 +27,9 @@ final GoRouter appRouter = GoRouter(
     GoRoute(path: '/easytab', builder: (context, state) =>  EasyTabbar()),
     GoRoute(path: '/splash', builder: (context, state) =>  ScreenSplash()),
     GoRoute(path: '/MyHomePage', builder: (context, state) =>  MyHomePage()),
+    GoRoute(path: '/settings', builder: (context, state) =>  SettingsScreen()),
+    GoRoute(path: '/sensitive', builder: (context, state) =>  SensitiveTogleScreen()),
+
     // GoRoute(
     //   path: '/profile/:userId', // The ':userId' is the parameter
     //   builder: (context, state) {

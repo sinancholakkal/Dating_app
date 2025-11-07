@@ -11,11 +11,9 @@ import 'package:dating_app/utils/app_string.dart';
 import 'package:dating_app/view/profile_screen.dart/managers/profile_ad_manager.dart';
 import 'package:dating_app/view/profile_screen.dart/widget/bio_editor_widget.dart';
 import 'package:dating_app/view/profile_screen.dart/widget/interests_section.dart';
-import 'package:dating_app/view/profile_screen.dart/widget/privacy_button.dart';
 import 'package:dating_app/view/profile_screen.dart/widget/profile_photo_grid.dart';
 import 'package:dating_app/view/profile_screen.dart/widget/section_header.dart';
 import 'package:dating_app/view/profile_screen.dart/widget/wallet_card_pro.dart';
-import 'package:dating_app/view/widgets/show_diolog.dart';
 import 'package:dating_app/view/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -296,19 +294,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   backgroundColor: Colors.transparent,
                   elevation: 0,
                   actions: [
+                    // IconButton(
+                    //   icon: Icon(Icons.logout, color: kWhite),
+                    //   onPressed: () {
+                    //     showDiolog(
+                    //       context: context,
+                    //       title: AppStrings.logout,
+                    //       content: AppStrings.logoutContent,
+                    //       cancelTap: () => context.pop(),
+                    //       confirmTap: () {
+                    //         context.pop();
+                    //         context.read<AuthBloc>().add(SignOutEvent());
+                    //       },
+                    //     );
+                    //   },
+                    // ),
                     IconButton(
-                      icon: Icon(Icons.logout, color: kWhite),
+                      icon: Icon(Icons.settings, color: kWhite),
                       onPressed: () {
-                        showDiolog(
-                          context: context,
-                          title: AppStrings.logout,
-                          content: AppStrings.logoutContent,
-                          cancelTap: () => context.pop(),
-                          confirmTap: () {
-                            context.pop();
-                            context.read<AuthBloc>().add(SignOutEvent());
-                          },
-                        );
+                        context.push("/settings");
                       },
                     ),
                   ],
@@ -384,8 +388,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             );
                           },
                         ),
-                        AppSizedBox.h70, // Space for the FAB
-                        buildPrivacyPolicyLink(context),
+                   
                         AppSizedBox.h70,
                       ],
                     ),

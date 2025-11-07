@@ -128,40 +128,41 @@ class _HomeScreenState extends State<HomeScreen> {
                   profile,
                 ) {
                   return SwipeItem(
+                    
                     content: profile,
                     likeAction: () {
                       if (accUserProfile == null) return;
                       log("Liked //${profile.name}");
                       log(accUserProfile!.name);
                       log(accUserProfile!.id);
-                      context.read<UserActionsBloc>().add(
-                        UserLikeActionEvent(
-                          likeUserId: profile.id,
-                          likeUserName: profile.name,
-                          currentUserId: accUserProfile!.id,
-                          currentUserName: accUserProfile!.name,
-                          image: accUserProfile!.getImages![0],
-                        ),
-                      );
+                      // context.read<UserActionsBloc>().add(
+                      //   UserLikeActionEvent(
+                      //     likeUserId: profile.id,
+                      //     likeUserName: profile.name,
+                      //     currentUserId: accUserProfile!.id,
+                      //     currentUserName: accUserProfile!.name,
+                      //     image: accUserProfile!.getImages![0],
+                      //   ),
+                      // );
                     },
                     nopeAction: () {
                       log("Noped ${profile.name}");
-                      context.read<UserActionsBloc>().add(
-                        UserDislikeActionEvent(dislikeUserId: profile.id),
-                      );
+                      // context.read<UserActionsBloc>().add(
+                      //   UserDislikeActionEvent(dislikeUserId: profile.id),
+                      // );
                     },
                     superlikeAction: () {
                       if (accUserProfile == null) return;
                       log("Superliked ${profile.name}");
-                      context.read<UserActionsBloc>().add(
-                        SuperLikeEvent(
-                          likeUserId: profile.id,
-                          likeUserName: profile.name,
-                          currentUserId: accUserProfile!.id,
-                          currentUserName: accUserProfile!.name,
-                          image: accUserProfile!.getImages![0],
-                        ),
-                      );
+                      // context.read<UserActionsBloc>().add(
+                      //   SuperLikeEvent(
+                      //     likeUserId: profile.id,
+                      //     likeUserName: profile.name,
+                      //     currentUserId: accUserProfile!.id,
+                      //     currentUserName: accUserProfile!.name,
+                      //     image: accUserProfile!.getImages![0],
+                      //   ),
+                      // );
                     },
                   );
                 }).toList();

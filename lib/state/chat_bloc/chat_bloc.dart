@@ -15,16 +15,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ChatBloc(this._chatService) : super(ChatInitial()) {
     on<LoadChatsEvent>((event, emit) {
       emit(ChatLoading());
-      
-      // Cancel any previous subscription to avoid memory leaks
+    
       _chatsSubscription?.cancel();
       
       final currentUserId = FirebaseAuth.instance.currentUser!.uid;
       
-      // Subscribe to the stream from the service
       _chatsSubscription = _chatService.getChatsStream(currentUserId).listen(
         (chats) {
-          // When new data arrives, add a private event to update the state
           //add(_ChatsUpdatedEvent(chats));
         },
         onError: (error) {
@@ -33,8 +30,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         },
       );
     });
-
-    // This handler takes the data from the stream and emits the final state
     on<_ChatsUpdatedEvent>((event, emit) {
       emit(ChatLoaded(event.chats));
     });

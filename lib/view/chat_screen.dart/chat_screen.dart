@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dating_app/di/di.dart';
 import 'package:dating_app/models/chat_user_model.dart';
 import 'package:dating_app/services/chat_service.dart';
@@ -66,6 +68,7 @@ class ChatListScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 itemCount: chatList.length,
                 itemBuilder: (context, index) {
+                  log("chatList[index].lastMessage: ${chatList[index].lastMessage}");
                   return ChatListItem(
                     chat: chatList[index],
                     currentUserId: currentUserId,
