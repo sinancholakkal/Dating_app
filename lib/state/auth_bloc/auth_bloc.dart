@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/di/di.dart';
 import 'package:dating_app/services/auth_services.dart';
+import 'package:dating_app/services/lookingfor_service.dart';
 import 'package:dating_app/utils/app_string.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -12,15 +13,20 @@ part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final authServices = di.get<AuthServices>();
+  final lookingforService = di.get<LookingforService>();
   AuthBloc() : super(AuthInitial()) {
     on<CheckLoginStatusEvent>((event, emit) async {
       User? user;
+      bool isLookingforExists = false;
       try {
-        await Future.delayed(Duration(seconds: 2), () {
+        await Future.delayed(Duration(seconds: 2), () async{
           user = authServices.getCurrentUser();
+          isLookingforExists = await lookingforService.isLookingforExists();
         });
 
+
         if (user != null) {
+          isLookingforExists = await lookingforService.isLookingforExists();
           final docRef = FirebaseFirestore.instance
               .collection("user")
               .doc(user!.uid);
@@ -31,7 +37,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             final data = docSnap.data() as Map<String, dynamic>;
 
             if (data['isSetupProfile'] == true) {
-              emit(AuthSuccessNavigateToHome());
+              if(!isLookingforExists){
+                emit(AuthSuccessNavigateToProfileSetupLookingfor());
+              }else{
+                emit(AuthSuccessNavigateToHome());
+              }
             } else {
               emit(AuthSuccessNavigateToProfileSetup());
               //emit(AuthSuccessNavigateToHome());

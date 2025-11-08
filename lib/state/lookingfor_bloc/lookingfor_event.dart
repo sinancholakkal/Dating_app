@@ -20,3 +20,4 @@ class LookingforAddEvent extends LookingforEvent{
   final List<LookingForModel> lookingFor;
   const LookingforAddEvent({required this.lookingFor});
 }
+class LookingforIsLookingforExistsEvent extends LookingforEvent{}

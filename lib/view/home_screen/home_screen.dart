@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/state/home_user_bloc/home_user_bloc.dart';
+import 'package:dating_app/state/lookingfor_bloc/lookingfor_bloc.dart';
 import 'package:dating_app/state/user_actions_bloc/user_actions_bloc.dart';
 import 'package:dating_app/state/user_bloc/user_bloc.dart' hide ErrorState;
 import 'package:dating_app/utils/app_color.dart' as AppColors;
@@ -46,6 +47,25 @@ class _HomeScreenState extends State<HomeScreen> {
 
               accUserProfile = state.userProfile;
               log(accUserProfile!.name);
+            }
+          },
+        ),
+        BlocListener<LookingforBloc, LookingforState>(
+          listener: (context, state) {
+            if (state is LookingforNotExistedEvent) {
+              log("Looking for not existed");
+              showBottomSheet(context: context, builder: (context){
+                return Container(
+                  height: 200,
+                  width: double.infinity,
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      Text("Looking for not existed"),
+                    ],
+                  ),
+                );
+              });
             }
           },
         ),

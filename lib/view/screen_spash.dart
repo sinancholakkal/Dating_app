@@ -99,6 +99,8 @@ class _ScreenSplashState extends State<ScreenSplash>
               context.go("/onboarding");
             } else if (state is AuthSuccessNavigateToProfileSetup) {
               context.go("/profilesetup");
+            } else if (state is AuthSuccessNavigateToProfileSetupLookingfor) {
+              context.go("/lookingforexist");
             }
           },
           child: Stack(

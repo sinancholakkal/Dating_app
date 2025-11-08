@@ -246,7 +246,7 @@ class _OtherProfileDetailsScreenState extends State<OtherProfileDetailsScreen> {
                                 SizedBox(width: 8),
                                 //Age display
                                 Text(
-                                  widget.userProfile.age,
+                                  widget.userProfile.age.substring(0,2).toString(),
                                   style: GoogleFonts.poppins(
                                     color: kWhite,
                                     fontWeight: FontWeight.w400,

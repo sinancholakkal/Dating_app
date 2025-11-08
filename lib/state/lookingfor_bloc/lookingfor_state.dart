@@ -21,3 +21,5 @@ class LookingforErrorState extends LookingforState{
   @override
   List<Object> get props => [message];
 }
+class LookingforNotExistedEvent extends LookingforState{}
+class LookingforAddedState extends LookingforState{}

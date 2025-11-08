@@ -4,6 +4,7 @@ import 'package:dating_app/di/di.dart';
 import 'package:dating_app/services/auth_services.dart';
 import 'package:dating_app/services/location_service.dart';
 import 'package:dating_app/state/favorite_bloc/favorite_bloc.dart';
+import 'package:dating_app/state/lookingfor_bloc/lookingfor_bloc.dart';
 import 'package:dating_app/state/request_bloc/request_bloc.dart';
 import 'package:dating_app/state/user_actions_bloc/user_actions_bloc.dart';
 import 'package:dating_app/view/chat_screen.dart/chat_screen.dart';
@@ -57,11 +58,15 @@ class _EasyTabbarState extends State<EasyTabbar> {
             context.read<FavoriteBloc>().add(FetchAllFavoritesEvent());
             context.read<UserActionsBloc>().add(SwipeLimitWarningShownEvent());
           } else if (index == 0) {
+           
             if (Navigator.canPop(context)) {
               log("can pop");
             } else {
               log("Can't pop");
             }
+          }else if(index == 5){
+            context.read<LookingforBloc>().add(LookingforFetchEvent());
+             
           }
           model.changePage(index);
         } else {

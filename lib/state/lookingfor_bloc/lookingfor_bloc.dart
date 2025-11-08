@@ -49,11 +49,21 @@ class LookingforBloc extends Bloc<LookingforEvent, LookingforState> {
     });
     on<LookingforAddEvent>((event, emit)async {
       try{
-        emit(LookingforLoadingState());
         await lookingforService.addLookingfor(event.lookingFor);
+        emit(LookingforAddedState());
       }catch(e){
         log("Error adding lookingfor: $e");
         emit(LookingforErrorState(message: e.toString()));
+      }
+    });
+    on<LookingforIsLookingforExistsEvent>((event, emit)async {
+      try{
+        final isExists = await lookingforService.isLookingforExists();
+        if(!isExists){
+          emit(LookingforNotExistedEvent());
+        }
+      }catch(e){
+        log("Error checking if lookingfor exists: $e");
       }
     });
   }

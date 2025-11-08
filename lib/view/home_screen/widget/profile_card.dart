@@ -198,13 +198,13 @@ class _ProfileCardState extends State<ProfileCard> {
                             children: [
                               SizedBox(
                                 child: Row(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.baseline,
-                                  textBaseline: TextBaseline.alphabetic,
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     //Name display--------
-                                    SizedBox(
-                                      width: 160,
+                                    ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                        maxWidth: 160,
+                                      ),
                                       child: Text(
                                         widget.profile.name,
                                         style: GoogleFonts.poppins(
@@ -243,7 +243,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                       ),
                                       //Age display------------
                                       child: Text(
-                                        widget.profile.age.toString(),
+                                        widget.profile.age.substring(0,2).toString(),
                                         style: GoogleFonts.poppins(
                                           color: Colors.white,
                                           fontSize: 16,

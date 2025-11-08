@@ -5,6 +5,7 @@ import 'package:dating_app/view/home_screen/persistent_nav.dart';
 import 'package:dating_app/view/auth_landing_screen/auth_landing_screen.dart';
 import 'package:dating_app/view/email_auth_screen/email_auth_screen.dart';
 import 'package:dating_app/view/home_screen/home_screen.dart';
+import 'package:dating_app/view/lookingfor_exist_screen/lookingfor_exist_screen.dart';
 import 'package:dating_app/view/phone_otp_screen/phone_otp_screen.dart';
 import 'package:dating_app/view/profile_setup_screen/profile_setup_screen.dart';
 import 'package:dating_app/view/screen_onboarding/screen_onboarding.dart';
@@ -29,6 +30,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(path: '/MyHomePage', builder: (context, state) =>  MyHomePage()),
     GoRoute(path: '/settings', builder: (context, state) =>  SettingsScreen()),
     GoRoute(path: '/sensitive', builder: (context, state) =>  SensitiveTogleScreen()),
+    GoRoute(path: '/lookingforexist', builder: (context, state) =>  ExistLookingforScreen()),
 
     // GoRoute(
     //   path: '/profile/:userId', // The ':userId' is the parameter

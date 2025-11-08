@@ -49,3 +49,4 @@ class GoogleAuthError extends AuthState {
   final String message;
   GoogleAuthError({required this.message});
 }
+class AuthSuccessNavigateToProfileSetupLookingfor extends AuthState{}
