@@ -258,7 +258,6 @@ Stream<List<UserProfile>> getNearbyUsersWithProfiles(
 
           // Return the complete UserProfile with location data
           return UserProfile(
-            lookingFor: List<Map<String, dynamic>>.from(profile.lookingFor),
             id: profile.id,
             name: profile.name,
             bio: profile.bio,

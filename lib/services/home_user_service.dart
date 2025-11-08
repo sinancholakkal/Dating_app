@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/di/di.dart';
+import 'package:dating_app/models/lookingfor_model.dart';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/services/auth_services.dart';
 import 'package:dating_app/services/user_actions_services.dart';
@@ -59,7 +60,6 @@ class HomeUserService {
               user.data()["id"] != null) {
             log(data['name']);
             final userProfile = UserProfile(
-              lookingFor: List<Map<String, dynamic>>.from(data['lookingFor'] ?? []),
               id: data['id'] ?? "",
               name: data['name'] ?? "",
               age: data['age'],

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dating_app/models/lookingfor_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -15,10 +16,8 @@ class UserProfile extends Equatable{
   String?getSelfie;
   final GeoPoint? currentGeoPoint;
     final double? distanceInMeters; 
-    final List<Map<String, dynamic>> lookingFor;
 
    UserProfile({
-    required this.lookingFor,
     required this.id,
     required this.name,           
     required this.age,           
@@ -32,6 +31,38 @@ class UserProfile extends Equatable{
     this.currentGeoPoint,
     this.distanceInMeters
   });
+  factory UserProfile.fromJson(Map<String, dynamic> json) {
+    return UserProfile(
+      id: json['id'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+      age: json['age'] as String? ?? '',
+      gender: json['gender'] as String? ?? '',
+      bio: json['bio'] as String? ?? '',
+      imageUrls: null, // XFile objects are not serialized from JSON
+      selfieImageUrl: null, // XFile objects are not serialized from JSON
+      interests: Set<String>.from(json['interests'] ?? []),
+      getImages: json['images'] != null ? List<String>.from(json['images']) : null,
+      getSelfie: json['selfie'] as String?,
+      currentGeoPoint: json['currentGeoPoint'] as GeoPoint?,
+      distanceInMeters: json['distanceInMeters'] as double?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'age': age,
+      'gender': gender,
+      'bio': bio,
+      'interests': interests.toList(),
+      'images': getImages,
+      'selfie': getSelfie,
+      'currentGeoPoint': currentGeoPoint,
+      'distanceInMeters': distanceInMeters,
+    };
+  }
+
   UserProfile copyWith({
     List<Map<String, dynamic>>? lookingFor,
     String? id,
@@ -48,7 +79,6 @@ class UserProfile extends Equatable{
     double? distanceInMeters,
   }) {
     return UserProfile(
-      lookingFor: lookingFor?? this.lookingFor,
       id: id ?? this.id,
       name: name ?? this.name,
       age: age ?? this.age,

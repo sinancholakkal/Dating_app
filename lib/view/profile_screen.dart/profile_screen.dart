@@ -4,6 +4,7 @@ import 'package:dating_app/models/user_current_model.dart';
 import 'package:dating_app/services/auth_services.dart';
 import 'package:dating_app/state/auth_bloc/auth_bloc.dart';
 import 'package:dating_app/state/coins_bloc/coins_bloc.dart';
+import 'package:dating_app/state/lookingfor_bloc/lookingfor_bloc.dart';
 import 'package:dating_app/state/user_bloc/user_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/utils/app_sizedbox.dart';
@@ -11,9 +12,12 @@ import 'package:dating_app/utils/app_string.dart';
 import 'package:dating_app/view/profile_screen.dart/managers/profile_ad_manager.dart';
 import 'package:dating_app/view/profile_screen.dart/widget/bio_editor_widget.dart';
 import 'package:dating_app/view/profile_screen.dart/widget/interests_section.dart';
+import 'package:dating_app/view/profile_screen.dart/widget/lookingfor_session.dart';
+import 'package:dating_app/view/profile_screen.dart/widget/profile_loading_widget.dart';
 import 'package:dating_app/view/profile_screen.dart/widget/profile_photo_grid.dart';
 import 'package:dating_app/view/profile_screen.dart/widget/section_header.dart';
 import 'package:dating_app/view/profile_screen.dart/widget/wallet_card_pro.dart';
+import 'package:dating_app/view/widgets/lookingFor_card.dart';
 import 'package:dating_app/view/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,22 +42,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-
+    context.read<LookingforBloc>().add(LookingforFetchEvent());
     context.read<UserBloc>().add(GetUserProfileEvent());
     _bioController = TextEditingController(
       text:
           "Lover of sunsets, travel, and finding the best coffee shops. Looking for someone to share new adventures with!",
     );
-    
+
     // Initialize ad manager
     _adManager = ProfileAdManager(
       onAdRewardGranted: _onAdRewardGranted,
       onError: (message) => flutterToast(msg: message),
     );
     _adManager.initialize();
-    
+
     // Load user's coins from Firestore
     context.read<CoinsBloc>().add(GetCurrentUserCoinsEvent());
+    context.read<LookingforBloc>().add(LookingforFetchDefaultEvent());
   }
 
   @override
@@ -81,39 +86,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
     log(_bioController.text.trim());
     log("==========");
     log(getUserModel.bio);
-    
+
     final newModel = UserCurrentModel(
       bio: _bioController.text.trim(),
       images: getImages,
       userId: getUserModel.userId,
       interests: userInterests.value,
     );
-    
+
     log(getUserModel.interests.toString());
     log(newModel.interests.toString());
     log("${getUserModel == newModel}");
-    
+
     // Validation checks
     if (getUserModel == newModel) {
       flutterToast(msg: "No updates");
       return;
     }
-    
+
     if (getImages.length < 2) {
       flutterToast(msg: "Please select minimum two images");
       return;
     }
-    
+
     if (userInterests.value.length < 2) {
       flutterToast(msg: "Please select minimum two your interest");
       return;
     }
-    
+
     if (_bioController.text.trim().isEmpty) {
       flutterToast(msg: "Please fill the bio");
       return;
     }
-    
+
     // Call update event
     context.read<UserBloc>().add(
       UpdateUserPrfileEvent(
@@ -170,6 +175,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               state is UpdateProfileLoadingState) {
             return ProfileLoadingWidget(state: state);
           } else if (state is GetSuccessState) {
+            //It is a current user model of diplaying in the profile screen
             UserCurrentModel getUserModel = UserCurrentModel(
               bio: _bioController.text,
               images: state.userProfile.getImages!,
@@ -228,11 +234,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         BlocBuilder<CoinsBloc, CoinsState>(
                           builder: (context, coinsState) {
                             return WalletCardPro(
-                              coins: 0, // Will be updated by BlocBuilder inside WalletCardPro
+                              coins:
+                                  0, // Will be updated by BlocBuilder inside WalletCardPro
                               onWatchAd: _adManager.onWatchAdButtonClicked,
                               onManage: null,
-                              isLoading: coinsState is AddCoinsLoadingState || 
-                                       coinsState is GetCurrentUserCoinsLoadingState,
+                              isLoading:
+                                  coinsState is AddCoinsLoadingState ||
+                                  coinsState is GetCurrentUserCoinsLoadingState,
                               isAdLoading: coinsState is AddCoinsLoadingState,
                             );
                           },
@@ -289,8 +297,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             );
                           },
                         ),
-                   
+                        AppSizedBox.h30,
+                        const SectionHeader(title: "Looking For"),
+                         LookingForSession(),
+                       
                         AppSizedBox.h70,
+
                       ],
                     ),
                   ),
@@ -308,119 +320,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         },
       ),
     );
-  }
-
-}
-
-class ProfileLoadingWidget extends StatelessWidget {
-  final UserState state;
-  const ProfileLoadingWidget({
-    super.key,
-    required this.state,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: const BoxDecoration(gradient: appGradient),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(
-                  color: Colors.white.withOpacity(0.2),
-                  width: 1,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: 20,
-                    offset: const Offset(0, 10),
-                  ),
-                ],
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    strokeWidth: 3,
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    state is GetProfileLoadingState 
-                        ? 'Loading your profile...' 
-                        : 'Updating profile...',
-                    style: GoogleFonts.poppins(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    state is GetProfileLoadingState 
-                        ? 'Getting your information ready' 
-                        : 'Saving your changes',
-                    style: GoogleFonts.poppins(
-                      color: Colors.white.withOpacity(0.8),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 40),
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 12,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: Colors.white.withOpacity(0.2),
-                  width: 1,
-                ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Colors.white.withOpacity(0.7),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    'Please wait...',
-                    style: GoogleFonts.poppins(
-                      color: Colors.white.withOpacity(0.8),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+    
   }
 }
-

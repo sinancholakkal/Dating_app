@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dating_app/models/lookingfor_model.dart';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -53,8 +54,8 @@ class FavoriteServices {
       final data = doc.data();
       
       // Manually create the UserProfile object by mapping each field
+      
       return UserProfile(
-        lookingFor: List<Map<String, dynamic>>.from(data['lookingFor'] ?? []),
         id: data['id'] ?? '',
         name: data['name'] ?? '',
         age: data['age'],

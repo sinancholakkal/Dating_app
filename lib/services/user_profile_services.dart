@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/di/di.dart';
+import 'package:dating_app/models/lookingfor_model.dart';
 import 'package:dating_app/models/user_current_model.dart';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/services/auth_services.dart';
@@ -39,7 +40,6 @@ class UserProfileService {
             'selfie': selfie,
             "isSetupProfile": true,
             'interests': userProfile.interests.toList(),
-            'lookingFor': userProfile.lookingFor.toList(),
           }, SetOptions(merge: true));
     } catch (e) {
       log("Something issue while uploading user profile datas $e");
@@ -159,7 +159,6 @@ class UserProfileService {
           getSelfie: data["selfie"] as String,
 
           interests: Set<String>.from(data['interests'] ?? []),
-          lookingFor: List<Map<String, dynamic>>.from(data['lookingFor'] ?? []),
         );
 
         return userProfile;

@@ -20,9 +20,9 @@ class LookingForStep extends StatefulWidget {
 class _LookingForStepState extends State<LookingForStep> {
   List<LookingForModel> lookingFor = [];
 
-@override
+  @override
   void initState() {
-    context.read<LookingforBloc>().add(LookingforFetchEvent());
+    context.read<LookingforBloc>().add(LookingforFetchDefaultEvent());
     super.initState();
   }
 
@@ -52,13 +52,13 @@ class _LookingForStepState extends State<LookingForStep> {
           Expanded(
             child: BlocConsumer<LookingforBloc, LookingforState>(
               listener: (context, state) {
-                if(state is LookingforLoadedState) {
+                if (state is LookingforLoadedState) {
                   final items = state.lookingFor;
                   lookingFor = List.from(items);
                 }
               },
               builder: (context, state) {
-                if(state is LookingforLoadedState) {
+                if (state is LookingforLoadedState) {
                   final items = state.lookingFor;
                   return GridView.builder(
                     itemCount: items.length,
@@ -75,20 +75,21 @@ class _LookingForStepState extends State<LookingForStep> {
                         item: item,
                         onTap: () {
                           log("onTap: ${item.keyValue}");
-                          context.read<LookingforBloc>().add(LookingforUpdateEvent(index: index));
+                          context.read<LookingforBloc>().add(
+                            LookingforUpdateDefaultEvent(index: index),
+                          );
                         },
                       );
                     },
                   );
                 }
                 return const SizedBox.shrink();
-              }
+              },
             ),
           ),
           ElevatedButton(
             onPressed: () {
-              final selectedLookingFor = lookingFor.where((element) => element.isSelected).toList();
-              widget.onContinue(selectedLookingFor);
+              widget.onContinue(lookingFor);
             },
             style: ElevatedButton.styleFrom(
               minimumSize: const Size(double.infinity, 55),

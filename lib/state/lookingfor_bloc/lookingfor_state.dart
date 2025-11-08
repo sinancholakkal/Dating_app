@@ -14,3 +14,10 @@ class LookingforLoadedState extends LookingforState{
   @override
   List<Object> get props => [lookingFor];
 }
+class LookingforLoadingState extends LookingforState{}
+class LookingforErrorState extends LookingforState{
+  final String message;
+  const LookingforErrorState({required this.message});
+  @override
+  List<Object> get props => [message];
+}

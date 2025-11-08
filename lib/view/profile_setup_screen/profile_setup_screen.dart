@@ -4,6 +4,7 @@ import 'package:dating_app/di/di.dart';
 import 'package:dating_app/models/lookingfor_model.dart';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/services/auth_services.dart';
+import 'package:dating_app/state/lookingfor_bloc/lookingfor_bloc.dart';
 import 'package:dating_app/state/profile_setup_bloc/profile_setup_bloc.dart';
 import 'package:dating_app/state/user_bloc/user_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
@@ -224,13 +225,6 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       log(selfie.toString());
                       log(interest.toString());
                       final UserProfile model = UserProfile(
-                        lookingFor: lookingFor.map((e) => {
-                          'key': e.keyValue,
-                          'title': e.title,
-                          'description': e.description,
-                          'icon': e.icon.codePoint,
-                          'isSelected': e.isSelected,
-                        }).toList(),
                         id: authService.getCurrentUser()!.uid,
                         name: _nameController.text.trim(),
                         age: _ageController.text.trim().toString(),
@@ -242,8 +236,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       );
                       log("user setup event called");
                       context.read<UserBloc>().add(
-                        AddUserProfileSetupEvent(userProfile: model),
+                        AddUserProfileSetupEvent(userProfile: model, lookingFor: lookingFor),
                       );
+                      // context.read<LookingforBloc>().add(LookingforAddEvent(lookingFor: lookingFor));
                       //log(message)
                     }
                   },

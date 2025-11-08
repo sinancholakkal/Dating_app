@@ -57,6 +57,7 @@
 // }
 import 'dart:io';
 
+import 'package:dating_app/models/lookingfor_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -64,16 +65,16 @@ class UserCurrentModel extends Equatable {
   final String bio;
   final String userId;
   final List<dynamic> images;
-  final Set<String> interests; // 1. New property added
+  final Set<String> interests; 
 
   const UserCurrentModel({
     required this.bio,
     required this.images,
     required this.userId,
-    required this.interests, // 2. Added to the constructor
+    required this.interests, 
   });
 
-  // Strict comparison for lists remains the same
+
   bool _areListsEqual(List<dynamic> other) {
     if (images.length != other.length) return false;
     for (int i = 0; i < images.length; i++) {

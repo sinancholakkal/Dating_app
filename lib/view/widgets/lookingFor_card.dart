@@ -1,5 +1,6 @@
 
-  import 'dart:ui';
+  import 'dart:developer';
+import 'dart:ui';
 
 import 'package:dating_app/models/lookingfor_model.dart';
 import 'package:dating_app/utils/app_color.dart';
@@ -9,14 +10,17 @@ import 'package:google_fonts/google_fonts.dart';
 class LookingForCard extends StatelessWidget {
   final LookingForModel item;
   final VoidCallback onTap;
-
-  const LookingForCard({super.key, 
+   bool? isSelected;
+   LookingForCard({super.key, 
     required this.item,
-    required this.onTap,
+    required this.onTap, this.isSelected,
   });
+
 
   @override
   Widget build(BuildContext context) {
+    log("===${isSelected}===");
+    isSelected??=item.isSelected;
     return GestureDetector(
       onTap: onTap,
       child: Stack(
@@ -24,10 +28,10 @@ class LookingForCard extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: item.isSelected ? primary : Color(0xFF1E1E1E),
+              color: isSelected! ? primary : Color(0xFF1E1E1E),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: kWhite.withOpacity(0.08)),
-              boxShadow: item.isSelected
+              boxShadow: isSelected!
                   ? [
                       BoxShadow(
                         color: primary.withOpacity(0.35),
@@ -41,7 +45,7 @@ class LookingForCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(item.icon, color: kWhite, size: 32),
+                Icon(item.icon, color: isSelected! ?kWhite: primary , size: 32),
                 const SizedBox(height: 16),
                 Text(
                   item.title,
@@ -63,7 +67,7 @@ class LookingForCard extends StatelessWidget {
               ],
             ),
           ),
-          if (item.isSelected)
+          if (isSelected!)
             Positioned(
               bottom: -12,
               left: 0,
