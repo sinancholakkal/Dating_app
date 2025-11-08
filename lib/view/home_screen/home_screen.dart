@@ -45,7 +45,8 @@ class _HomeScreenState extends State<HomeScreen> {
               log("User profile executed----------");
 
               accUserProfile = state.userProfile;
-
+              log("looking for:::::::: ${accUserProfile!.lookingFor}");
+              log("looking for============================================================================================================================");
               log(accUserProfile!.name);
             }
           },

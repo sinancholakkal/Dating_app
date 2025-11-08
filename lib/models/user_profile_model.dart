@@ -15,8 +15,10 @@ class UserProfile extends Equatable{
   String?getSelfie;
   final GeoPoint? currentGeoPoint;
     final double? distanceInMeters; 
+    final List<Map<String, dynamic>> lookingFor;
 
    UserProfile({
+    required this.lookingFor,
     required this.id,
     required this.name,           
     required this.age,           
@@ -30,6 +32,37 @@ class UserProfile extends Equatable{
     this.currentGeoPoint,
     this.distanceInMeters
   });
+  UserProfile copyWith({
+    List<Map<String, dynamic>>? lookingFor,
+    String? id,
+    String? name,
+    String? age,
+    String? gender,
+    String? bio,
+    List<XFile>? imageUrls,
+    XFile? selfieImageUrl,
+    Set<String>? interests,
+    List<String>? getImages,
+    String? getSelfie,
+    GeoPoint? currentGeoPoint,
+    double? distanceInMeters,
+  }) {
+    return UserProfile(
+      lookingFor: lookingFor?? this.lookingFor,
+      id: id ?? this.id,
+      name: name ?? this.name,
+      age: age ?? this.age,
+      gender: gender ?? this.gender,
+      bio: bio ?? this.bio,
+      imageUrls: imageUrls ?? this.imageUrls,
+      selfieImageUrl: selfieImageUrl ?? this.selfieImageUrl,
+      interests: interests ?? this.interests,
+      getImages: getImages ?? this.getImages,
+      getSelfie: getSelfie ?? this.getSelfie,
+      currentGeoPoint: currentGeoPoint ?? this.currentGeoPoint,
+      distanceInMeters: distanceInMeters ?? this.distanceInMeters,
+    );
+  }
     @override
   List<Object?> get props => [
         id,
@@ -41,4 +74,5 @@ class UserProfile extends Equatable{
         selfieImageUrl,
         interests,
       ];
+      
 }

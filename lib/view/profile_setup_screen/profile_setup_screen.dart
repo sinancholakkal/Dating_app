@@ -224,6 +224,13 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       log(selfie.toString());
                       log(interest.toString());
                       final UserProfile model = UserProfile(
+                        lookingFor: lookingFor.map((e) => {
+                          'key': e.keyValue,
+                          'title': e.title,
+                          'description': e.description,
+                          'icon': e.icon.codePoint,
+                          'isSelected': e.isSelected,
+                        }).toList(),
                         id: authService.getCurrentUser()!.uid,
                         name: _nameController.text.trim(),
                         age: _ageController.text.trim().toString(),

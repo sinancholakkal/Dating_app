@@ -59,6 +59,7 @@ class HomeUserService {
               user.data()["id"] != null) {
             log(data['name']);
             final userProfile = UserProfile(
+              lookingFor: List<Map<String, dynamic>>.from(data['lookingFor'] ?? []),
               id: data['id'] ?? "",
               name: data['name'] ?? "",
               age: data['age'],

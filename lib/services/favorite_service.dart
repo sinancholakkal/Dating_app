@@ -54,7 +54,7 @@ class FavoriteServices {
       
       // Manually create the UserProfile object by mapping each field
       return UserProfile(
-        
+        lookingFor: List<Map<String, dynamic>>.from(data['lookingFor'] ?? []),
         id: data['id'] ?? '',
         name: data['name'] ?? '',
         age: data['age'],

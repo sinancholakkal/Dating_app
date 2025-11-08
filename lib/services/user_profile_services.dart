@@ -39,6 +39,7 @@ class UserProfileService {
             'selfie': selfie,
             "isSetupProfile": true,
             'interests': userProfile.interests.toList(),
+            'lookingFor': userProfile.lookingFor.toList(),
           }, SetOptions(merge: true));
     } catch (e) {
       log("Something issue while uploading user profile datas $e");
@@ -76,7 +77,8 @@ class UserProfileService {
           .update({
             'bio': userModel.bio,
             'images': images,
-            'interests':userModel.interests
+            'interests':userModel.interests,
+            //'lookingFor':userModel.,
           },);
       
     } catch (e) {
@@ -157,6 +159,7 @@ class UserProfileService {
           getSelfie: data["selfie"] as String,
 
           interests: Set<String>.from(data['interests'] ?? []),
+          lookingFor: List<Map<String, dynamic>>.from(data['lookingFor'] ?? []),
         );
 
         return userProfile;
