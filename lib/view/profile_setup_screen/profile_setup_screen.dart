@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:dating_app/di/di.dart';
+import 'package:dating_app/models/lookingfor_model.dart';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/services/auth_services.dart';
 import 'package:dating_app/state/profile_setup_bloc/profile_setup_bloc.dart';
@@ -9,6 +10,7 @@ import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/utils/app_string.dart';
 import 'package:dating_app/view/profile_setup_screen/widget/details_setup.dart';
 import 'package:dating_app/view/profile_setup_screen/widget/interested_setup.dart';
+import 'package:dating_app/view/profile_setup_screen/widget/looking_for.dart';
 import 'package:dating_app/view/profile_setup_screen/widget/photos_setp.dart';
 import 'package:dating_app/view/profile_setup_screen/widget/verification_step.dart';
 import 'package:dating_app/view/widgets/loading.dart';
@@ -30,6 +32,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   //Gender _selectedGender = Gender.none;
+  List<LookingForModel> lookingFor = [];
   ValueNotifier<Gender> selectedGender = ValueNotifier(Gender.none);
     final authService = di.get<AuthServices>();
   int _currentPage = 0;
@@ -92,7 +95,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                   _currentPage = state.currentPage;
                 }
                 return LinearProgressIndicator(
-                  value: (_currentPage + 1) / 4,
+                  value: (_currentPage + 1) / 5,
                   backgroundColor: Colors.white24,
                   valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
                 );
@@ -111,6 +114,25 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
               controller: _pageController,
               physics: const NeverScrollableScrollPhysics(),
               children: [
+                     //Looking for step-------
+                LookingForStep(
+                  onContinue: (selectedLookingFor) {
+                    lookingFor = List.from(selectedLookingFor);
+                    log("Looking for step continue button pressed");
+                   if(lookingFor.isEmpty) {
+                    flutterToast(msg: "Please select your looking for");
+                   } else {
+                    context.read<ProfileSetupBloc>().add(
+                      ContinueTappedEvent(
+                        pageController: _pageController,
+                        currentPage: _currentPage,
+                      ),
+                    );
+                   }
+                  },
+                ),
+
+
                 ValueListenableBuilder(
                   valueListenable: selectedGender,
                   builder: (context, genderNoti, child) {
@@ -183,6 +205,8 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                   bioController: TextEditingController(),
                   initialInterests: interest,
                 ),
+  
+           
 
                 //Verification(Selfie image upload)-------
                 VerificationStep(

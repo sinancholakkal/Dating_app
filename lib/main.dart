@@ -9,6 +9,7 @@ import 'package:dating_app/state/coins_bloc/coins_bloc.dart';
 import 'package:dating_app/state/conversation_bloc/conversation_bloc.dart';
 import 'package:dating_app/state/favorite_bloc/favorite_bloc.dart';
 import 'package:dating_app/state/home_user_bloc/home_user_bloc.dart';
+import 'package:dating_app/state/lookingfor_bloc/lookingfor_bloc.dart';
 import 'package:dating_app/state/profile_setup_bloc/profile_setup_bloc.dart';
 import 'package:dating_app/state/request_bloc/request_bloc.dart';
 import 'package:dating_app/state/user_actions_bloc/user_actions_bloc.dart';
@@ -67,6 +68,7 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => ChatBloc(context.read<ChatServices>()),
           ),
+          BlocProvider(create: (context) => LookingforBloc()),
           BlocProvider(create: (context) => ConversationBloc(context.read<ChatServices>()),),
             BlocProvider(create: (context) => UserBlocAndReportBloc(context.read<ChatServices>())),
             BlocProvider(

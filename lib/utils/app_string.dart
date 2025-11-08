@@ -1,4 +1,7 @@
 
+import 'package:dating_app/models/lookingfor_model.dart';
+import 'package:flutter/material.dart';
+
 class AppStrings {
   static const String forgotPassword = "Forgot Password";
   static const String login = "Sign In";
@@ -49,5 +52,12 @@ class AppStrings {
  static final List<String> allInterests = const [
     'Travel', 'Photography', 'Movies', 'Gaming', 'Music', 'Art',
     'Cooking', 'Reading', 'Fitness', 'Dancing', 'Sports', 'Tech'
+  ];
+  static final List<LookingForModel> lookingForItems = [
+    LookingForModel(keyValue: 'casual', title: 'Casual', description: "Let's take it easy and see where things go", icon: Icons.favorite_border, isSelected: false),
+    LookingForModel(keyValue: 'long_term', title: 'Long-term', description: 'Ready for a genuine connection', icon: Icons.favorite, isSelected: false),
+    LookingForModel(keyValue: 'virtual', title: 'Virtual', description: "Here for a good time, online. Let's chat!", icon: Icons.chat_bubble_outline, isSelected: false),
+    LookingForModel(keyValue: 'non_monogamy', title: 'Non-monogamy', description: 'Ethically, lovingly, consensually', icon: Icons.group_outlined, isSelected: false),
+    LookingForModel(keyValue: 'anything_but_boring', title: 'Anything but boring', description: 'Looking for something exciting', icon: Icons.mood_outlined, isSelected: false),
   ];
 }
