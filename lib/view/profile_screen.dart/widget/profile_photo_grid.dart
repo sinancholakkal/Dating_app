@@ -121,7 +121,7 @@ class _AddPhotoCard extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.12),
+                        color: const Color.fromARGB(255, 17, 17, 17).withOpacity(0.12),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(Icons.add, color: kWhite, size: 22),

@@ -9,7 +9,7 @@ class ProfileAdManager {
   static const int _walletAdType = 4;
   static const int _cooldownDuration = 2; 
   static const int _coinsReward = 5;
-  static const String _adUnitId = 'ca-app-pub-6236667985806581/7882906249';
+  static const String _adUnitId = 'ca-app-pub-8328099920408589/5627342176';
 
   // Ad watching variables
   InterstitialAd? _interstitialAd;
