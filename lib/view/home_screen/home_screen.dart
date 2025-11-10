@@ -15,6 +15,7 @@ import 'package:dating_app/view/home_screen/widget/swipe_action_buttons.dart';
 import 'package:dating_app/view/home_screen/widget/upgrade_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:swipe_cards/swipe_cards.dart';
@@ -32,8 +33,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch users when the screen is first initialized.
     context.read<HomeUserBloc>().add(FetchHomeAllUsers());
+    context.read<LookingforBloc>().add(LookingforIsLookingforExistsEvent());
   }
 
   @override
@@ -54,18 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
           listener: (context, state) {
             if (state is LookingforNotExistedEvent) {
               log("Looking for not existed");
-              showBottomSheet(context: context, builder: (context){
-                return Container(
-                  height: 200,
-                  width: double.infinity,
-                  color: Colors.white,
-                  child: Column(
-                    children: [
-                      Text("Looking for not existed"),
-                    ],
-                  ),
-                );
-              });
+              context.push("/lookingforexist");
             }
           },
         ),

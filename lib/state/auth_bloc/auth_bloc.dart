@@ -21,7 +21,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         await Future.delayed(Duration(seconds: 2), () async{
           user = authServices.getCurrentUser();
-          isLookingforExists = await lookingforService.isLookingforExists();
+          
         });
 
 

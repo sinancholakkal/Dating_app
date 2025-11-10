@@ -4,6 +4,7 @@ import 'package:dating_app/models/lookingfor_model.dart';
 import 'package:dating_app/state/lookingfor_bloc/lookingfor_bloc.dart';
 import 'package:dating_app/utils/app_string.dart';
 import 'package:dating_app/view/widgets/lookingFor_card.dart';
+import 'package:dating_app/view/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,15 +21,18 @@ class LookingForSession extends StatelessWidget {
         if(state is LookingforErrorState){
           return Center(child: Text(state.message));
         }
-        if (state is LookingforLoadedState) {
-        if(state.lookingFor.isEmpty){
+        if (state is LookingforLoadedState || state is LookingforUpdatedState) {
+          if(state is LookingforUpdatedState){
+            flutterToast(msg: "Looking for updated");
+          }
+        if((state is LookingforLoadedState && state.lookingFor.isEmpty) || (state is LookingforUpdatedState && state.lookingFor.isEmpty)){
           return const Center(child: Text("No looking for found"));
         }
       
           return GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: state.lookingFor.length,
+            itemCount: (state is LookingforLoadedState ? state.lookingFor.length : (state is LookingforUpdatedState ? state.lookingFor.length : 0)),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               mainAxisSpacing: 16,
@@ -36,13 +40,13 @@ class LookingForSession extends StatelessWidget {
               childAspectRatio: 0.80,
             ),
             itemBuilder: (context, index) {
-              final item = state.lookingFor[index];
+              final item = (state is LookingforLoadedState ? state.lookingFor[index] : (state is LookingforUpdatedState ? state.lookingFor[index] : null));
               
               return LookingForCard(
-                item: item,
+                item: item!,
                 onTap: () {
                   log("onTap: ${item.keyValue}");
-                  final List<LookingForModel> newItemList = List.from(state.lookingFor);
+                  final List<LookingForModel> newItemList = List.from((state is LookingforLoadedState ? state.lookingFor : (state is LookingforUpdatedState ? state.lookingFor : [])));
                   newItemList[index] = item.copyWith(isSelected: !item.isSelected);
                   context.read<LookingforBloc>().add(LookingforUpdateEvent(lookingFor: newItemList));
                 },

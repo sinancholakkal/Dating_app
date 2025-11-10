@@ -23,3 +23,9 @@ class LookingforErrorState extends LookingforState{
 }
 class LookingforNotExistedEvent extends LookingforState{}
 class LookingforAddedState extends LookingforState{}
+class LookingforUpdatedState extends LookingforState{
+  final List<LookingForModel> lookingFor;
+  const LookingforUpdatedState({required this.lookingFor});
+  @override
+  List<Object> get props => [lookingFor];
+}

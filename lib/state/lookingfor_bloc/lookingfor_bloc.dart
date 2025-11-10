@@ -40,8 +40,8 @@ class LookingforBloc extends Bloc<LookingforEvent, LookingforState> {
     });
     on<LookingforUpdateEvent>((event, emit)async {
       try{
-         lookingforService.updateLookingfor(event.lookingFor);
-        emit(LookingforLoadedState(lookingFor: event.lookingFor));
+        await lookingforService.updateLookingfor(event.lookingFor);
+        emit(LookingforUpdatedState(lookingFor: event.lookingFor));
       }catch(e){
         log("Error updating lookingfor: $e");
         emit(LookingforErrorState(message: e.toString()));
