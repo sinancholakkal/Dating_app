@@ -47,7 +47,7 @@ class TurnOnsSession extends StatelessWidget {
                   : (state is TurnOnsUpdatedState
                       ? state.turnOns[index]
                       : null));
-
+              //log("item: ${item?.icon.codePoint}====");
               return LookingForCard(
                 item: item!,
                 onTap: () {

@@ -7,6 +7,7 @@ import 'package:dating_app/models/user_current_model.dart';
 import 'package:dating_app/models/user_profile_model.dart';
 import 'package:dating_app/services/lookingfor_service.dart';
 import 'package:dating_app/services/moderation_services.dart';
+import 'package:dating_app/services/turn_ons_servie.dart';
 import 'package:dating_app/services/user_profile_services.dart';
 import 'package:meta/meta.dart';
 
@@ -16,6 +17,7 @@ part 'user_state.dart';
 class UserBloc extends Bloc<UserEvent, UserState> {
   final userService = di.get<UserProfileService>();
   final moderationServices = ModerationServices();
+  final turnOnsService = di.get<TurnOnsService>();
   final lookingforService = di.get<LookingforService>();
   UserBloc() : super(UserInitial()) {
     on<AddUserProfileSetupEvent>((event, emit)async {
@@ -25,6 +27,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         log("user profile stored========================");
         await lookingforService.addLookingfor(event.lookingFor);
         log("looking for added ================");
+        await turnOnsService.addTurnOns(event.turnOns);
+        log("turn ons added ================");
         emit(ProfileSuccessState());
       }catch(e){
         log("something issue while add data $e");

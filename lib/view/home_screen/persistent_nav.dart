@@ -6,6 +6,7 @@ import 'package:dating_app/services/location_service.dart';
 import 'package:dating_app/state/favorite_bloc/favorite_bloc.dart';
 import 'package:dating_app/state/lookingfor_bloc/lookingfor_bloc.dart';
 import 'package:dating_app/state/request_bloc/request_bloc.dart';
+import 'package:dating_app/state/turn_ons_bloc/turn_ons_bloc.dart';
 import 'package:dating_app/state/user_actions_bloc/user_actions_bloc.dart';
 import 'package:dating_app/view/chat_screen.dart/chat_screen.dart';
 import 'package:dating_app/view/favorite_screen/favorite_screen.dart';
@@ -66,7 +67,7 @@ class _EasyTabbarState extends State<EasyTabbar> {
             }
           }else if(index == 5){
             context.read<LookingforBloc>().add(LookingforFetchEvent());
-             
+             context.read<TurnOnsBloc>().add(TurnOnsFetchEvent());
           }
           model.changePage(index);
         } else {

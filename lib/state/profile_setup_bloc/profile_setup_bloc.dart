@@ -14,7 +14,7 @@ class ProfileSetupBloc extends Bloc<ProfileSetupEvent, ProfileSetupState> {
     });
 
     on<ContinueTappedEvent>((event, emit) {
-      if (event.currentPage < 4) {
+      if (event.currentPage < 5) {
         currentPage = event.currentPage + 1;
         event.pageController.animateToPage(
           currentPage,

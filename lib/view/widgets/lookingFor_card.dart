@@ -59,6 +59,8 @@ class LookingForCard extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   item.description,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 3,
                   style: GoogleFonts.poppins(
                     color: kWhite70,
                     fontSize: 12,

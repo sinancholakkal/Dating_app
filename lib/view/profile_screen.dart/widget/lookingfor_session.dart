@@ -37,7 +37,7 @@ class LookingForSession extends StatelessWidget {
               crossAxisCount: 2,
               mainAxisSpacing: 16,
               crossAxisSpacing: 16,
-              childAspectRatio: 0.95,
+              childAspectRatio: 0.90,
             ),
             itemBuilder: (context, index) {
               final item = (state is LookingforLoadedState ? state.lookingFor[index] : (state is LookingforUpdatedState ? state.lookingFor[index] : null));

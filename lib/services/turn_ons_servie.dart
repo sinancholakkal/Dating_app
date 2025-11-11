@@ -26,7 +26,14 @@ class TurnOnsService {
     try {
       final doc = await _firestore.collection('turnons').doc(authService.getCurrentUser()!.uid).get();
       final data = doc.data();
-      return LookingForModel.fromJsonList(data?['turnOns'] ?? []);
+      // for(var item in data?['turnOns'] ?? []) {
+      //   log("-0item: ${item['icon']}====");
+      // }
+      final models =  LookingForModel.fromJsonList(data?['turnOns'] ?? []);
+      for(var item in models) {
+        log("-1item: ${item.icon}====");
+      }
+      return models;
     } catch (e) {
       log('Error getting turnOns: $e');
       rethrow;

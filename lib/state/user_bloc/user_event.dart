@@ -6,7 +6,8 @@ sealed class UserEvent {}
 class AddUserProfileSetupEvent extends UserEvent{
   final UserProfile userProfile;
   final List<LookingForModel> lookingFor;
-  AddUserProfileSetupEvent({required this.userProfile, required this.lookingFor});
+  final List<LookingForModel> turnOns;
+  AddUserProfileSetupEvent({required this.userProfile, required this.lookingFor, required this.turnOns});
   
 } 
 
