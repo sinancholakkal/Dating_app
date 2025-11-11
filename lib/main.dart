@@ -12,6 +12,7 @@ import 'package:dating_app/state/home_user_bloc/home_user_bloc.dart';
 import 'package:dating_app/state/lookingfor_bloc/lookingfor_bloc.dart';
 import 'package:dating_app/state/profile_setup_bloc/profile_setup_bloc.dart';
 import 'package:dating_app/state/request_bloc/request_bloc.dart';
+import 'package:dating_app/state/turn_ons_bloc/turn_ons_bloc.dart';
 import 'package:dating_app/state/user_actions_bloc/user_actions_bloc.dart';
 import 'package:dating_app/state/user_bloc/user_bloc.dart';
 import 'package:dating_app/state/user_bloc_and_report_bloc/user_bloc_and_report_bloc.dart';
@@ -76,6 +77,7 @@ class MyApp extends StatelessWidget {
           ),
              BlocProvider(create: (context) => AdBloc()),
               BlocProvider(create: (context) => CoinsBloc()),
+              BlocProvider(create: (context) => TurnOnsBloc()),
         ],
         child: CupertinoTheme(
           data: const CupertinoThemeData(

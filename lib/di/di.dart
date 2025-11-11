@@ -5,6 +5,7 @@ import 'package:dating_app/services/favorite_service.dart';
 import 'package:dating_app/services/lookingfor_service.dart';
 import 'package:dating_app/services/request_services.dart';
 import 'package:dating_app/services/swip_service.dart';
+import 'package:dating_app/services/turn_ons_servie.dart';
 import 'package:dating_app/services/user_actions_services.dart';
 import 'package:dating_app/services/user_profile_services.dart';
 import 'package:get_it/get_it.dart';
@@ -20,4 +21,5 @@ void setUpDi(){
   di.registerLazySingleton(()=>UserActionsService());
   di.registerLazySingleton(()=>UserProfileService());
   di.registerLazySingleton(()=>LookingforService());
+  di.registerLazySingleton(()=>TurnOnsService());
 }
