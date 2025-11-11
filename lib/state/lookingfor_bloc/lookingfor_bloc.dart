@@ -41,7 +41,15 @@ class LookingforBloc extends Bloc<LookingforEvent, LookingforState> {
     on<LookingforUpdateEvent>((event, emit)async {
       try{
         await lookingforService.updateLookingfor(event.lookingFor);
-        emit(LookingforUpdatedState(lookingFor: event.lookingFor));
+        final updated = List<LookingForModel>.from(event.lookingFor);
+        if(updated[event.index].isSelected){
+          final model =updated.removeAt(event.index);
+          updated.insert(0, model);
+        }else{
+          final model =updated.removeAt(event.index);
+          updated.add(model);
+        }
+        emit(LookingforUpdatedState(lookingFor: updated));
       }catch(e){
         log("Error updating lookingfor: $e");
         emit(LookingforErrorState(message: e.toString()));

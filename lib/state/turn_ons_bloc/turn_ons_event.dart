@@ -14,7 +14,8 @@ class TurnOnsUpdateDefaultEvent extends TurnOnsEvent{
 }
 class TurnOnsUpdateEvent extends TurnOnsEvent{
   final List<LookingForModel> turnOns;
-  const TurnOnsUpdateEvent({required this.turnOns});
+  final int index;
+  const TurnOnsUpdateEvent({required this.turnOns, required this.index});
 }
 class TurnOnsAddEvent extends TurnOnsEvent{
   final List<LookingForModel> turnOns;

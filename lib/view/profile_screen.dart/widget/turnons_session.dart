@@ -60,7 +60,7 @@ class TurnOnsSession extends StatelessWidget {
                       item.copyWith(isSelected: !item.isSelected);
                   context
                       .read<TurnOnsBloc>()
-                      .add(TurnOnsUpdateEvent(turnOns: newItemList));
+                      .add(TurnOnsUpdateEvent(turnOns: newItemList, index: index));
                 },
               );
             },

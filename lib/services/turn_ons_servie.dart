@@ -10,8 +10,12 @@ class TurnOnsService {
   final authService = di.get<AuthServices>();
   Future<void>addTurnOns(List<LookingForModel> turnOns) async {
     try {
+      final List<LookingForModel> modelsToSort = List<LookingForModel>.from(turnOns);
+      modelsToSort.sort((a, b) {
+        return b.isSelected.toString().compareTo(a.isSelected.toString());
+      });
       await _firestore.collection('turnons').doc(authService.getCurrentUser()!.uid).set({
-        'turnOns': turnOns.map((e) => e.toJson()).toList(),
+        'turnOns': modelsToSort.map((e) => e.toJson()).toList(),
       },SetOptions(merge: true));
     } catch (e) {
       log('Error adding turnOns: $e');
@@ -30,8 +34,12 @@ class TurnOnsService {
   }
   Future<void> updateTurnOns(List<LookingForModel> turnOns) async {
     try {
+      final List<LookingForModel> modelsToSort = List<LookingForModel>.from(turnOns);
+      modelsToSort.sort((a, b) {
+        return b.isSelected.toString().compareTo(a.isSelected.toString());
+      });
       await _firestore.collection('turnons').doc(authService.getCurrentUser()!.uid).set({
-        'turnOns': turnOns.map((e) => e.toJson()).toList(),
+        'turnOns': modelsToSort.map((e) => e.toJson()).toList(),
       },SetOptions(merge: true));
     } catch (e) {
       log('Error updating turnOns: $e');

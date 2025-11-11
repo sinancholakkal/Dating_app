@@ -48,7 +48,7 @@ class LookingForSession extends StatelessWidget {
                   log("onTap: ${item.keyValue}");
                   final List<LookingForModel> newItemList = List.from((state is LookingforLoadedState ? state.lookingFor : (state is LookingforUpdatedState ? state.lookingFor : [])));
                   newItemList[index] = item.copyWith(isSelected: !item.isSelected);
-                  context.read<LookingforBloc>().add(LookingforUpdateEvent(lookingFor: newItemList));
+                  context.read<LookingforBloc>().add(LookingforUpdateEvent(lookingFor: newItemList, index: index));
                 },
               );
             },

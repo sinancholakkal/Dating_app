@@ -14,7 +14,8 @@ class LookingforUpdateDefaultEvent extends LookingforEvent{
 }
 class LookingforUpdateEvent extends LookingforEvent{
   final List<LookingForModel> lookingFor;
-  const LookingforUpdateEvent({required this.lookingFor});
+  final int index;
+  const LookingforUpdateEvent({required this.lookingFor, required this.index});
 }
 class LookingforAddEvent extends LookingforEvent{
   final List<LookingForModel> lookingFor;

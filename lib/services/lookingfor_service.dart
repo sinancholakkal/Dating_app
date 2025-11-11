@@ -8,16 +8,22 @@ import 'package:dating_app/services/auth_services.dart';
 class LookingforService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final authService = di.get<AuthServices>();
-  Future<void>addLookingfor(List<LookingForModel> lookingFor) async {
-    try {
-      await _firestore.collection('lookingfor').doc(authService.getCurrentUser()!.uid).set({
-        'lookingFor': lookingFor.map((e) => e.toJson()).toList(),
-      },SetOptions(merge: true));
-    } catch (e) {
-      log('Error adding lookingfor: $e');
-      rethrow;
-    }
+Future<void> addLookingfor(List<LookingForModel> lookingFor) async {
+  try {
+    final List<LookingForModel> modelsToSort = List<LookingForModel>.from(lookingFor);
+    modelsToSort.sort((a, b) {
+      return b.isSelected.toString().compareTo(a.isSelected.toString());
+    });
+
+    await _firestore.collection('lookingfor').doc(authService.getCurrentUser()!.uid).set({
+      'lookingFor': modelsToSort.map((e) => e.toJson()).toList(), 
+    }, SetOptions(merge: true));
+
+  } catch (e) {
+    log('Error adding lookingfor (with sort): $e');
+    rethrow;
   }
+}
   Future<List<LookingForModel>> getLookingfor() async {
     try {
       final doc = await _firestore.collection('lookingfor').doc(authService.getCurrentUser()!.uid).get();
@@ -28,16 +34,22 @@ class LookingforService {
       rethrow;
     }
   }
-  Future<void> updateLookingfor(List<LookingForModel> lookingFor) async {
-    try {
-      await _firestore.collection('lookingfor').doc(authService.getCurrentUser()!.uid).set({
-        'lookingFor': lookingFor.map((e) => e.toJson()).toList(),
-      },SetOptions(merge: true));
-    } catch (e) {
-      log('Error updating lookingfor: $e');
-      rethrow;
-    }
+Future<void> updateLookingfor(List<LookingForModel> lookingFor) async {
+  try {
+    final List<LookingForModel> modelsToSave = List<LookingForModel>.from(lookingFor);
+    modelsToSave.sort((a, b) {
+      return b.isSelected.toString().compareTo(a.isSelected.toString());
+    });
+    
+    await _firestore.collection('lookingfor').doc(authService.getCurrentUser()!.uid).set({
+      'lookingFor': modelsToSave.map((e) => e.toJson()).toList(), 
+    }, SetOptions(merge: true));
+
+  } catch (e) {
+    log('Error updating lookingfor: $e');
+    rethrow;
   }
+}
   Future<bool> isLookingforExists() async {
     try {
       final doc = await _firestore.collection('lookingfor').doc(authService.getCurrentUser()!.uid).get();

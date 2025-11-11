@@ -42,7 +42,15 @@ class TurnOnsBloc extends Bloc<TurnOnsEvent, TurnOnsState> {
     on<TurnOnsUpdateEvent>((event, emit)async {
       try{
         await turnOnsService.updateTurnOns(event.turnOns);
-        emit(TurnOnsUpdatedState(turnOns: event.turnOns));
+        final updated = List<LookingForModel>.from(event.turnOns);
+        if(updated[event.index].isSelected){
+          final model =updated.removeAt(event.index);
+          updated.insert(0, model);
+        }else{
+          final model =updated.removeAt(event.index);
+          updated.add(model);
+        }
+        emit(TurnOnsUpdatedState(turnOns: updated));
       }catch(e){
         log("Error updating turnOns: $e");
         emit(TurnOnsErrorState(message: e.toString()));
