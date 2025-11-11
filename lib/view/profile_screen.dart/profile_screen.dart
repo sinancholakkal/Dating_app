@@ -5,6 +5,7 @@ import 'package:dating_app/services/auth_services.dart';
 import 'package:dating_app/state/auth_bloc/auth_bloc.dart';
 import 'package:dating_app/state/coins_bloc/coins_bloc.dart';
 import 'package:dating_app/state/lookingfor_bloc/lookingfor_bloc.dart';
+import 'package:dating_app/state/turn_ons_bloc/turn_ons_bloc.dart';
 import 'package:dating_app/state/user_bloc/user_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
 import 'package:dating_app/utils/app_sizedbox.dart';
@@ -13,11 +14,11 @@ import 'package:dating_app/view/profile_screen.dart/managers/profile_ad_manager.
 import 'package:dating_app/view/profile_screen.dart/widget/bio_editor_widget.dart';
 import 'package:dating_app/view/profile_screen.dart/widget/interests_section.dart';
 import 'package:dating_app/view/profile_screen.dart/widget/lookingfor_session.dart';
+import 'package:dating_app/view/profile_screen.dart/widget/turnons_session.dart';
 import 'package:dating_app/view/profile_screen.dart/widget/profile_loading_widget.dart';
 import 'package:dating_app/view/profile_screen.dart/widget/profile_photo_grid.dart';
 import 'package:dating_app/view/profile_screen.dart/widget/section_header.dart';
 import 'package:dating_app/view/profile_screen.dart/widget/wallet_card_pro.dart';
-import 'package:dating_app/view/widgets/lookingFor_card.dart';
 import 'package:dating_app/view/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,6 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     context.read<LookingforBloc>().add(LookingforFetchEvent());
+    context.read<TurnOnsBloc>().add(TurnOnsFetchEvent());
     context.read<UserBloc>().add(GetUserProfileEvent());
     _bioController = TextEditingController(
       text:
@@ -299,7 +301,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         AppSizedBox.h30,
                         const SectionHeader(title: "Looking For"),
-                         LookingForSession(),
+                        const LookingForSession(),
+                        
+                        AppSizedBox.h30,
+                        const SectionHeader(title: "Turn Ons"),
+                        const TurnOnsSession(),
                        
                         AppSizedBox.h70,
 

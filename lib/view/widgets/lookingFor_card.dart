@@ -27,6 +27,7 @@ class LookingForCard extends StatelessWidget {
         clipBehavior: Clip.none,
         children: [
           Container(
+            width: double.infinity,
             decoration: BoxDecoration(
               color: isSelected! ? primary : Color(0xFF1E1E1E),
               borderRadius: BorderRadius.circular(16),
