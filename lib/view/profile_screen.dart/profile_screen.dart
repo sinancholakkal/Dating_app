@@ -40,9 +40,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late ValueNotifier<Set<String>> userInterests;
   late ProfileAdManager _adManager;
   final authService = di.get<AuthServices>();
+  late ScrollController _scrollController;
+
+ ValueNotifier<bool> hideUp = ValueNotifier(false);
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(() {
+      log("offset: ${_scrollController.offset}");
+      if (_scrollController.offset > 1000) {
+       hideUp.value = true;
+      } else if (_scrollController.offset < 1000) {
+        hideUp.value = false;
+      }
+    });
     context.read<LookingforBloc>().add(LookingforFetchEvent());
     context.read<TurnOnsBloc>().add(TurnOnsFetchEvent());
     context.read<UserBloc>().add(GetUserProfileEvent());
@@ -51,14 +63,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           "Lover of sunsets, travel, and finding the best coffee shops. Looking for someone to share new adventures with!",
     );
 
-    // Initialize ad manager
     _adManager = ProfileAdManager(
       onAdRewardGranted: _onAdRewardGranted,
       onError: (message) => flutterToast(msg: message),
     );
     _adManager.initialize();
-
-    // Load user's coins from Firestore
     context.read<CoinsBloc>().add(GetCurrentUserCoinsEvent());
     context.read<LookingforBloc>().add(LookingforFetchDefaultEvent());
   }
@@ -70,16 +79,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.dispose();
   }
 
-  // Callback when ad reward is granted
   void _onAdRewardGranted() {
-    // Add coins using the coins service
     context.read<CoinsBloc>().add(
       AddCoinsEvent(
         coins: _adManager.coinsReward,
         userId: authService.getCurrentUser()!.uid,
       ),
     );
-    // Show success message
     flutterToast(msg: "You earned ${_adManager.coinsReward} coins! 🎉");
   }
 
@@ -227,6 +233,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
                 body: SingleChildScrollView(
+                  controller: _scrollController,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),
                     child: Column(
@@ -302,21 +309,50 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         AppSizedBox.h30,
                         const SectionHeader(title: "Looking For"),
                         const LookingForSession(),
-                        
+
                         AppSizedBox.h30,
                         const SectionHeader(title: "Turn Ons"),
                         const TurnOnsSession(),
-                       
-                        AppSizedBox.h70,
 
+                        AppSizedBox.h70,
                       ],
                     ),
                   ),
                 ),
-                floatingActionButton: FloatingActionButton(
-                  onPressed: () => _handleSaveProfile(getUserModel),
-                  backgroundColor: primary,
-                  child: Icon(Icons.check, color: kWhite),
+                floatingActionButton: Column(
+                  spacing: 10,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ValueListenableBuilder(
+                      valueListenable: hideUp,
+                      builder: (context, value, child) {
+                        return Visibility(
+                          visible: value,
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: kWhite,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: IconButton(onPressed: (){
+                               _scrollController.animateTo(
+                                _scrollController.position.minScrollExtent,
+                                //_scontroller.offset -150,
+                                duration: Duration(seconds: 1),
+                                curve: Curves.easeIn,
+                              );
+                            }, icon: Icon(Icons.arrow_upward, color: kBlack),),
+                          ),
+                        );
+                      }
+                    ),
+                    FloatingActionButton(
+                      onPressed: () => _handleSaveProfile(getUserModel),
+                      backgroundColor: primary,
+                      child: Icon(Icons.check, color: kWhite),
+                    ),
+                  ],
                 ),
               ),
             );
@@ -326,6 +362,5 @@ class _ProfileScreenState extends State<ProfileScreen> {
         },
       ),
     );
-    
   }
 }

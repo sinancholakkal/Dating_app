@@ -28,12 +28,9 @@ class LookingForModel {
         .toList();
   }
 
-// IMPORTANT: You will need to import 'package:font_awesome_flutter/font_awesome_flutter.dart' 
-// if you are using the FontAwesomeIcons.
 
 static IconData _getIconFromKeyValue(String keyValue) {
   switch (keyValue) {
-    // --- Icons from the original list (LookingForModel) ---
     case 'casual':
       return Icons.favorite_border;
     case 'long_term':
@@ -44,12 +41,11 @@ static IconData _getIconFromKeyValue(String keyValue) {
       return Icons.group_outlined;
     case 'anything_but_boring':
       return Icons.mood_outlined;
-      
-    // --- Icons from the 'turnOns' list (NEW ADDITIONS) ---
+  
     case 'cosplay':
       return Icons.theater_comedy;
     case 'cuddles':
-      return Icons.favorite; // Duplicate of 'long_term' icon
+      return Icons.favorite; 
     case 'kisses':
       return FontAwesomeIcons.faceKiss;
     case 'massage':
@@ -77,7 +73,7 @@ static IconData _getIconFromKeyValue(String keyValue) {
     case 'fantasies':
       return Icons.lightbulb_outline;
     case 'dirty_talk':
-      return Icons.chat_bubble_outline; // Duplicate of 'virtual' icon
+      return Icons.chat_bubble_outline; 
     case 'sapiosexuality':
       return Icons.psychology_outlined;
     case 'sexting':
@@ -95,7 +91,7 @@ static IconData _getIconFromKeyValue(String keyValue) {
     case 'switch':
       return Icons.change_circle_outlined;
     case 'love_is_love':
-      return Icons.favorite_border; // Duplicate of 'casual' icon
+      return Icons.favorite_border;
     case 'spanking':
       return Icons.flash_on;
     case 'vintage':
@@ -132,9 +128,7 @@ static IconData _getIconFromKeyValue(String keyValue) {
       return FontAwesomeIcons.faceGrinHearts;
     case 'board_games':
       return FontAwesomeIcons.diceD20;
-      
-    // --- Default Case ---
-    default:
+          default:
       return Icons.favorite_border;
   }
 }
