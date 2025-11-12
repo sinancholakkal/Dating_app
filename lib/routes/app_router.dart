@@ -16,7 +16,7 @@ import 'package:dating_app/view/test_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/splash',
+  initialLocation: '/test',
   
   routes: [
     GoRoute(path: '/onboarding', builder: (context, state) =>  ScreenOnboarding()),
@@ -27,7 +27,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(path: '/home', builder: (context, state) =>  HomeScreen()),
     GoRoute(path: '/easytab', builder: (context, state) =>  EasyTabbar()),
     GoRoute(path: '/splash', builder: (context, state) =>  ScreenSplash()),
-    GoRoute(path: '/MyHomePage', builder: (context, state) =>  MyHomePage()),
+    GoRoute(path: '/test', builder: (context, state) => TestScreen()),
     GoRoute(path: '/settings', builder: (context, state) =>  SettingsScreen()),
     GoRoute(path: '/sensitive', builder: (context, state) =>  SensitiveTogleScreen()),
     GoRoute(path: '/lookingforexist', builder: (context, state) =>  ExistLookingforScreen()),
