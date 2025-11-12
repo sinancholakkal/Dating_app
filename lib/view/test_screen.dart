@@ -24,20 +24,101 @@ class _TestScreenState extends State<TestScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Container(
+                    padding: const EdgeInsets.all(16),
                     width: double.infinity,
                     height: 550,
                     decoration: BoxDecoration(
                       color: Color(0xff242424),
                       borderRadius: BorderRadius.circular(16),
                     ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          spacing: 10,
+                          children: [
+                            Expanded(
+                              child: FadeShimmer(
+                                height: 14,
+                                width: double.infinity,
+                                radius: 20,
+                                millisecondsDelay: 20,
+                                fadeTheme: FadeTheme.dark,
+                              ),
+                            ),
+                            Expanded(
+                              child: FadeShimmer(
+                                height: 14,
+                                width: double.infinity,
+                                radius: 500,
+                                millisecondsDelay: 20,
+                                fadeTheme: FadeTheme.dark,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Spacer(),
+                        SizedBox(
+                          child: Row(
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    spacing: 10,
+                                    children: [
+                                      FadeShimmer(
+                                        height: 16,
+                                        width: 140,
+                                        radius: 20,
+                                        millisecondsDelay: 20,
+                                        fadeTheme: FadeTheme.dark,
+                                      ),
+                                      FadeShimmer(
+                                        height: 35,
+                                        width: 40,
+                                        radius: 16,
+                                        millisecondsDelay: 500,
+                                        fadeTheme: FadeTheme.dark,
+                                      ),
+                                    ],
+                                  ),
+                                  FadeShimmer(
+                                    height: 16,
+                                    width: 140,
+                                    radius: 20,
+                                    millisecondsDelay: 20,
+                                    fadeTheme: FadeTheme.dark,
+                                  ),
+                                ],
+                              ),
+                              Spacer(),
+                              FadeShimmer(width: 50, height: 50, radius: 16, millisecondsDelay: 500, fadeTheme: FadeTheme.dark),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  FadeShimmer(
-                    height: 100,
+               
+                  Container(
+                    height: 120,
                     width: double.infinity,
-                    radius: 20,
-                    fadeTheme: FadeTheme.dark,
-                    millisecondsDelay: 20,
-                  ),
+                    decoration: BoxDecoration(
+                      color: Color(0xff242424),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        FadeShimmer.round(size: 45,  millisecondsDelay: 20, fadeTheme: FadeTheme.dark),
+                        FadeShimmer.round(size: 50,  millisecondsDelay: 20, fadeTheme: FadeTheme.dark),
+                        FadeShimmer.round(size: 45,  millisecondsDelay: 500, fadeTheme: FadeTheme.dark),
+                        FadeShimmer.round(size: 50,  millisecondsDelay: 500, fadeTheme: FadeTheme.dark),
+                      ],
+                    ),
+                  )
                 ],
               ),
             ),
