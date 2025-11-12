@@ -339,7 +339,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                _scrollController.animateTo(
                                 _scrollController.position.minScrollExtent,
                                 //_scontroller.offset -150,
-                                duration: Duration(seconds: 1),
+                                duration: Duration(seconds: 1),                               
                                 curve: Curves.easeIn,
                               );
                             }, icon: Icon(Icons.arrow_upward, color: kBlack),),
