@@ -338,7 +338,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: IconButton(onPressed: (){
                                _scrollController.animateTo(
                                 _scrollController.position.minScrollExtent,
-                                //_scontroller.offset -150,
                                 duration: Duration(seconds: 1),                               
                                 curve: Curves.easeIn,
                               );

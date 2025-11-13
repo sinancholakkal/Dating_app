@@ -6,8 +6,10 @@ import 'package:dating_app/state/favorite_bloc/favorite_bloc.dart';
 import 'package:dating_app/state/user_actions_bloc/user_actions_bloc.dart';
 import 'package:dating_app/state/user_bloc/user_bloc.dart';
 import 'package:dating_app/utils/app_color.dart';
+import 'package:dating_app/view/favorite_screen/widgets/fav_loading_widget.dart';
 import 'package:dating_app/view/favorite_screen/widgets/favorite_card.dart';
 import 'package:dating_app/view/home_screen/widget/upgrade_widget.dart';
+import 'package:fade_shimmer/fade_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -80,7 +82,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             },
             builder: (context, state) {
               if (state is FavoriteLoadingState) {
-                return Center(child: CircularProgressIndicator(color: kWhite));
+                return FavLoadingWidget();
               }
               if (state is FavoriteLoadedState) {
                 log("favorite loaded state emited");
@@ -98,9 +100,15 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                             decoration: BoxDecoration(
                               color: Colors.white.withOpacity(0.06),
                               borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: Colors.white.withOpacity(0.1)),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.1),
+                              ),
                             ),
-                            child: const Icon(Icons.favorite_border, color: Colors.white, size: 36),
+                            child: const Icon(
+                              Icons.favorite_border,
+                              color: Colors.white,
+                              size: 36,
+                            ),
                           ),
                           const SizedBox(height: 16),
                           Text(
@@ -114,7 +122,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                           Text(
                             "Tap the heart on profiles to save them here",
                             textAlign: TextAlign.center,
-                            style: GoogleFonts.poppins(color: kWhite70, fontSize: 12),
+                            style: GoogleFonts.poppins(
+                              color: kWhite70,
+                              fontSize: 12,
+                            ),
                           ),
                         ],
                       ),
@@ -159,7 +170,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                             UserDislikeActionEvent(dislikeUserId: user.id),
                           );
                         }
-                        userActionsService.removeFromFavorites(favoriteUserId: user.id);
+                        userActionsService.removeFromFavorites(
+                          favoriteUserId: user.id,
+                        );
                       },
 
                       background: Container(
@@ -194,4 +207,3 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     );
   }
 }
-

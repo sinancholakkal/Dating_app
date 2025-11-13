@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:dating_app/state/request_bloc/request_bloc.dart';
 import 'package:dating_app/utils/app_color.dart'; // Your app's colors
+import 'package:dating_app/view/notification_screen.dart/widget/noti_loading_widget.dart';
 import 'package:dating_app/view/notification_screen.dart/widget/request_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,12 +49,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           child: BlocBuilder<RequestBloc, RequestState>(
             builder: (context, state) {
               if (state is FetchLoadingState) {
-                return Center(
-                  child: CircularProgressIndicator(
-                    color: kWhite,
-                    strokeWidth: 3,
-                  ),
-                );
+                return NotiLoadingWidget();
               } else if (state is EmptyRequestState) {
                 return Padding(
                   padding: const EdgeInsets.all(24.0),
